@@ -43,6 +43,10 @@ void GameWidget::initUI()
     }
     layout->addWidget(chessBoard);
 
+    // 隐藏窗口控制按钮（最小化和关闭）
+    ui->minimizeBtn->hide();
+    ui->closeBtn->hide();
+
     // 设置初始文本
     ui->gameIdLabel->setText("#0 桌");
     ui->timeRuleLabel->setText("20+5 分，19路");
@@ -63,6 +67,10 @@ void GameWidget::initUI()
     ui->backToLobbyButton->setEnabled(true);
     ui->restartButton->setEnabled(false);
 
+    // 设置AI复选框初始状态（未选中）
+    ui->enableAICheckBox->setChecked(false);
+    ui->enableAICheckBox->setEnabled(true); // 在游戏开始前可以切换
+
     LOG_DEBUG("GameWidget UI initialized");
 }
 
@@ -75,6 +83,12 @@ void GameWidget::setupConnections()
     connect(ui->sendButton, &QPushButton::clicked, this, &GameWidget::onSendButtonClicked);
     connect(ui->minimizeBtn, &QPushButton::clicked, this, &GameWidget::onMinimizeBtnClicked);
     connect(ui->closeBtn, &QPushButton::clicked, this, &GameWidget::onCloseBtnClicked);
+
+    // 连接AI复选框信号
+    connect(ui->enableAICheckBox, &QCheckBox::toggled, this, &GameWidget::onAIToggled);
+
+    // 连接重新开始按钮信号
+    connect(ui->restartButton, &QPushButton::clicked, this, &GameWidget::onRestartButtonClicked);
 
     // 连接玩家头像点击信号
     connect(ui->player1Avatar, &QPushButton::clicked, this, &GameWidget::onPlayer1AvatarClicked);
@@ -180,6 +194,19 @@ void GameWidget::initGameWidget(bool islocal)
     updatePlayerInfo(1200, 1200, true); // 默认20分钟，黑棋先行
     updateGameStatus(false, false);     // 游戏未开始，未结束
 
+    // 根据游戏模式设置UI
+    if (islocal) {
+        // 本地游戏：隐藏聊天tab，只显示记录和玩家tab
+        ui->tabWidget->setTabEnabled(0, false); // 隐藏聊天tab
+        ui->tabWidget->setCurrentIndex(1); // 默认显示记录tab
+        ui->restartButton->show(); // 显示重新开始按钮
+    } else {
+        // 在线游戏：显示所有tab
+        ui->tabWidget->setTabEnabled(0, true); // 显示聊天tab
+        ui->tabWidget->setCurrentIndex(0); // 默认显示聊天tab
+        ui->restartButton->hide(); // 隐藏重新开始按钮（在线游戏不支持）
+    }
+
     // 添加欢迎消息
     QString welcomeMsg = islocal ? "本地游戏已就绪" : "在线游戏已就绪";
     ui->chatHistory->append(QString("<font color='gray'>%1</font>").arg(welcomeMsg));
@@ -271,7 +298,12 @@ void GameWidget::onGameEnded(const QString &username, int rating, bool won)
     // 更新UI状态
     updateGameStatus(false, true); // 游戏未开始，已结束
 
-    // 添加游戏结果消息
+    // 显示获胜对话框
+    QString title = won ? "恭喜获胜！" : "游戏结束";
+    QString message = won ? QString("%1 获胜！").arg(username) : QString("游戏结束，%1 失败").arg(username);
+    QMessageBox::information(this, title, message);
+
+    // 添加游戏结果消息到聊天
     QString resultMsg = won ? QString("%1 获胜！").arg(username) : QString("%1 失败").arg(username);
     ui->chatHistory->append(QString("<font color='%1'>%2</font>").arg(won ? "green" : "red").arg(resultMsg));
 }
@@ -467,4 +499,16 @@ void GameWidget::updatePlayerSeatStatus(bool blackTaken, bool whiteTaken)
         ui->player2Avatar->setEnabled(true);
         ui->player2NameLabel->setText("等待玩家...");
     }
+}
+
+void GameWidget::onAIToggled(bool checked)
+{
+    LOG_DEBUG(QString("AI toggled: %1").arg(checked ? "enabled" : "disabled").toStdString());
+    emit aiToggled(checked);
+}
+
+void GameWidget::onRestartButtonClicked()
+{
+    LOG_DEBUG("Restart button clicked");
+    emit restartGame();
 }

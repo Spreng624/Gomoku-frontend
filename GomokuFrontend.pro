@@ -9,7 +9,7 @@ DEPENDPATH  +=  src src/network src/utils
 VPATH +=  src src/network src/utils
 
 # 链接Windows Socket API和BCrypt库
-LIBS += -lws2_32 -lbcrypt
+LIBS += -lws2_32 -lbcrypt -lpthread
 
 INCLUDEPATH += . \
                src \
@@ -34,6 +34,7 @@ VPATH += . \
         src/utils
 
 SOURCES += src/core/Game.cpp \
+           src/core/AiPlayer.cpp \
            src/core/manager.cpp \
            src/core/GameManager.cpp \
            src/network/Client.cpp \

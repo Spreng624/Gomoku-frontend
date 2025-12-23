@@ -70,7 +70,7 @@ void ChessBoardWidget::paintEvent(QPaintEvent *event)
     }
 
     // 绘制当前玩家指示器
-    drawCurrentPlayerIndicator(painter);
+    // drawCurrentPlayerIndicator(painter); // 注释掉，不显示当前玩家指示器
 
     // 如果游戏结束，显示获胜信息
     if (isGameOver && !winner.isEmpty())

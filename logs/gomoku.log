@@ -5151,3 +5151,1943 @@
 [2025-12-23 17:51:14.049] [DEBUG] ====== Background Validation Complete ======
 [2025-12-23 17:51:14.050] [INFO] MainWindow initialization completed successfully
 [2025-12-23 17:51:18.222] [DEBUG] User info button clicked, showing login dialog
+[2025-12-23 21:25:28.957] [INFO] Logger initialized. Log file: logs/gomoku.log
+[2025-12-23 21:25:28.957] [DEBUG] Logger initialized with DEBUG level
+[2025-12-23 21:25:28.957] [DEBUG] Setting up UI...
+[2025-12-23 21:25:28.990] [DEBUG] Creating Manager instance...
+[2025-12-23 21:25:28.991] [INFO] Manager initialized for server
+[2025-12-23 21:25:28.991] [DEBUG] Client constructor called for 127.0.0.1:8080
+[2025-12-23 21:25:29.012] [DEBUG] Session activated callback set
+[2025-12-23 21:25:29.013] [INFO] Attempting to connect to server...
+[2025-12-23 21:25:29.013] [DEBUG] Connecting to 127.0.0.1:8080...
+[2025-12-23 21:25:29.019] [DEBUG] New socket created successfully, socket value: 1052
+[2025-12-23 21:25:31.062] [ERROR] Connect failed with error: 10061
+[2025-12-23 21:25:31.064] [DEBUG] Creating LobbyWidget...
+[2025-12-23 21:25:31.064] [DEBUG] LobbyWidget Initializing...
+[2025-12-23 21:25:31.075] [DEBUG] Configuring room table properties...
+[2025-12-23 21:25:31.075] [DEBUG] Room table properties configured
+[2025-12-23 21:25:31.075] [DEBUG] Initializing room table...
+[2025-12-23 21:25:31.079] [DEBUG] Initializing player list...
+[2025-12-23 21:25:31.079] [DEBUG] Setting up signals...
+[2025-12-23 21:25:31.079] [INFO] LobbyWidget initialized successfully
+[2025-12-23 21:25:31.079] [DEBUG] Creating GameWidget...
+[2025-12-23 21:25:31.084] [DEBUG] GameWidget UI initialized
+[2025-12-23 21:25:31.084] [DEBUG] GameWidget signal connections established
+[2025-12-23 21:25:31.084] [DEBUG] GameWidget constructed successfully
+[2025-12-23 21:25:31.085] [DEBUG] Creating GameManager instance...
+[2025-12-23 21:25:31.085] [DEBUG] Setting up signal connections...
+[2025-12-23 21:25:31.085] [DEBUG] Connecting LobbyWidget::localGame to GameManager::setLocalGame...
+[2025-12-23 21:25:31.085] [DEBUG] localGame connection result: 1
+[2025-12-23 21:25:31.086] [DEBUG] Initializing window components...
+[2025-12-23 21:25:31.086] [DEBUG] Initializing window style...
+[2025-12-23 21:25:31.095] [DEBUG] Set main window background to white
+[2025-12-23 21:25:31.095] [DEBUG] Setting window flags: FramelessWindowHint | WindowSystemMenuHint | WindowMinimizeButtonHint
+[2025-12-23 21:25:31.101] [DEBUG] WA_TranslucentBackground is commented out (not set)
+[2025-12-23 21:25:31.102] [DEBUG] WA_OpaquePaintEvent attribute set
+[2025-12-23 21:25:31.102] [DEBUG] Added Qt::Window flag for taskbar interaction
+[2025-12-23 21:25:31.102] [DEBUG] Window size set to: 1000x700
+[2025-12-23 21:25:31.102] [DEBUG] Set window palette to white background
+[2025-12-23 21:25:31.103] [DEBUG] Current stylesheet: QMainWindow {    background-color: white;    border: none;}
+[2025-12-23 21:25:31.103] [DEBUG] Window background role color: #ffffff
+[2025-12-23 21:25:31.103] [DEBUG] Initializing layout...
+[2025-12-23 21:25:31.103] [DEBUG] centralwidget found at address: 2766527313008
+[2025-12-23 21:25:31.104] [DEBUG] centralwidget object name: centralwidget
+[2025-12-23 21:25:31.104] [DEBUG] centralwidget geometry: 100x30
+[2025-12-23 21:25:31.104] [DEBUG] centralwidget object name set to: centralContainer
+[2025-12-23 21:25:31.104] [DEBUG] centralwidget WA_StyledBackground attribute set
+[2025-12-23 21:25:31.104] [DEBUG] centralwidget palette background color: #f3f3f3
+[2025-12-23 21:25:31.104] [DEBUG] Set centralwidget palette to white background
+[2025-12-23 21:25:31.104] [DEBUG] Layout initialized successfully
+[2025-12-23 21:25:31.104] [DEBUG] Initializing title bar and status bar...
+[2025-12-23 21:25:31.104] [DEBUG] Initializing title bar components...
+[2025-12-23 21:25:31.104] [DEBUG] titleBarWidget found at address: 2766527454112
+[2025-12-23 21:25:31.105] [DEBUG] titleBarWidget object name: titleBarWidget
+[2025-12-23 21:25:31.105] [DEBUG] titleLabel found at address: 2766527456112
+[2025-12-23 21:25:31.105] [DEBUG] titleLabel text: 五子棋大厅
+[2025-12-23 21:25:31.105] [DEBUG] minimizeButton found at address: 2766527471536
+[2025-12-23 21:25:31.105] [DEBUG] maximizeButton found at address: 2766527475136
+[2025-12-23 21:25:31.106] [DEBUG] closeButton found at address: 2766527485824
+[2025-12-23 21:25:31.106] [DEBUG] Title bar initialization completed
+[2025-12-23 21:25:31.106] [DEBUG] Initializing status bar components...
+[2025-12-23 21:25:31.106] [DEBUG] statusBarWidget found
+[2025-12-23 21:25:31.106] [DEBUG] statusMessageLabel found
+[2025-12-23 21:25:31.106] [DEBUG] networkStatusButton found
+[2025-12-23 21:25:31.106] [DEBUG] userInfoButton found
+[2025-12-23 21:25:31.106] [DEBUG] Status bar initialization completed
+[2025-12-23 21:25:31.107] [DEBUG] Getting stackedWidget from UI...
+[2025-12-23 21:25:31.107] [DEBUG] stackedWidget found in UI
+[2025-12-23 21:25:31.115] [DEBUG] StackedWidget initialized with Lobby as default
+[2025-12-23 21:25:31.115] [DEBUG] Creating ToastWidget...
+[2025-12-23 21:25:31.118] [DEBUG] ====== Validating Window Background ======
+[2025-12-23 21:25:31.118] [DEBUG] CentralWidget palette background color: #ffffff
+[2025-12-23 21:25:31.118] [INFO] CentralWidget background is correctly set to white
+[2025-12-23 21:25:31.119] [DEBUG] Current window stylesheet length: 59 characters
+[2025-12-23 21:25:31.119] [DEBUG] Stylesheet contains background-color definition
+[2025-12-23 21:25:31.119] [DEBUG] Window has WA_StyledBackground: 1
+[2025-12-23 21:25:31.119] [DEBUG] Window has WA_OpaquePaintEvent: 1
+[2025-12-23 21:25:31.119] [DEBUG] Window has WA_TranslucentBackground: 0
+[2025-12-23 21:25:31.119] [DEBUG] ====== Background Validation Complete ======
+[2025-12-23 21:25:31.119] [INFO] MainWindow initialization completed successfully
+[2025-12-23 21:25:38.937] [INFO] MainWindow destructor called
+[2025-12-23 21:25:38.937] [DEBUG] Cleaning up UI...
+[2025-12-23 21:25:38.937] [DEBUG] Cleaning up Manager...
+[2025-12-23 21:25:38.937] [INFO] Manager destructor called
+[2025-12-23 21:25:38.937] [DEBUG] Disconnecting client...
+[2025-12-23 21:25:38.937] [DEBUG] Disconnect called, setting is_running to false
+[2025-12-23 21:25:38.937] [DEBUG] Current socket value before disconnect: -1
+[2025-12-23 21:25:38.938] [DEBUG] Worker thread is not joinable or already finished
+[2025-12-23 21:25:38.938] [DEBUG] Socket is already INVALID_SOCKET, skipping close
+[2025-12-23 21:25:38.938] [DEBUG] Calling disconnectedCallback from Disconnect()
+[2025-12-23 21:25:38.938] [INFO] Disconnected from server callback triggered
+[2025-12-23 21:25:38.941] [INFO] Client disconnected successfully.
+[2025-12-23 21:25:38.941] [DEBUG] Client destructor called
+[2025-12-23 21:25:38.941] [DEBUG] Disconnect called, setting is_running to false
+[2025-12-23 21:25:38.942] [DEBUG] Current socket value before disconnect: -1
+[2025-12-23 21:25:38.942] [DEBUG] Worker thread is not joinable or already finished
+[2025-12-23 21:25:38.942] [DEBUG] Socket is already INVALID_SOCKET, skipping close
+[2025-12-23 21:25:38.942] [DEBUG] Calling disconnectedCallback from Disconnect()
+[2025-12-23 21:25:38.942] [INFO] Disconnected from server callback triggered
+[2025-12-23 21:25:38.942] [INFO] Client disconnected successfully.
+[2025-12-23 21:25:38.943] [DEBUG] Client cleanup completed
+[2025-12-23 21:25:38.943] [DEBUG] Client disconnected and reset
+[2025-12-23 21:25:38.943] [INFO] Manager cleanup completed
+[2025-12-23 21:25:38.943] [DEBUG] Cleaning up ToastWidget...
+[2025-12-23 21:25:38.949] [DEBUG] Shutting down Logger...
+[2025-12-23 21:25:38.949] [INFO] Logger shutting down.
+[2025-12-23 21:27:11.803] [INFO] Logger initialized. Log file: logs/gomoku.log
+[2025-12-23 21:27:11.803] [DEBUG] Logger initialized with DEBUG level
+[2025-12-23 21:27:11.803] [DEBUG] Setting up UI...
+[2025-12-23 21:27:11.817] [DEBUG] Creating Manager instance...
+[2025-12-23 21:27:11.817] [INFO] Manager initialized for server
+[2025-12-23 21:27:11.818] [DEBUG] Client constructor called for 127.0.0.1:8080
+[2025-12-23 21:27:11.840] [DEBUG] Session activated callback set
+[2025-12-23 21:27:11.841] [INFO] Attempting to connect to server...
+[2025-12-23 21:27:11.841] [DEBUG] Connecting to 127.0.0.1:8080...
+[2025-12-23 21:27:11.846] [DEBUG] New socket created successfully, socket value: 1060
+[2025-12-23 21:27:13.878] [ERROR] Connect failed with error: 10061
+[2025-12-23 21:27:13.879] [DEBUG] Creating LobbyWidget...
+[2025-12-23 21:27:13.879] [DEBUG] LobbyWidget Initializing...
+[2025-12-23 21:27:13.882] [DEBUG] Configuring room table properties...
+[2025-12-23 21:27:13.883] [DEBUG] Room table properties configured
+[2025-12-23 21:27:13.883] [DEBUG] Initializing room table...
+[2025-12-23 21:27:13.885] [DEBUG] Initializing player list...
+[2025-12-23 21:27:13.885] [DEBUG] Setting up signals...
+[2025-12-23 21:27:13.885] [INFO] LobbyWidget initialized successfully
+[2025-12-23 21:27:13.886] [DEBUG] Creating GameWidget...
+[2025-12-23 21:27:13.889] [DEBUG] GameWidget UI initialized
+[2025-12-23 21:27:13.890] [DEBUG] GameWidget signal connections established
+[2025-12-23 21:27:13.892] [DEBUG] GameWidget constructed successfully
+[2025-12-23 21:27:13.892] [DEBUG] Creating GameManager instance...
+[2025-12-23 21:27:13.892] [DEBUG] Setting up signal connections...
+[2025-12-23 21:27:13.893] [DEBUG] Connecting LobbyWidget::localGame to GameManager::setLocalGame...
+[2025-12-23 21:27:13.893] [DEBUG] localGame connection result: 1
+[2025-12-23 21:27:13.894] [DEBUG] Initializing window components...
+[2025-12-23 21:27:13.894] [DEBUG] Initializing window style...
+[2025-12-23 21:27:13.903] [DEBUG] Set main window background to white
+[2025-12-23 21:27:13.903] [DEBUG] Setting window flags: FramelessWindowHint | WindowSystemMenuHint | WindowMinimizeButtonHint
+[2025-12-23 21:27:13.910] [DEBUG] WA_TranslucentBackground is commented out (not set)
+[2025-12-23 21:27:13.911] [DEBUG] WA_OpaquePaintEvent attribute set
+[2025-12-23 21:27:13.911] [DEBUG] Added Qt::Window flag for taskbar interaction
+[2025-12-23 21:27:13.912] [DEBUG] Window size set to: 1000x700
+[2025-12-23 21:27:13.912] [DEBUG] Set window palette to white background
+[2025-12-23 21:27:13.912] [DEBUG] Current stylesheet: QMainWindow {    background-color: white;    border: none;}
+[2025-12-23 21:27:13.912] [DEBUG] Window background role color: #ffffff
+[2025-12-23 21:27:13.913] [DEBUG] Initializing layout...
+[2025-12-23 21:27:13.913] [DEBUG] centralwidget found at address: 1184116814960
+[2025-12-23 21:27:13.913] [DEBUG] centralwidget object name: centralwidget
+[2025-12-23 21:27:13.913] [DEBUG] centralwidget geometry: 100x30
+[2025-12-23 21:27:13.913] [DEBUG] centralwidget object name set to: centralContainer
+[2025-12-23 21:27:13.913] [DEBUG] centralwidget WA_StyledBackground attribute set
+[2025-12-23 21:27:13.913] [DEBUG] centralwidget palette background color: #f3f3f3
+[2025-12-23 21:27:13.913] [DEBUG] Set centralwidget palette to white background
+[2025-12-23 21:27:13.914] [DEBUG] Layout initialized successfully
+[2025-12-23 21:27:13.914] [DEBUG] Initializing title bar and status bar...
+[2025-12-23 21:27:13.914] [DEBUG] Initializing title bar components...
+[2025-12-23 21:27:13.914] [DEBUG] titleBarWidget found at address: 1184116956064
+[2025-12-23 21:27:13.914] [DEBUG] titleBarWidget object name: titleBarWidget
+[2025-12-23 21:27:13.914] [DEBUG] titleLabel found at address: 1184116958064
+[2025-12-23 21:27:13.915] [DEBUG] titleLabel text: 五子棋大厅
+[2025-12-23 21:27:13.915] [DEBUG] minimizeButton found at address: 1184116973488
+[2025-12-23 21:27:13.915] [DEBUG] maximizeButton found at address: 1184116977088
+[2025-12-23 21:27:13.915] [DEBUG] closeButton found at address: 1184116987776
+[2025-12-23 21:27:13.915] [DEBUG] Title bar initialization completed
+[2025-12-23 21:27:13.915] [DEBUG] Initializing status bar components...
+[2025-12-23 21:27:13.916] [DEBUG] statusBarWidget found
+[2025-12-23 21:27:13.916] [DEBUG] statusMessageLabel found
+[2025-12-23 21:27:13.916] [DEBUG] networkStatusButton found
+[2025-12-23 21:27:13.916] [DEBUG] userInfoButton found
+[2025-12-23 21:27:13.916] [DEBUG] Status bar initialization completed
+[2025-12-23 21:27:13.916] [DEBUG] Getting stackedWidget from UI...
+[2025-12-23 21:27:13.916] [DEBUG] stackedWidget found in UI
+[2025-12-23 21:27:13.924] [DEBUG] StackedWidget initialized with Lobby as default
+[2025-12-23 21:27:13.924] [DEBUG] Creating ToastWidget...
+[2025-12-23 21:27:13.927] [DEBUG] ====== Validating Window Background ======
+[2025-12-23 21:27:13.927] [DEBUG] CentralWidget palette background color: #ffffff
+[2025-12-23 21:27:13.927] [INFO] CentralWidget background is correctly set to white
+[2025-12-23 21:27:13.928] [DEBUG] Current window stylesheet length: 59 characters
+[2025-12-23 21:27:13.928] [DEBUG] Stylesheet contains background-color definition
+[2025-12-23 21:27:13.928] [DEBUG] Window has WA_StyledBackground: 1
+[2025-12-23 21:27:13.928] [DEBUG] Window has WA_OpaquePaintEvent: 1
+[2025-12-23 21:27:13.928] [DEBUG] Window has WA_TranslucentBackground: 0
+[2025-12-23 21:27:13.928] [DEBUG] ====== Background Validation Complete ======
+[2025-12-23 21:27:13.929] [INFO] MainWindow initialization completed successfully
+[2025-12-23 21:27:18.742] [DEBUG] Local game button clicked, emitting localGame signal
+[2025-12-23 21:27:18.742] [DEBUG] localGame signal received, initializing local game
+[2025-12-23 21:27:18.742] [DEBUG] GameManager::setLocalGame called with isLocal: 1
+[2025-12-23 21:27:18.744] [DEBUG] Player list updated, count: 2
+[2025-12-23 21:27:18.744] [DEBUG] Updating player seat status: blackTaken=0, whiteTaken=0
+[2025-12-23 21:27:18.744] [DEBUG] Chat message from 游戏: 本地游戏已就绪，请点击玩家头像选择座位
+[2025-12-23 21:27:18.745] [DEBUG] Chat message from 游戏: 本地游戏已就绪
+[2025-12-23 21:27:18.747] [DEBUG] Initializing GameWidget, islocal: 1
+[2025-12-23 21:27:18.747] [DEBUG] Updating player seat status: blackTaken=0, whiteTaken=0
+[2025-12-23 21:27:18.748] [INFO] GameWidget initialized successfully
+[2025-12-23 21:27:18.749] [DEBUG] Switching widget to index: 1
+[2025-12-23 21:27:18.752] [INFO] Switching to Game widget
+[2025-12-23 21:27:18.754] [DEBUG] Widget switch completed
+[2025-12-23 21:27:21.333] [DEBUG] GameManager::onMakeMove called, x: 3, y: 3, isLocalGame: 1
+[2025-12-23 21:27:21.334] [DEBUG] Chat message from 游戏: 游戏未开始或已结束
+[2025-12-23 21:27:21.993] [DEBUG] GameManager::onMakeMove called, x: 3, y: 3, isLocalGame: 1
+[2025-12-23 21:27:21.994] [DEBUG] Chat message from 游戏: 游戏未开始或已结束
+[2025-12-23 21:27:22.452] [DEBUG] GameManager::onMakeMove called, x: 3, y: 3, isLocalGame: 1
+[2025-12-23 21:27:22.454] [DEBUG] Chat message from 游戏: 游戏未开始或已结束
+[2025-12-23 21:27:27.168] [DEBUG] Player 1 avatar clicked (black seat)
+[2025-12-23 21:27:27.171] [DEBUG] Chat message from 系统: 玩家1 选择了黑棋
+[2025-12-23 21:27:27.171] [DEBUG] Player list updated, count: 2
+[2025-12-23 21:27:27.171] [DEBUG] Updating player seat status: blackTaken=1, whiteTaken=0
+[2025-12-23 21:27:27.173] [DEBUG] Updating player seat status: blackTaken=1, whiteTaken=0
+[2025-12-23 21:27:34.152] [DEBUG] Player 2 avatar clicked (white seat)
+[2025-12-23 21:27:34.155] [DEBUG] Chat message from 系统: 玩家2 选择了白棋
+[2025-12-23 21:27:34.155] [DEBUG] Player list updated, count: 2
+[2025-12-23 21:27:34.156] [DEBUG] Updating player seat status: blackTaken=1, whiteTaken=1
+[2025-12-23 21:27:34.168] [INFO] Game started for player: 玩家1, rating: 1500
+[2025-12-23 21:27:34.169] [DEBUG] Chat message from 游戏: 游戏开始！玩家1 执黑先行
+[2025-12-23 21:27:34.169] [DEBUG] Updating player seat status: blackTaken=1, whiteTaken=1
+[2025-12-23 21:27:39.000] [DEBUG] GameManager::onMakeMove called, x: 1, y: 1, isLocalGame: 1
+[2025-12-23 21:27:39.001] [DEBUG] Chat message from 游戏: 玩家1 在 (1, 1) 落黑子
+[2025-12-23 21:27:39.003] [DEBUG] Chat message from 游戏: 轮到 玩家2 落子
+[2025-12-23 21:27:48.092] [DEBUG] GameManager::onMakeMove called, x: 2, y: 1, isLocalGame: 1
+[2025-12-23 21:27:48.093] [DEBUG] Chat message from 游戏: 玩家2 在 (2, 1) 落白子
+[2025-12-23 21:27:48.097] [DEBUG] Chat message from 游戏: 轮到 玩家1 落子
+[2025-12-23 21:27:50.470] [DEBUG] GameManager::onMakeMove called, x: 1, y: 2, isLocalGame: 1
+[2025-12-23 21:27:50.471] [DEBUG] Chat message from 游戏: 玩家1 在 (1, 2) 落黑子
+[2025-12-23 21:27:50.474] [DEBUG] Chat message from 游戏: 轮到 玩家2 落子
+[2025-12-23 21:27:51.705] [DEBUG] GameManager::onMakeMove called, x: 2, y: 2, isLocalGame: 1
+[2025-12-23 21:27:51.707] [DEBUG] Chat message from 游戏: 玩家2 在 (2, 2) 落白子
+[2025-12-23 21:27:51.711] [DEBUG] Chat message from 游戏: 轮到 玩家1 落子
+[2025-12-23 21:27:52.578] [DEBUG] GameManager::onMakeMove called, x: 2, y: 3, isLocalGame: 1
+[2025-12-23 21:27:52.579] [DEBUG] Chat message from 游戏: 玩家1 在 (2, 3) 落黑子
+[2025-12-23 21:27:52.582] [DEBUG] Chat message from 游戏: 轮到 玩家2 落子
+[2025-12-23 21:27:53.422] [DEBUG] GameManager::onMakeMove called, x: 3, y: 1, isLocalGame: 1
+[2025-12-23 21:27:53.425] [DEBUG] Chat message from 游戏: 玩家2 在 (3, 1) 落白子
+[2025-12-23 21:27:53.430] [DEBUG] Chat message from 游戏: 轮到 玩家1 落子
+[2025-12-23 21:27:54.483] [DEBUG] GameManager::onMakeMove called, x: 1, y: 3, isLocalGame: 1
+[2025-12-23 21:27:54.484] [DEBUG] Chat message from 游戏: 玩家1 在 (1, 3) 落黑子
+[2025-12-23 21:27:54.487] [DEBUG] Chat message from 游戏: 轮到 玩家2 落子
+[2025-12-23 21:27:57.028] [DEBUG] GameManager::onMakeMove called, x: 1, y: 4, isLocalGame: 1
+[2025-12-23 21:27:57.031] [DEBUG] Chat message from 游戏: 玩家2 在 (1, 4) 落白子
+[2025-12-23 21:27:57.034] [DEBUG] Chat message from 游戏: 轮到 玩家1 落子
+[2025-12-23 21:27:58.254] [DEBUG] GameManager::onMakeMove called, x: 3, y: 3, isLocalGame: 1
+[2025-12-23 21:27:58.256] [DEBUG] Chat message from 游戏: 玩家1 在 (3, 3) 落黑子
+[2025-12-23 21:27:58.259] [DEBUG] Chat message from 游戏: 轮到 玩家2 落子
+[2025-12-23 21:27:58.688] [DEBUG] GameManager::onMakeMove called, x: 2, y: 4, isLocalGame: 1
+[2025-12-23 21:27:58.689] [DEBUG] Chat message from 游戏: 玩家2 在 (2, 4) 落白子
+[2025-12-23 21:27:58.694] [DEBUG] Chat message from 游戏: 轮到 玩家1 落子
+[2025-12-23 21:28:05.068] [DEBUG] GameManager::onMakeMove called, x: 4, y: 3, isLocalGame: 1
+[2025-12-23 21:28:05.069] [DEBUG] Chat message from 游戏: 玩家1 在 (4, 3) 落黑子
+[2025-12-23 21:28:05.073] [DEBUG] Chat message from 游戏: 轮到 玩家2 落子
+[2025-12-23 21:28:06.135] [DEBUG] GameManager::onMakeMove called, x: 3, y: 2, isLocalGame: 1
+[2025-12-23 21:28:06.140] [DEBUG] Chat message from 游戏: 玩家2 在 (3, 2) 落白子
+[2025-12-23 21:28:06.146] [DEBUG] Chat message from 游戏: 轮到 玩家1 落子
+[2025-12-23 21:28:07.841] [DEBUG] GameManager::onMakeMove called, x: 5, y: 3, isLocalGame: 1
+[2025-12-23 21:28:07.842] [DEBUG] Chat message from 游戏: 玩家1 在 (5, 3) 落黑子
+[2025-12-23 21:28:07.845] [DEBUG] Chat message from 游戏: 玩家1 五子连珠，获胜！
+[2025-12-23 21:28:07.845] [INFO] Game ended for player: 玩家1, won: 1
+[2025-12-23 21:28:13.952] [DEBUG] Back to lobby button clicked
+[2025-12-23 21:28:13.953] [DEBUG] Chat message from 游戏: 已退出本地游戏
+[2025-12-23 21:28:13.955] [DEBUG] Switching widget to index: 0
+[2025-12-23 21:28:13.956] [INFO] Switching to Lobby widget
+[2025-12-23 21:28:13.957] [DEBUG] Widget switch completed
+[2025-12-23 21:28:13.959] [DEBUG] Initializing GameWidget, islocal: 0
+[2025-12-23 21:28:13.959] [DEBUG] Updating player seat status: blackTaken=0, whiteTaken=0
+[2025-12-23 21:28:13.960] [INFO] GameWidget initialized successfully
+[2025-12-23 21:28:13.961] [DEBUG] GameManager::setLocalGame called with isLocal: 0
+[2025-12-23 21:28:13.961] [DEBUG] GameManager::setLocalGame: isLocal is false, resetting game state for online play
+[2025-12-23 21:29:50.258] [DEBUG] Network status button clicked, calling manager->reConnect()
+[2025-12-23 21:29:50.258] [INFO] Reconnecting to server...
+[2025-12-23 21:29:50.258] [INFO] Attempting to connect to server...
+[2025-12-23 21:29:50.258] [DEBUG] Connecting to 127.0.0.1:8080...
+[2025-12-23 21:29:50.259] [DEBUG] New socket created successfully, socket value: 1416
+[2025-12-23 21:29:50.259] [INFO] Connected to server successfully!
+[2025-12-23 21:29:50.259] [DEBUG] Socket set to non-blocking mode
+[2025-12-23 21:29:50.259] [DEBUG] Disconnect called, setting is_running to false
+[2025-12-23 21:29:50.260] [DEBUG] Worker thread is not joinable or already finished
+[2025-12-23 21:29:50.261] [DEBUG] Worker thread started
+[2025-12-23 21:29:50.262] [DEBUG] Sending Hello frame to initiate handshake
+[2025-12-23 21:29:50.262] [INFO] Client loop started.
+[2025-12-23 21:29:50.262] [INFO] Connection established and handshake initiated
+[2025-12-23 21:29:50.291] [DEBUG] [Handshake] Received NewSession. ID: 7770614599025979878
+[2025-12-23 21:29:50.293] [DEBUG] Saved server public key
+[2025-12-23 21:29:50.302] [INFO] [Handshake] Session Activated!
+[2025-12-23 21:29:50.303] [DEBUG] Calling sessionActivatedCallback with sessionId: 7770614599025979878
+[2025-12-23 21:29:50.303] [INFO] Session activated callback received, sessionId: 7770614599025979878
+[2025-12-23 21:29:54.398] [DEBUG] User info button clicked, showing login dialog
+[2025-12-23 21:29:56.993] [DEBUG] User chose to login with account
+[2025-12-23 21:30:13.818] [INFO] Login attempt for user: xixi
+[2025-12-23 21:30:13.819] [DEBUG] Login packet created with session ID: 7770614599025979878
+[2025-12-23 21:30:13.819] [DEBUG] Sending login packet...
+[2025-12-23 21:30:13.820] [DEBUG] Sent packet (type: 256)
+[2025-12-23 21:30:13.820] [INFO] Login request sent for user: xixi
+[2025-12-23 21:30:13.829] [DEBUG] Received packet (type: 65535)
+[2025-12-23 21:32:25.213] [WARN] Server disconnected.
+[2025-12-23 21:32:25.213] [DEBUG] Calling disconnectedCallback
+[2025-12-23 21:32:25.213] [INFO] Disconnected from server callback triggered
+[2025-12-23 21:32:58.632] [DEBUG] Network status button clicked, calling manager->reConnect()
+[2025-12-23 21:32:58.632] [INFO] Reconnecting to server...
+[2025-12-23 21:32:58.633] [INFO] Attempting to connect to server...
+[2025-12-23 21:32:58.633] [DEBUG] Connecting to 127.0.0.1:8080...
+[2025-12-23 21:32:58.633] [DEBUG] New socket created successfully, socket value: 1644
+[2025-12-23 21:32:58.634] [INFO] Connected to server successfully!
+[2025-12-23 21:32:58.634] [DEBUG] Socket set to non-blocking mode
+[2025-12-23 21:32:58.634] [DEBUG] Disconnect called, setting is_running to false
+[2025-12-23 21:32:58.634] [DEBUG] Waiting for worker thread to finish...
+[2025-12-23 21:32:58.635] [DEBUG] Worker thread joined successfully.
+[2025-12-23 21:32:58.635] [DEBUG] Worker thread started
+[2025-12-23 21:32:58.637] [DEBUG] Sending Hello frame to initiate handshake
+[2025-12-23 21:32:58.637] [INFO] Client loop started.
+[2025-12-23 21:32:58.637] [INFO] Connection established and handshake initiated
+[2025-12-23 21:32:58.654] [DEBUG] [Handshake] Received NewSession. ID: 6040557058887845028
+[2025-12-23 21:32:58.655] [DEBUG] Saved server public key
+[2025-12-23 21:32:58.671] [INFO] [Handshake] Session Activated!
+[2025-12-23 21:32:58.671] [DEBUG] Calling sessionActivatedCallback with sessionId: 6040557058887845028
+[2025-12-23 21:32:58.671] [INFO] Session activated callback received, sessionId: 6040557058887845028
+[2025-12-23 21:33:01.136] [DEBUG] User info button clicked, showing login dialog
+[2025-12-23 21:33:02.268] [DEBUG] User chose to login with account
+[2025-12-23 21:33:12.359] [INFO] Login attempt for user: xixi
+[2025-12-23 21:33:12.359] [DEBUG] Login packet created with session ID: 6040557058887845028
+[2025-12-23 21:33:12.360] [DEBUG] Sending login packet...
+[2025-12-23 21:33:12.360] [DEBUG] Sent packet (type: 256)
+[2025-12-23 21:33:12.360] [INFO] Login request sent for user: xixi
+[2025-12-23 21:33:12.362] [DEBUG] Received packet (type: 256)
+[2025-12-23 21:33:22.910] [DEBUG] Creating room
+[2025-12-23 21:33:22.910] [DEBUG] Sent packet (type: 512)
+[2025-12-23 21:33:22.923] [DEBUG] Received packet (type: 512)
+[2025-12-23 21:33:22.924] [INFO] Room created successfully, room ID: 0
+[2025-12-23 21:33:22.926] [DEBUG] Switching widget to index: 1
+[2025-12-23 21:33:22.927] [INFO] Switching to Game widget
+[2025-12-23 21:33:22.927] [DEBUG] Widget switch completed
+[2025-12-23 21:33:22.931] [DEBUG] Initializing GameWidget, islocal: 0
+[2025-12-23 21:33:22.931] [DEBUG] Updating player seat status: blackTaken=0, whiteTaken=0
+[2025-12-23 21:33:22.932] [INFO] GameWidget initialized successfully
+[2025-12-23 21:33:22.932] [DEBUG] GameManager::setLocalGame called with isLocal: 0
+[2025-12-23 21:33:22.932] [DEBUG] GameManager::setLocalGame: isLocal is false, resetting game state for online play
+[2025-12-23 21:33:26.020] [DEBUG] Player 1 avatar clicked (black seat)
+[2025-12-23 21:33:26.022] [INFO] Taking black pieces
+[2025-12-23 21:33:26.022] [DEBUG] Updating player seat status: blackTaken=1, whiteTaken=0
+[2025-12-23 21:33:33.392] [DEBUG] Player 2 avatar clicked (white seat)
+[2025-12-23 21:33:33.394] [INFO] Taking white pieces
+[2025-12-23 21:33:33.394] [DEBUG] Updating player seat status: blackTaken=1, whiteTaken=1
+[2025-12-23 21:34:17.164] [DEBUG] Back to lobby button clicked
+[2025-12-23 21:34:18.760] [DEBUG] Back to lobby button clicked
+[2025-12-23 21:34:21.770] [DEBUG] Back to lobby button clicked
+[2025-12-23 21:34:24.985] [DEBUG] Back to lobby button clicked
+[2025-12-23 21:38:56.033] [INFO] Logger initialized. Log file: logs/gomoku.log
+[2025-12-23 21:38:56.033] [DEBUG] Logger initialized with DEBUG level
+[2025-12-23 21:38:56.033] [DEBUG] Setting up UI...
+[2025-12-23 21:38:56.047] [DEBUG] Creating Manager instance...
+[2025-12-23 21:38:56.047] [INFO] Manager initialized for server
+[2025-12-23 21:38:56.047] [DEBUG] Client constructor called for 127.0.0.1:8080
+[2025-12-23 21:38:56.069] [DEBUG] Session activated callback set
+[2025-12-23 21:38:56.069] [INFO] Attempting to connect to server...
+[2025-12-23 21:38:56.070] [DEBUG] Connecting to 127.0.0.1:8080...
+[2025-12-23 21:38:56.074] [DEBUG] New socket created successfully, socket value: 1080
+[2025-12-23 21:38:56.075] [INFO] Connected to server successfully!
+[2025-12-23 21:38:56.075] [DEBUG] Socket set to non-blocking mode
+[2025-12-23 21:38:56.076] [DEBUG] Disconnect called, setting is_running to false
+[2025-12-23 21:38:56.076] [DEBUG] Worker thread is not joinable or already finished
+[2025-12-23 21:38:56.076] [DEBUG] Worker thread started
+[2025-12-23 21:38:56.077] [DEBUG] Sending Hello frame to initiate handshake
+[2025-12-23 21:38:56.077] [INFO] Connection established and handshake initiated
+[2025-12-23 21:38:56.077] [DEBUG] Creating LobbyWidget...
+[2025-12-23 21:38:56.077] [DEBUG] LobbyWidget Initializing...
+[2025-12-23 21:38:56.079] [INFO] Client loop started.
+[2025-12-23 21:38:56.083] [DEBUG] Configuring room table properties...
+[2025-12-23 21:38:56.083] [DEBUG] Room table properties configured
+[2025-12-23 21:38:56.083] [DEBUG] Initializing room table...
+[2025-12-23 21:38:56.085] [DEBUG] Initializing player list...
+[2025-12-23 21:38:56.085] [DEBUG] Setting up signals...
+[2025-12-23 21:38:56.085] [INFO] LobbyWidget initialized successfully
+[2025-12-23 21:38:56.086] [DEBUG] Creating GameWidget...
+[2025-12-23 21:38:56.089] [DEBUG] GameWidget UI initialized
+[2025-12-23 21:38:56.089] [DEBUG] GameWidget signal connections established
+[2025-12-23 21:38:56.089] [DEBUG] GameWidget constructed successfully
+[2025-12-23 21:38:56.090] [DEBUG] Creating GameManager instance...
+[2025-12-23 21:38:56.090] [DEBUG] Setting up signal connections...
+[2025-12-23 21:38:56.090] [DEBUG] Connecting LobbyWidget::localGame to GameManager::setLocalGame...
+[2025-12-23 21:38:56.090] [DEBUG] localGame connection result: 1
+[2025-12-23 21:38:56.091] [DEBUG] Initializing window components...
+[2025-12-23 21:38:56.091] [DEBUG] Initializing window style...
+[2025-12-23 21:38:56.092] [DEBUG] [Handshake] Received NewSession. ID: 6040557058887845028
+[2025-12-23 21:38:56.093] [DEBUG] Saved server public key
+[2025-12-23 21:38:56.099] [DEBUG] Set main window background to white
+[2025-12-23 21:38:56.100] [DEBUG] Setting window flags: FramelessWindowHint | WindowSystemMenuHint | WindowMinimizeButtonHint
+[2025-12-23 21:38:56.106] [DEBUG] WA_TranslucentBackground is commented out (not set)
+[2025-12-23 21:38:56.106] [DEBUG] WA_OpaquePaintEvent attribute set
+[2025-12-23 21:38:56.106] [DEBUG] Added Qt::Window flag for taskbar interaction
+[2025-12-23 21:38:56.107] [DEBUG] Window size set to: 1000x700
+[2025-12-23 21:38:56.107] [DEBUG] Set window palette to white background
+[2025-12-23 21:38:56.107] [DEBUG] Current stylesheet: QMainWindow {    background-color: white;    border: none;}
+[2025-12-23 21:38:56.107] [DEBUG] Window background role color: #ffffff
+[2025-12-23 21:38:56.107] [DEBUG] Initializing layout...
+[2025-12-23 21:38:56.108] [DEBUG] centralwidget found at address: 2326824465520
+[2025-12-23 21:38:56.108] [INFO] [Handshake] Session Activated!
+[2025-12-23 21:38:56.108] [DEBUG] Calling sessionActivatedCallback with sessionId: 6040557058887845028
+[2025-12-23 21:38:56.108] [DEBUG] centralwidget object name: centralwidget
+[2025-12-23 21:38:56.108] [INFO] Session activated callback received, sessionId: 6040557058887845028
+[2025-12-23 21:38:56.108] [DEBUG] centralwidget geometry: 100x30
+[2025-12-23 21:38:56.109] [DEBUG] centralwidget object name set to: centralContainer
+[2025-12-23 21:38:56.109] [DEBUG] centralwidget WA_StyledBackground attribute set
+[2025-12-23 21:38:56.109] [DEBUG] centralwidget palette background color: #f3f3f3
+[2025-12-23 21:38:56.109] [DEBUG] Set centralwidget palette to white background
+[2025-12-23 21:38:56.109] [DEBUG] Layout initialized successfully
+[2025-12-23 21:38:56.110] [DEBUG] Initializing title bar and status bar...
+[2025-12-23 21:38:56.110] [DEBUG] Initializing title bar components...
+[2025-12-23 21:38:56.110] [DEBUG] titleBarWidget found at address: 2326824606624
+[2025-12-23 21:38:56.110] [DEBUG] titleBarWidget object name: titleBarWidget
+[2025-12-23 21:38:56.110] [DEBUG] titleLabel found at address: 2326824608624
+[2025-12-23 21:38:56.110] [DEBUG] titleLabel text: 五子棋大厅
+[2025-12-23 21:38:56.110] [DEBUG] minimizeButton found at address: 2326824624048
+[2025-12-23 21:38:56.110] [DEBUG] maximizeButton found at address: 2326824627648
+[2025-12-23 21:38:56.110] [DEBUG] closeButton found at address: 2326824638336
+[2025-12-23 21:38:56.110] [DEBUG] Title bar initialization completed
+[2025-12-23 21:38:56.111] [DEBUG] Initializing status bar components...
+[2025-12-23 21:38:56.111] [DEBUG] statusBarWidget found
+[2025-12-23 21:38:56.111] [DEBUG] statusMessageLabel found
+[2025-12-23 21:38:56.111] [DEBUG] networkStatusButton found
+[2025-12-23 21:38:56.111] [DEBUG] userInfoButton found
+[2025-12-23 21:38:56.111] [DEBUG] Status bar initialization completed
+[2025-12-23 21:38:56.111] [DEBUG] Getting stackedWidget from UI...
+[2025-12-23 21:38:56.111] [DEBUG] stackedWidget found in UI
+[2025-12-23 21:38:56.119] [DEBUG] StackedWidget initialized with Lobby as default
+[2025-12-23 21:38:56.119] [DEBUG] Creating ToastWidget...
+[2025-12-23 21:38:56.121] [DEBUG] ====== Validating Window Background ======
+[2025-12-23 21:38:56.121] [DEBUG] CentralWidget palette background color: #ffffff
+[2025-12-23 21:38:56.121] [INFO] CentralWidget background is correctly set to white
+[2025-12-23 21:38:56.121] [DEBUG] Current window stylesheet length: 59 characters
+[2025-12-23 21:38:56.121] [DEBUG] Stylesheet contains background-color definition
+[2025-12-23 21:38:56.121] [DEBUG] Window has WA_StyledBackground: 1
+[2025-12-23 21:38:56.122] [DEBUG] Window has WA_OpaquePaintEvent: 1
+[2025-12-23 21:38:56.122] [DEBUG] Window has WA_TranslucentBackground: 0
+[2025-12-23 21:38:56.122] [DEBUG] ====== Background Validation Complete ======
+[2025-12-23 21:38:56.122] [INFO] MainWindow initialization completed successfully
+[2025-12-23 21:39:02.695] [DEBUG] Local game button clicked, emitting localGame signal
+[2025-12-23 21:39:02.696] [DEBUG] localGame signal received, initializing local game
+[2025-12-23 21:39:02.696] [DEBUG] GameManager::setLocalGame called with isLocal: 1
+[2025-12-23 21:39:02.697] [DEBUG] Player list updated, count: 2
+[2025-12-23 21:39:02.697] [DEBUG] Updating player seat status: blackTaken=0, whiteTaken=0
+[2025-12-23 21:39:02.698] [DEBUG] Chat message from 游戏: 本地游戏已就绪，请点击玩家头像选择座位
+[2025-12-23 21:39:02.698] [DEBUG] Chat message from 游戏: 本地游戏已就绪
+[2025-12-23 21:39:02.700] [DEBUG] Initializing GameWidget, islocal: 1
+[2025-12-23 21:39:02.700] [DEBUG] Updating player seat status: blackTaken=0, whiteTaken=0
+[2025-12-23 21:39:02.701] [INFO] GameWidget initialized successfully
+[2025-12-23 21:39:02.701] [DEBUG] Switching widget to index: 1
+[2025-12-23 21:39:02.703] [INFO] Switching to Game widget
+[2025-12-23 21:39:02.703] [DEBUG] Widget switch completed
+[2025-12-23 21:55:39.576] [INFO] Logger initialized. Log file: logs/gomoku.log
+[2025-12-23 21:55:39.576] [DEBUG] Logger initialized with DEBUG level
+[2025-12-23 21:55:39.576] [DEBUG] Setting up UI...
+[2025-12-23 21:55:39.607] [DEBUG] Creating Manager instance...
+[2025-12-23 21:55:39.607] [INFO] Manager initialized for server
+[2025-12-23 21:55:39.607] [DEBUG] Client constructor called for 127.0.0.1:8080
+[2025-12-23 21:55:39.630] [DEBUG] Session activated callback set
+[2025-12-23 21:55:39.630] [INFO] Attempting to connect to server...
+[2025-12-23 21:55:39.631] [DEBUG] Connecting to 127.0.0.1:8080...
+[2025-12-23 21:55:39.635] [DEBUG] New socket created successfully, socket value: 1056
+[2025-12-23 21:55:39.635] [INFO] Connected to server successfully!
+[2025-12-23 21:55:39.635] [DEBUG] Socket set to non-blocking mode
+[2025-12-23 21:55:39.636] [DEBUG] Disconnect called, setting is_running to false
+[2025-12-23 21:55:39.636] [DEBUG] Worker thread is not joinable or already finished
+[2025-12-23 21:55:39.636] [DEBUG] Worker thread started
+[2025-12-23 21:55:39.636] [DEBUG] Sending Hello frame to initiate handshake
+[2025-12-23 21:55:39.637] [INFO] Connection established and handshake initiated
+[2025-12-23 21:55:39.637] [DEBUG] Creating LobbyWidget...
+[2025-12-23 21:55:39.637] [DEBUG] LobbyWidget Initializing...
+[2025-12-23 21:55:39.639] [INFO] Client loop started.
+[2025-12-23 21:55:39.643] [DEBUG] Configuring room table properties...
+[2025-12-23 21:55:39.644] [DEBUG] Room table properties configured
+[2025-12-23 21:55:39.644] [DEBUG] Initializing room table...
+[2025-12-23 21:55:39.646] [DEBUG] Initializing player list...
+[2025-12-23 21:55:39.646] [DEBUG] Setting up signals...
+[2025-12-23 21:55:39.647] [INFO] LobbyWidget initialized successfully
+[2025-12-23 21:55:39.647] [DEBUG] Creating GameWidget...
+[2025-12-23 21:55:39.650] [DEBUG] GameWidget UI initialized
+[2025-12-23 21:55:39.650] [DEBUG] GameWidget signal connections established
+[2025-12-23 21:55:39.651] [DEBUG] GameWidget constructed successfully
+[2025-12-23 21:55:39.651] [DEBUG] Creating GameManager instance...
+[2025-12-23 21:55:39.651] [DEBUG] Setting up signal connections...
+[2025-12-23 21:55:39.651] [DEBUG] Connecting LobbyWidget::localGame to GameManager::setLocalGame...
+[2025-12-23 21:55:39.652] [DEBUG] localGame connection result: 1
+[2025-12-23 21:55:39.652] [DEBUG] Initializing window components...
+[2025-12-23 21:55:39.652] [DEBUG] Initializing window style...
+[2025-12-23 21:55:39.661] [DEBUG] Set main window background to white
+[2025-12-23 21:55:39.662] [DEBUG] Setting window flags: FramelessWindowHint | WindowSystemMenuHint | WindowMinimizeButtonHint
+[2025-12-23 21:55:39.662] [DEBUG] [Handshake] Received NewSession. ID: 2905721490287305630
+[2025-12-23 21:55:39.663] [DEBUG] Saved server public key
+[2025-12-23 21:55:39.670] [DEBUG] WA_TranslucentBackground is commented out (not set)
+[2025-12-23 21:55:39.671] [DEBUG] WA_OpaquePaintEvent attribute set
+[2025-12-23 21:55:39.671] [DEBUG] Added Qt::Window flag for taskbar interaction
+[2025-12-23 21:55:39.671] [DEBUG] Window size set to: 1000x700
+[2025-12-23 21:55:39.671] [DEBUG] Set window palette to white background
+[2025-12-23 21:55:39.671] [DEBUG] Current stylesheet: QMainWindow {    background-color: white;    border: none;}
+[2025-12-23 21:55:39.671] [DEBUG] Window background role color: #ffffff
+[2025-12-23 21:55:39.672] [DEBUG] Initializing layout...
+[2025-12-23 21:55:39.672] [DEBUG] centralwidget found at address: 1701905806448
+[2025-12-23 21:55:39.672] [DEBUG] centralwidget object name: centralwidget
+[2025-12-23 21:55:39.672] [DEBUG] centralwidget geometry: 100x30
+[2025-12-23 21:55:39.672] [DEBUG] centralwidget object name set to: centralContainer
+[2025-12-23 21:55:39.672] [DEBUG] centralwidget WA_StyledBackground attribute set
+[2025-12-23 21:55:39.673] [DEBUG] centralwidget palette background color: #f3f3f3
+[2025-12-23 21:55:39.673] [DEBUG] Set centralwidget palette to white background
+[2025-12-23 21:55:39.673] [DEBUG] Layout initialized successfully
+[2025-12-23 21:55:39.673] [DEBUG] Initializing title bar and status bar...
+[2025-12-23 21:55:39.673] [DEBUG] Initializing title bar components...
+[2025-12-23 21:55:39.673] [DEBUG] titleBarWidget found at address: 1701905947552
+[2025-12-23 21:55:39.673] [DEBUG] titleBarWidget object name: titleBarWidget
+[2025-12-23 21:55:39.673] [DEBUG] titleLabel found at address: 1701905949552
+[2025-12-23 21:55:39.673] [DEBUG] titleLabel text: 五子棋大厅
+[2025-12-23 21:55:39.673] [DEBUG] minimizeButton found at address: 1701905964976
+[2025-12-23 21:55:39.673] [DEBUG] maximizeButton found at address: 1701905968576
+[2025-12-23 21:55:39.674] [DEBUG] closeButton found at address: 1701905979264
+[2025-12-23 21:55:39.674] [DEBUG] Title bar initialization completed
+[2025-12-23 21:55:39.674] [DEBUG] Initializing status bar components...
+[2025-12-23 21:55:39.674] [DEBUG] statusBarWidget found
+[2025-12-23 21:55:39.674] [DEBUG] statusMessageLabel found
+[2025-12-23 21:55:39.674] [DEBUG] networkStatusButton found
+[2025-12-23 21:55:39.674] [DEBUG] userInfoButton found
+[2025-12-23 21:55:39.674] [DEBUG] Status bar initialization completed
+[2025-12-23 21:55:39.674] [DEBUG] Getting stackedWidget from UI...
+[2025-12-23 21:55:39.674] [DEBUG] stackedWidget found in UI
+[2025-12-23 21:55:39.677] [INFO] [Handshake] Session Activated!
+[2025-12-23 21:55:39.678] [DEBUG] Calling sessionActivatedCallback with sessionId: 2905721490287305630
+[2025-12-23 21:55:39.678] [INFO] Session activated callback received, sessionId: 2905721490287305630
+[2025-12-23 21:55:39.685] [DEBUG] StackedWidget initialized with Lobby as default
+[2025-12-23 21:55:39.685] [DEBUG] Creating ToastWidget...
+[2025-12-23 21:55:39.686] [DEBUG] ====== Validating Window Background ======
+[2025-12-23 21:55:39.686] [DEBUG] CentralWidget palette background color: #ffffff
+[2025-12-23 21:55:39.687] [INFO] CentralWidget background is correctly set to white
+[2025-12-23 21:55:39.687] [DEBUG] Current window stylesheet length: 59 characters
+[2025-12-23 21:55:39.687] [DEBUG] Stylesheet contains background-color definition
+[2025-12-23 21:55:39.687] [DEBUG] Window has WA_StyledBackground: 1
+[2025-12-23 21:55:39.687] [DEBUG] Window has WA_OpaquePaintEvent: 1
+[2025-12-23 21:55:39.687] [DEBUG] Window has WA_TranslucentBackground: 0
+[2025-12-23 21:55:39.688] [DEBUG] ====== Background Validation Complete ======
+[2025-12-23 21:55:39.688] [INFO] MainWindow initialization completed successfully
+[2025-12-23 21:55:48.846] [DEBUG] Local game button clicked, emitting localGame signal
+[2025-12-23 21:55:48.846] [DEBUG] localGame signal received, initializing local game
+[2025-12-23 21:55:48.846] [DEBUG] GameManager::setLocalGame called with isLocal: 1, enableAI: 1
+[2025-12-23 21:55:48.848] [DEBUG] Player list updated, count: 2
+[2025-12-23 21:55:48.848] [DEBUG] Updating player seat status: blackTaken=1, whiteTaken=1
+[2025-12-23 21:55:48.848] [DEBUG] Chat message from 游戏: 本地游戏已就绪，请选择黑棋座位，AI将执白棋
+[2025-12-23 21:55:48.852] [DEBUG] Chat message from 游戏: 本地游戏已就绪
+[2025-12-23 21:55:48.855] [DEBUG] Initializing GameWidget, islocal: 1
+[2025-12-23 21:55:48.856] [DEBUG] Updating player seat status: blackTaken=0, whiteTaken=0
+[2025-12-23 21:55:48.858] [INFO] GameWidget initialized successfully
+[2025-12-23 21:55:48.858] [DEBUG] Switching widget to index: 1
+[2025-12-23 21:55:48.862] [INFO] Switching to Game widget
+[2025-12-23 21:55:48.864] [DEBUG] Widget switch completed
+[2025-12-23 21:55:50.312] [DEBUG] Player 1 avatar clicked (black seat)
+[2025-12-23 21:55:50.313] [DEBUG] Chat message from 系统: 玩家 选择了黑棋
+[2025-12-23 21:55:50.314] [DEBUG] Player list updated, count: 2
+[2025-12-23 21:55:50.314] [DEBUG] Updating player seat status: blackTaken=1, whiteTaken=1
+[2025-12-23 21:55:50.326] [INFO] Game started for player: 玩家, rating: 1500
+[2025-12-23 21:55:50.326] [DEBUG] Chat message from 游戏: 游戏开始！玩家 执黑先行
+[2025-12-23 21:55:50.327] [DEBUG] Updating player seat status: blackTaken=1, whiteTaken=1
+[2025-12-23 21:55:52.298] [DEBUG] GameManager::onMakeMove called, x: 10, y: 2, isLocalGame: 1
+[2025-12-23 21:55:52.299] [DEBUG] Chat message from 游戏: 玩家 在 (10, 2) 落黑子
+[2025-12-23 21:55:52.302] [DEBUG] Chat message from 游戏: 轮到 AI玩家 落子
+[2025-12-23 21:55:56.508] [DEBUG] Chat message from 游戏: AI玩家 在 (0, 0) 落白子
+[2025-12-23 21:55:56.512] [DEBUG] Chat message from 游戏: 轮到 玩家 落子
+[2025-12-23 21:55:56.536] [DEBUG] GameManager::onMakeMove called, x: 9, y: 3, isLocalGame: 1
+[2025-12-23 21:55:56.537] [DEBUG] Chat message from 游戏: 玩家 在 (9, 3) 落黑子
+[2025-12-23 21:55:56.543] [DEBUG] Chat message from 游戏: 轮到 AI玩家 落子
+[2025-12-23 21:55:57.591] [DEBUG] Chat message from 游戏: AI玩家 在 (0, 1) 落白子
+[2025-12-23 21:55:57.594] [DEBUG] Chat message from 游戏: 轮到 玩家 落子
+[2025-12-23 21:56:02.824] [DEBUG] GameManager::onMakeMove called, x: 7, y: 3, isLocalGame: 1
+[2025-12-23 21:56:02.825] [DEBUG] Chat message from 游戏: 玩家 在 (7, 3) 落黑子
+[2025-12-23 21:56:02.826] [DEBUG] Chat message from 游戏: 轮到 AI玩家 落子
+[2025-12-23 21:56:06.607] [DEBUG] Chat message from 游戏: AI玩家 在 (0, 2) 落白子
+[2025-12-23 21:56:06.612] [DEBUG] Chat message from 游戏: 轮到 玩家 落子
+[2025-12-23 21:56:08.246] [DEBUG] GameManager::onMakeMove called, x: 7, y: 4, isLocalGame: 1
+[2025-12-23 21:56:08.248] [DEBUG] Chat message from 游戏: 玩家 在 (7, 4) 落黑子
+[2025-12-23 21:56:08.250] [DEBUG] Chat message from 游戏: 轮到 AI玩家 落子
+[2025-12-23 21:56:11.937] [DEBUG] Chat message from 游戏: AI玩家 在 (0, 3) 落白子
+[2025-12-23 21:56:11.941] [DEBUG] Chat message from 游戏: 轮到 玩家 落子
+[2025-12-23 21:56:35.789] [DEBUG] Back to lobby button clicked
+[2025-12-23 21:56:35.789] [DEBUG] Chat message from 游戏: 已退出本地游戏
+[2025-12-23 21:56:35.792] [DEBUG] Switching widget to index: 0
+[2025-12-23 21:56:35.792] [INFO] Switching to Lobby widget
+[2025-12-23 21:56:35.793] [DEBUG] Widget switch completed
+[2025-12-23 21:56:35.796] [DEBUG] Initializing GameWidget, islocal: 0
+[2025-12-23 21:56:35.796] [DEBUG] Updating player seat status: blackTaken=0, whiteTaken=0
+[2025-12-23 21:56:35.797] [INFO] GameWidget initialized successfully
+[2025-12-23 21:56:35.798] [DEBUG] GameManager::setLocalGame called with isLocal: 0, enableAI: 0
+[2025-12-23 21:56:35.798] [DEBUG] GameManager::setLocalGame: isLocal is false, resetting game state for online play
+[2025-12-23 21:56:56.617] [DEBUG] User info button clicked, showing login dialog
+[2025-12-23 21:56:57.643] [DEBUG] User chose to login with account
+[2025-12-23 21:57:05.604] [INFO] Login attempt for user: xixi
+[2025-12-23 21:57:05.604] [DEBUG] Login packet created with session ID: 2905721490287305630
+[2025-12-23 21:57:05.605] [DEBUG] Sending login packet...
+[2025-12-23 21:57:05.605] [DEBUG] Sent packet (type: 256)
+[2025-12-23 21:57:05.605] [INFO] Login request sent for user: xixi
+[2025-12-23 21:57:05.612] [DEBUG] Received packet (type: 256)
+[2025-12-23 21:57:07.510] [DEBUG] Creating room
+[2025-12-23 21:57:07.511] [DEBUG] Sent packet (type: 512)
+[2025-12-23 21:57:07.516] [DEBUG] Received packet (type: 512)
+[2025-12-23 21:57:07.516] [INFO] Room created successfully, room ID: 0
+[2025-12-23 21:57:07.519] [DEBUG] Switching widget to index: 1
+[2025-12-23 21:57:07.520] [INFO] Switching to Game widget
+[2025-12-23 21:57:07.520] [DEBUG] Widget switch completed
+[2025-12-23 21:57:07.523] [DEBUG] Initializing GameWidget, islocal: 0
+[2025-12-23 21:57:07.523] [DEBUG] Updating player seat status: blackTaken=0, whiteTaken=0
+[2025-12-23 21:57:07.525] [INFO] GameWidget initialized successfully
+[2025-12-23 21:57:07.525] [DEBUG] GameManager::setLocalGame called with isLocal: 0, enableAI: 0
+[2025-12-23 21:57:07.525] [DEBUG] GameManager::setLocalGame: isLocal is false, resetting game state for online play
+[2025-12-23 21:57:08.632] [DEBUG] Back to lobby button clicked
+[2025-12-23 21:57:09.709] [DEBUG] Back to lobby button clicked
+[2025-12-23 21:57:10.814] [DEBUG] Back to lobby button clicked
+[2025-12-23 21:57:12.196] [DEBUG] Back to lobby button clicked
+[2025-12-23 21:57:12.550] [DEBUG] Back to lobby button clicked
+[2025-12-23 21:57:13.927] [DEBUG] Back to lobby button clicked
+[2025-12-23 21:57:17.954] [DEBUG] Player 1 avatar clicked (black seat)
+[2025-12-23 21:57:17.956] [INFO] Taking black pieces
+[2025-12-23 21:57:17.957] [DEBUG] Updating player seat status: blackTaken=1, whiteTaken=0
+[2025-12-23 21:57:21.385] [DEBUG] Player 2 avatar clicked (white seat)
+[2025-12-23 21:57:21.386] [INFO] Taking white pieces
+[2025-12-23 21:57:21.386] [DEBUG] Updating player seat status: blackTaken=1, whiteTaken=1
+[2025-12-23 21:57:24.291] [DEBUG] Back to lobby button clicked
+[2025-12-23 21:57:32.375] [DEBUG] Close button clicked
+[2025-12-23 21:57:42.713] [INFO] MainWindow destructor called
+[2025-12-23 21:57:42.714] [DEBUG] Cleaning up UI...
+[2025-12-23 21:57:42.714] [DEBUG] Cleaning up Manager...
+[2025-12-23 21:57:42.714] [INFO] Manager destructor called
+[2025-12-23 21:57:42.714] [DEBUG] Disconnecting client...
+[2025-12-23 21:57:42.714] [DEBUG] Disconnect called, setting is_running to false
+[2025-12-23 21:57:42.714] [DEBUG] Current socket value before disconnect: 1056
+[2025-12-23 21:57:42.714] [DEBUG] Waiting for worker thread to finish...
+[2025-12-23 21:57:42.750] [DEBUG] Worker thread joined successfully.
+[2025-12-23 21:57:42.750] [DEBUG] Closing socket
+[2025-12-23 21:57:42.751] [DEBUG] Socket closed and set to INVALID_SOCKET
+[2025-12-23 21:57:42.751] [DEBUG] Resetting session context
+[2025-12-23 21:57:42.751] [DEBUG] Calling disconnectedCallback from Disconnect()
+[2025-12-23 21:57:42.751] [INFO] Disconnected from server callback triggered
+[2025-12-23 21:57:42.753] [INFO] Client disconnected successfully.
+[2025-12-23 21:57:42.753] [DEBUG] Client destructor called
+[2025-12-23 21:57:42.754] [DEBUG] Disconnect called, setting is_running to false
+[2025-12-23 21:57:42.754] [DEBUG] Current socket value before disconnect: -1
+[2025-12-23 21:57:42.754] [DEBUG] Worker thread is not joinable or already finished
+[2025-12-23 21:57:42.754] [DEBUG] Socket is already INVALID_SOCKET, skipping close
+[2025-12-23 21:57:42.754] [DEBUG] Calling disconnectedCallback from Disconnect()
+[2025-12-23 21:57:42.754] [INFO] Disconnected from server callback triggered
+[2025-12-23 21:57:42.755] [INFO] Client disconnected successfully.
+[2025-12-23 21:57:42.755] [DEBUG] Client cleanup completed
+[2025-12-23 21:57:42.755] [DEBUG] Client disconnected and reset
+[2025-12-23 21:57:42.755] [INFO] Manager cleanup completed
+[2025-12-23 21:57:42.756] [DEBUG] Cleaning up ToastWidget...
+[2025-12-23 21:57:42.759] [DEBUG] Shutting down Logger...
+[2025-12-23 21:57:42.759] [INFO] Logger shutting down.
+[2025-12-23 21:57:50.206] [INFO] Logger initialized. Log file: logs/gomoku.log
+[2025-12-23 21:57:50.206] [DEBUG] Logger initialized with DEBUG level
+[2025-12-23 21:57:50.206] [DEBUG] Setting up UI...
+[2025-12-23 21:57:50.219] [DEBUG] Creating Manager instance...
+[2025-12-23 21:57:50.220] [INFO] Manager initialized for server
+[2025-12-23 21:57:50.220] [DEBUG] Client constructor called for 127.0.0.1:8080
+[2025-12-23 21:57:50.243] [DEBUG] Session activated callback set
+[2025-12-23 21:57:50.244] [INFO] Attempting to connect to server...
+[2025-12-23 21:57:50.244] [DEBUG] Connecting to 127.0.0.1:8080...
+[2025-12-23 21:57:50.249] [DEBUG] New socket created successfully, socket value: 1076
+[2025-12-23 21:57:50.249] [INFO] Connected to server successfully!
+[2025-12-23 21:57:50.250] [DEBUG] Socket set to non-blocking mode
+[2025-12-23 21:57:50.250] [DEBUG] Disconnect called, setting is_running to false
+[2025-12-23 21:57:50.250] [DEBUG] Worker thread is not joinable or already finished
+[2025-12-23 21:57:50.251] [DEBUG] Worker thread started
+[2025-12-23 21:57:50.251] [DEBUG] Sending Hello frame to initiate handshake
+[2025-12-23 21:57:50.252] [INFO] Connection established and handshake initiated
+[2025-12-23 21:57:50.252] [DEBUG] Creating LobbyWidget...
+[2025-12-23 21:57:50.255] [DEBUG] LobbyWidget Initializing...
+[2025-12-23 21:57:50.256] [INFO] Client loop started.
+[2025-12-23 21:57:50.265] [DEBUG] Configuring room table properties...
+[2025-12-23 21:57:50.266] [DEBUG] Room table properties configured
+[2025-12-23 21:57:50.266] [DEBUG] Initializing room table...
+[2025-12-23 21:57:50.269] [DEBUG] Initializing player list...
+[2025-12-23 21:57:50.269] [DEBUG] Setting up signals...
+[2025-12-23 21:57:50.270] [DEBUG] [Handshake] Received NewSession. ID: 2905721490287305630
+[2025-12-23 21:57:50.270] [INFO] LobbyWidget initialized successfully
+[2025-12-23 21:57:50.270] [DEBUG] Creating GameWidget...
+[2025-12-23 21:57:50.271] [DEBUG] Saved server public key
+[2025-12-23 21:57:50.275] [DEBUG] GameWidget UI initialized
+[2025-12-23 21:57:50.275] [DEBUG] GameWidget signal connections established
+[2025-12-23 21:57:50.276] [DEBUG] GameWidget constructed successfully
+[2025-12-23 21:57:50.276] [DEBUG] Creating GameManager instance...
+[2025-12-23 21:57:50.277] [DEBUG] Setting up signal connections...
+[2025-12-23 21:57:50.277] [DEBUG] Connecting LobbyWidget::localGame to GameManager::setLocalGame...
+[2025-12-23 21:57:50.277] [DEBUG] localGame connection result: 1
+[2025-12-23 21:57:50.278] [DEBUG] Initializing window components...
+[2025-12-23 21:57:50.278] [DEBUG] Initializing window style...
+[2025-12-23 21:57:50.285] [INFO] [Handshake] Session Activated!
+[2025-12-23 21:57:50.286] [DEBUG] Calling sessionActivatedCallback with sessionId: 2905721490287305630
+[2025-12-23 21:57:50.286] [INFO] Session activated callback received, sessionId: 2905721490287305630
+[2025-12-23 21:57:50.292] [DEBUG] Set main window background to white
+[2025-12-23 21:57:50.292] [DEBUG] Setting window flags: FramelessWindowHint | WindowSystemMenuHint | WindowMinimizeButtonHint
+[2025-12-23 21:57:50.299] [DEBUG] WA_TranslucentBackground is commented out (not set)
+[2025-12-23 21:57:50.300] [DEBUG] WA_OpaquePaintEvent attribute set
+[2025-12-23 21:57:50.301] [DEBUG] Added Qt::Window flag for taskbar interaction
+[2025-12-23 21:57:50.301] [DEBUG] Window size set to: 1000x700
+[2025-12-23 21:57:50.302] [DEBUG] Set window palette to white background
+[2025-12-23 21:57:50.302] [DEBUG] Current stylesheet: QMainWindow {    background-color: white;    border: none;}
+[2025-12-23 21:57:50.303] [DEBUG] Window background role color: #ffffff
+[2025-12-23 21:57:50.303] [DEBUG] Initializing layout...
+[2025-12-23 21:57:50.303] [DEBUG] centralwidget found at address: 2680056624240
+[2025-12-23 21:57:50.303] [DEBUG] centralwidget object name: centralwidget
+[2025-12-23 21:57:50.303] [DEBUG] centralwidget geometry: 100x30
+[2025-12-23 21:57:50.304] [DEBUG] centralwidget object name set to: centralContainer
+[2025-12-23 21:57:50.304] [DEBUG] centralwidget WA_StyledBackground attribute set
+[2025-12-23 21:57:50.304] [DEBUG] centralwidget palette background color: #f3f3f3
+[2025-12-23 21:57:50.305] [DEBUG] Set centralwidget palette to white background
+[2025-12-23 21:57:50.305] [DEBUG] Layout initialized successfully
+[2025-12-23 21:57:50.305] [DEBUG] Initializing title bar and status bar...
+[2025-12-23 21:57:50.305] [DEBUG] Initializing title bar components...
+[2025-12-23 21:57:50.306] [DEBUG] titleBarWidget found at address: 2680056765344
+[2025-12-23 21:57:50.306] [DEBUG] titleBarWidget object name: titleBarWidget
+[2025-12-23 21:57:50.306] [DEBUG] titleLabel found at address: 2680056767344
+[2025-12-23 21:57:50.306] [DEBUG] titleLabel text: 五子棋大厅
+[2025-12-23 21:57:50.306] [DEBUG] minimizeButton found at address: 2680056782768
+[2025-12-23 21:57:50.306] [DEBUG] maximizeButton found at address: 2680056786368
+[2025-12-23 21:57:50.307] [DEBUG] closeButton found at address: 2680056797056
+[2025-12-23 21:57:50.307] [DEBUG] Title bar initialization completed
+[2025-12-23 21:57:50.307] [DEBUG] Initializing status bar components...
+[2025-12-23 21:57:50.307] [DEBUG] statusBarWidget found
+[2025-12-23 21:57:50.307] [DEBUG] statusMessageLabel found
+[2025-12-23 21:57:50.307] [DEBUG] networkStatusButton found
+[2025-12-23 21:57:50.308] [DEBUG] userInfoButton found
+[2025-12-23 21:57:50.308] [DEBUG] Status bar initialization completed
+[2025-12-23 21:57:50.308] [DEBUG] Getting stackedWidget from UI...
+[2025-12-23 21:57:50.308] [DEBUG] stackedWidget found in UI
+[2025-12-23 21:57:50.316] [DEBUG] StackedWidget initialized with Lobby as default
+[2025-12-23 21:57:50.317] [DEBUG] Creating ToastWidget...
+[2025-12-23 21:57:50.318] [DEBUG] ====== Validating Window Background ======
+[2025-12-23 21:57:50.318] [DEBUG] CentralWidget palette background color: #ffffff
+[2025-12-23 21:57:50.318] [INFO] CentralWidget background is correctly set to white
+[2025-12-23 21:57:50.318] [DEBUG] Current window stylesheet length: 59 characters
+[2025-12-23 21:57:50.319] [DEBUG] Stylesheet contains background-color definition
+[2025-12-23 21:57:50.319] [DEBUG] Window has WA_StyledBackground: 1
+[2025-12-23 21:57:50.319] [DEBUG] Window has WA_OpaquePaintEvent: 1
+[2025-12-23 21:57:50.319] [DEBUG] Window has WA_TranslucentBackground: 0
+[2025-12-23 21:57:50.319] [DEBUG] ====== Background Validation Complete ======
+[2025-12-23 21:57:50.319] [INFO] MainWindow initialization completed successfully
+[2025-12-23 21:57:56.526] [DEBUG] User info button clicked, showing login dialog
+[2025-12-23 21:57:57.438] [DEBUG] User chose to login with account
+[2025-12-23 21:58:06.245] [INFO] Login attempt for user: xixi
+[2025-12-23 21:58:06.245] [DEBUG] Login packet created with session ID: 2905721490287305630
+[2025-12-23 21:58:06.245] [DEBUG] Sending login packet...
+[2025-12-23 21:58:06.245] [DEBUG] Sent packet (type: 256)
+[2025-12-23 21:58:06.245] [INFO] Login request sent for user: xixi
+[2025-12-23 21:58:06.255] [DEBUG] Received packet (type: 256)
+[2025-12-23 21:58:13.999] [DEBUG] Creating room
+[2025-12-23 21:58:14.000] [DEBUG] Sent packet (type: 512)
+[2025-12-23 21:58:14.014] [DEBUG] Received packet (type: 512)
+[2025-12-23 21:58:14.014] [INFO] Room created successfully, room ID: 0
+[2025-12-23 21:58:14.017] [DEBUG] Switching widget to index: 1
+[2025-12-23 21:58:14.018] [INFO] Switching to Game widget
+[2025-12-23 21:58:14.018] [DEBUG] Widget switch completed
+[2025-12-23 21:58:14.020] [DEBUG] Initializing GameWidget, islocal: 0
+[2025-12-23 21:58:14.021] [DEBUG] Updating player seat status: blackTaken=0, whiteTaken=0
+[2025-12-23 21:58:14.022] [INFO] GameWidget initialized successfully
+[2025-12-23 21:58:14.022] [DEBUG] GameManager::setLocalGame called with isLocal: 0, enableAI: 0
+[2025-12-23 21:58:14.022] [DEBUG] GameManager::setLocalGame: isLocal is false, resetting game state for online play
+[2025-12-23 21:58:16.112] [DEBUG] Player 1 avatar clicked (black seat)
+[2025-12-23 21:58:16.115] [INFO] Taking black pieces
+[2025-12-23 21:58:16.115] [DEBUG] Updating player seat status: blackTaken=1, whiteTaken=0
+[2025-12-23 21:58:24.801] [DEBUG] Player 2 avatar clicked (white seat)
+[2025-12-23 21:58:24.804] [INFO] Taking white pieces
+[2025-12-23 21:58:24.804] [DEBUG] Updating player seat status: blackTaken=1, whiteTaken=1
+[2025-12-23 21:58:27.653] [DEBUG] GameManager::onMakeMove called, x: 6, y: 2, isLocalGame: 0
+[2025-12-23 21:58:28.334] [DEBUG] GameManager::onMakeMove called, x: 6, y: 2, isLocalGame: 0
+[2025-12-23 21:58:29.419] [DEBUG] GameManager::onMakeMove called, x: 7, y: 3, isLocalGame: 0
+[2025-12-23 21:58:30.132] [DEBUG] GameManager::onMakeMove called, x: 6, y: 2, isLocalGame: 0
+[2025-12-23 21:58:31.162] [DEBUG] GameManager::onMakeMove called, x: 3, y: 3, isLocalGame: 0
+[2025-12-23 21:58:32.872] [DEBUG] GameManager::onMakeMove called, x: 7, y: 3, isLocalGame: 0
+[2025-12-23 21:58:33.616] [DEBUG] GameManager::onMakeMove called, x: 7, y: 4, isLocalGame: 0
+[2025-12-23 21:58:35.875] [DEBUG] GameManager::onMakeMove called, x: 11, y: 3, isLocalGame: 0
+[2025-12-23 21:58:36.502] [DEBUG] GameManager::onMakeMove called, x: 8, y: 3, isLocalGame: 0
+[2025-12-23 21:58:37.137] [DEBUG] GameManager::onMakeMove called, x: 9, y: 3, isLocalGame: 0
+[2025-12-23 21:58:37.949] [DEBUG] GameManager::onMakeMove called, x: 5, y: 4, isLocalGame: 0
+[2025-12-23 21:58:39.992] [DEBUG] GameManager::onMakeMove called, x: 9, y: 3, isLocalGame: 0
+[2025-12-23 21:58:40.381] [DEBUG] GameManager::onMakeMove called, x: 9, y: 3, isLocalGame: 0
+[2025-12-23 21:58:40.728] [DEBUG] GameManager::onMakeMove called, x: 9, y: 3, isLocalGame: 0
+[2025-12-23 21:58:41.519] [DEBUG] GameManager::onMakeMove called, x: 5, y: 6, isLocalGame: 0
+[2025-12-23 21:58:48.400] [DEBUG] GameManager::onMakeMove called, x: 9, y: 3, isLocalGame: 0
+[2025-12-23 21:58:59.562] [DEBUG] GameManager::onMakeMove called, x: 3, y: 11, isLocalGame: 0
+[2025-12-23 21:58:59.768] [DEBUG] GameManager::onMakeMove called, x: 3, y: 11, isLocalGame: 0
+[2025-12-23 21:59:00.039] [DEBUG] GameManager::onMakeMove called, x: 3, y: 11, isLocalGame: 0
+[2025-12-23 21:59:00.468] [DEBUG] GameManager::onMakeMove called, x: 2, y: 11, isLocalGame: 0
+[2025-12-23 21:59:00.720] [DEBUG] GameManager::onMakeMove called, x: 5, y: 11, isLocalGame: 0
+[2025-12-23 21:59:00.911] [DEBUG] GameManager::onMakeMove called, x: 5, y: 11, isLocalGame: 0
+[2025-12-23 21:59:01.130] [DEBUG] GameManager::onMakeMove called, x: 6, y: 11, isLocalGame: 0
+[2025-12-23 21:59:03.124] [DEBUG] GameManager::onMakeMove called, x: 5, y: 1, isLocalGame: 0
+[2025-12-23 21:59:04.332] [DEBUG] GameManager::onMakeMove called, x: 8, y: 1, isLocalGame: 0
+[2025-12-23 21:59:04.737] [DEBUG] GameManager::onMakeMove called, x: 8, y: 2, isLocalGame: 0
+[2025-12-23 21:59:05.218] [DEBUG] GameManager::onMakeMove called, x: 8, y: 2, isLocalGame: 0
+[2025-12-23 21:59:06.091] [DEBUG] GameManager::onMakeMove called, x: 11, y: 3, isLocalGame: 0
+[2025-12-23 21:59:08.886] [DEBUG] Back to lobby button clicked
+[2025-12-23 22:34:53.833] [DEBUG] Back to lobby button clicked
+[2025-12-23 22:34:54.135] [DEBUG] Back to lobby button clicked
+[2025-12-23 22:34:54.673] [DEBUG] Back to lobby button clicked
+[2025-12-23 22:34:55.160] [DEBUG] Back to lobby button clicked
+[2025-12-23 22:34:55.699] [DEBUG] Back to lobby button clicked
+[2025-12-23 22:35:12.633] [DEBUG] Sending chat message: 2
+[2025-12-23 22:35:12.633] [INFO] Chat message sent: 2
+[2025-12-23 22:35:20.276] [DEBUG] Minimize button clicked
+[2025-12-23 22:35:24.352] [INFO] MainWindow destructor called
+[2025-12-23 22:35:24.352] [DEBUG] Cleaning up UI...
+[2025-12-23 22:35:24.352] [DEBUG] Cleaning up Manager...
+[2025-12-23 22:35:24.352] [INFO] Manager destructor called
+[2025-12-23 22:35:24.352] [DEBUG] Disconnecting client...
+[2025-12-23 22:35:24.352] [DEBUG] Disconnect called, setting is_running to false
+[2025-12-23 22:35:24.352] [DEBUG] Current socket value before disconnect: 1076
+[2025-12-23 22:35:24.352] [DEBUG] Waiting for worker thread to finish...
+[2025-12-23 22:35:24.385] [DEBUG] Worker thread joined successfully.
+[2025-12-23 22:35:24.385] [DEBUG] Closing socket
+[2025-12-23 22:35:24.386] [DEBUG] Socket closed and set to INVALID_SOCKET
+[2025-12-23 22:35:24.386] [DEBUG] Resetting session context
+[2025-12-23 22:35:24.386] [DEBUG] Calling disconnectedCallback from Disconnect()
+[2025-12-23 22:35:24.386] [INFO] Disconnected from server callback triggered
+[2025-12-23 22:35:24.389] [INFO] Client disconnected successfully.
+[2025-12-23 22:35:24.389] [DEBUG] Client destructor called
+[2025-12-23 22:35:24.389] [DEBUG] Disconnect called, setting is_running to false
+[2025-12-23 22:35:24.389] [DEBUG] Current socket value before disconnect: -1
+[2025-12-23 22:35:24.389] [DEBUG] Worker thread is not joinable or already finished
+[2025-12-23 22:35:24.389] [DEBUG] Socket is already INVALID_SOCKET, skipping close
+[2025-12-23 22:35:24.390] [DEBUG] Calling disconnectedCallback from Disconnect()
+[2025-12-23 22:35:24.390] [INFO] Disconnected from server callback triggered
+[2025-12-23 22:35:24.390] [INFO] Client disconnected successfully.
+[2025-12-23 22:35:24.390] [DEBUG] Client cleanup completed
+[2025-12-23 22:35:24.390] [DEBUG] Client disconnected and reset
+[2025-12-23 22:35:24.390] [INFO] Manager cleanup completed
+[2025-12-23 22:35:24.391] [DEBUG] Cleaning up ToastWidget...
+[2025-12-23 22:35:24.392] [DEBUG] Shutting down Logger...
+[2025-12-23 22:35:24.393] [INFO] Logger shutting down.
+[2025-12-23 22:38:19.777] [INFO] Logger initialized. Log file: logs/gomoku.log
+[2025-12-23 22:38:19.777] [DEBUG] Logger initialized with DEBUG level
+[2025-12-23 22:38:19.777] [DEBUG] Setting up UI...
+[2025-12-23 22:38:19.793] [DEBUG] Creating Manager instance...
+[2025-12-23 22:38:19.794] [INFO] Manager initialized for server
+[2025-12-23 22:38:19.794] [DEBUG] Client constructor called for 127.0.0.1:8080
+[2025-12-23 22:38:19.816] [DEBUG] Session activated callback set
+[2025-12-23 22:38:19.817] [INFO] Attempting to connect to server...
+[2025-12-23 22:38:19.818] [DEBUG] Connecting to 127.0.0.1:8080...
+[2025-12-23 22:38:19.823] [DEBUG] New socket created successfully, socket value: 1056
+[2025-12-23 22:38:19.823] [INFO] Connected to server successfully!
+[2025-12-23 22:38:19.823] [DEBUG] Socket set to non-blocking mode
+[2025-12-23 22:38:19.823] [DEBUG] Disconnect called, setting is_running to false
+[2025-12-23 22:38:19.824] [DEBUG] Worker thread is not joinable or already finished
+[2025-12-23 22:38:19.824] [DEBUG] Worker thread started
+[2025-12-23 22:38:19.824] [DEBUG] Sending Hello frame to initiate handshake
+[2025-12-23 22:38:19.824] [INFO] Connection established and handshake initiated
+[2025-12-23 22:38:19.825] [DEBUG] Creating LobbyWidget...
+[2025-12-23 22:38:19.825] [DEBUG] LobbyWidget Initializing...
+[2025-12-23 22:38:19.827] [INFO] Client loop started.
+[2025-12-23 22:38:19.830] [DEBUG] Configuring room table properties...
+[2025-12-23 22:38:19.830] [DEBUG] Room table properties configured
+[2025-12-23 22:38:19.831] [DEBUG] Initializing room table...
+[2025-12-23 22:38:19.832] [DEBUG] Initializing player list...
+[2025-12-23 22:38:19.832] [DEBUG] Setting up signals...
+[2025-12-23 22:38:19.833] [INFO] LobbyWidget initialized successfully
+[2025-12-23 22:38:19.833] [DEBUG] Creating GameWidget...
+[2025-12-23 22:38:19.836] [DEBUG] GameWidget UI initialized
+[2025-12-23 22:38:19.837] [DEBUG] GameWidget signal connections established
+[2025-12-23 22:38:19.837] [DEBUG] GameWidget constructed successfully
+[2025-12-23 22:38:19.837] [DEBUG] Creating GameManager instance...
+[2025-12-23 22:38:19.838] [DEBUG] Setting up signal connections...
+[2025-12-23 22:38:19.838] [DEBUG] Connecting LobbyWidget::localGame to GameManager::setLocalGame...
+[2025-12-23 22:38:19.838] [DEBUG] localGame connection result: 1
+[2025-12-23 22:38:19.838] [DEBUG] Initializing window components...
+[2025-12-23 22:38:19.839] [DEBUG] Initializing window style...
+[2025-12-23 22:38:19.839] [DEBUG] [Handshake] Received NewSession. ID: 2905721490287305630
+[2025-12-23 22:38:19.840] [DEBUG] Saved server public key
+[2025-12-23 22:38:19.847] [DEBUG] Set main window background to white
+[2025-12-23 22:38:19.848] [DEBUG] Setting window flags: FramelessWindowHint | WindowSystemMenuHint | WindowMinimizeButtonHint
+[2025-12-23 22:38:19.851] [INFO] [Handshake] Session Activated!
+[2025-12-23 22:38:19.851] [DEBUG] Calling sessionActivatedCallback with sessionId: 2905721490287305630
+[2025-12-23 22:38:19.852] [INFO] Session activated callback received, sessionId: 2905721490287305630
+[2025-12-23 22:38:19.855] [DEBUG] WA_TranslucentBackground is commented out (not set)
+[2025-12-23 22:38:19.855] [DEBUG] WA_OpaquePaintEvent attribute set
+[2025-12-23 22:38:19.855] [DEBUG] Added Qt::Window flag for taskbar interaction
+[2025-12-23 22:38:19.856] [DEBUG] Window size set to: 1000x700
+[2025-12-23 22:38:19.856] [DEBUG] Set window palette to white background
+[2025-12-23 22:38:19.856] [DEBUG] Current stylesheet: QMainWindow {    background-color: white;    border: none;}
+[2025-12-23 22:38:19.856] [DEBUG] Window background role color: #ffffff
+[2025-12-23 22:38:19.856] [DEBUG] Initializing layout...
+[2025-12-23 22:38:19.856] [DEBUG] centralwidget found at address: 2235526263920
+[2025-12-23 22:38:19.857] [DEBUG] centralwidget object name: centralwidget
+[2025-12-23 22:38:19.857] [DEBUG] centralwidget geometry: 100x30
+[2025-12-23 22:38:19.857] [DEBUG] centralwidget object name set to: centralContainer
+[2025-12-23 22:38:19.857] [DEBUG] centralwidget WA_StyledBackground attribute set
+[2025-12-23 22:38:19.857] [DEBUG] centralwidget palette background color: #f3f3f3
+[2025-12-23 22:38:19.858] [DEBUG] Set centralwidget palette to white background
+[2025-12-23 22:38:19.858] [DEBUG] Layout initialized successfully
+[2025-12-23 22:38:19.858] [DEBUG] Initializing title bar and status bar...
+[2025-12-23 22:38:19.858] [DEBUG] Initializing title bar components...
+[2025-12-23 22:38:19.858] [DEBUG] titleBarWidget found at address: 2235526405024
+[2025-12-23 22:38:19.858] [DEBUG] titleBarWidget object name: titleBarWidget
+[2025-12-23 22:38:19.858] [DEBUG] titleLabel found at address: 2235526407024
+[2025-12-23 22:38:19.858] [DEBUG] titleLabel text: 五子棋大厅
+[2025-12-23 22:38:19.859] [DEBUG] minimizeButton found at address: 2235526422448
+[2025-12-23 22:38:19.859] [DEBUG] maximizeButton found at address: 2235526426048
+[2025-12-23 22:38:19.859] [DEBUG] closeButton found at address: 2235526436736
+[2025-12-23 22:38:19.859] [DEBUG] Title bar initialization completed
+[2025-12-23 22:38:19.859] [DEBUG] Initializing status bar components...
+[2025-12-23 22:38:19.859] [DEBUG] statusBarWidget found
+[2025-12-23 22:38:19.859] [DEBUG] statusMessageLabel found
+[2025-12-23 22:38:19.859] [DEBUG] networkStatusButton found
+[2025-12-23 22:38:19.859] [DEBUG] userInfoButton found
+[2025-12-23 22:38:19.860] [DEBUG] Status bar initialization completed
+[2025-12-23 22:38:19.860] [DEBUG] Getting stackedWidget from UI...
+[2025-12-23 22:38:19.860] [DEBUG] stackedWidget found in UI
+[2025-12-23 22:38:19.868] [DEBUG] StackedWidget initialized with Lobby as default
+[2025-12-23 22:38:19.869] [DEBUG] Creating ToastWidget...
+[2025-12-23 22:38:19.870] [DEBUG] ====== Validating Window Background ======
+[2025-12-23 22:38:19.870] [DEBUG] CentralWidget palette background color: #ffffff
+[2025-12-23 22:38:19.870] [INFO] CentralWidget background is correctly set to white
+[2025-12-23 22:38:19.870] [DEBUG] Current window stylesheet length: 59 characters
+[2025-12-23 22:38:19.870] [DEBUG] Stylesheet contains background-color definition
+[2025-12-23 22:38:19.870] [DEBUG] Window has WA_StyledBackground: 1
+[2025-12-23 22:38:19.870] [DEBUG] Window has WA_OpaquePaintEvent: 1
+[2025-12-23 22:38:19.871] [DEBUG] Window has WA_TranslucentBackground: 0
+[2025-12-23 22:38:19.871] [DEBUG] ====== Background Validation Complete ======
+[2025-12-23 22:38:19.871] [INFO] MainWindow initialization completed successfully
+[2025-12-23 22:38:24.563] [DEBUG] Local game button clicked, emitting localGame signal
+[2025-12-23 22:38:24.563] [DEBUG] localGame signal received, initializing local game
+[2025-12-23 22:38:24.564] [DEBUG] GameManager::setLocalGame called with isLocal: 1, enableAI: 1
+[2025-12-23 22:38:24.565] [DEBUG] Player list updated, count: 2
+[2025-12-23 22:38:24.566] [DEBUG] Updating player seat status: blackTaken=1, whiteTaken=1
+[2025-12-23 22:38:24.566] [DEBUG] Chat message from 游戏: 本地游戏已就绪，请选择黑棋座位，AI将执白棋
+[2025-12-23 22:38:24.566] [DEBUG] Chat message from 游戏: 本地游戏已就绪
+[2025-12-23 22:38:24.568] [DEBUG] Initializing GameWidget, islocal: 1
+[2025-12-23 22:38:24.568] [DEBUG] Updating player seat status: blackTaken=0, whiteTaken=0
+[2025-12-23 22:38:24.570] [INFO] GameWidget initialized successfully
+[2025-12-23 22:38:24.571] [DEBUG] Switching widget to index: 1
+[2025-12-23 22:38:24.572] [INFO] Switching to Game widget
+[2025-12-23 22:38:24.574] [DEBUG] Widget switch completed
+[2025-12-23 22:38:25.761] [DEBUG] Player 1 avatar clicked (black seat)
+[2025-12-23 22:38:25.762] [DEBUG] Chat message from 系统: 玩家 选择了黑棋
+[2025-12-23 22:38:25.763] [DEBUG] Player list updated, count: 2
+[2025-12-23 22:38:25.763] [DEBUG] Updating player seat status: blackTaken=1, whiteTaken=1
+[2025-12-23 22:38:25.776] [INFO] Game started for player: 玩家, rating: 1500
+[2025-12-23 22:38:25.776] [DEBUG] Chat message from 游戏: 游戏开始！玩家 执黑先行
+[2025-12-23 22:38:25.776] [DEBUG] Updating player seat status: blackTaken=1, whiteTaken=1
+[2025-12-23 22:38:30.673] [DEBUG] GameManager::onMakeMove called, x: 7, y: 4, isLocalGame: 1
+[2025-12-23 22:38:30.674] [DEBUG] Chat message from 游戏: 玩家 在 (7, 4) 落黑子
+[2025-12-23 22:38:30.676] [DEBUG] Chat message from 游戏: 轮到 AI玩家 落子
+[2025-12-23 22:38:31.790] [DEBUG] Chat message from 游戏: AI玩家 在 (0, 0) 落白子
+[2025-12-23 22:38:31.793] [DEBUG] Chat message from 游戏: 轮到 玩家 落子
+[2025-12-23 22:38:34.282] [DEBUG] GameManager::onMakeMove called, x: 8, y: 4, isLocalGame: 1
+[2025-12-23 22:38:34.284] [DEBUG] Chat message from 游戏: 玩家 在 (8, 4) 落黑子
+[2025-12-23 22:38:34.288] [DEBUG] Chat message from 游戏: 轮到 AI玩家 落子
+[2025-12-23 22:38:35.405] [DEBUG] Chat message from 游戏: AI玩家 在 (0, 1) 落白子
+[2025-12-23 22:38:35.408] [DEBUG] Chat message from 游戏: 轮到 玩家 落子
+[2025-12-23 22:38:36.854] [DEBUG] GameManager::onMakeMove called, x: 8, y: 6, isLocalGame: 1
+[2025-12-23 22:38:36.854] [DEBUG] Chat message from 游戏: 玩家 在 (8, 6) 落黑子
+[2025-12-23 22:38:36.857] [DEBUG] Chat message from 游戏: 轮到 AI玩家 落子
+[2025-12-23 22:38:37.869] [DEBUG] Chat message from 游戏: AI玩家 在 (0, 2) 落白子
+[2025-12-23 22:38:37.873] [DEBUG] Chat message from 游戏: 轮到 玩家 落子
+[2025-12-23 22:38:41.905] [DEBUG] GameManager::onMakeMove called, x: 0, y: 3, isLocalGame: 1
+[2025-12-23 22:38:41.906] [DEBUG] Chat message from 游戏: 玩家 在 (0, 3) 落黑子
+[2025-12-23 22:38:41.911] [DEBUG] Chat message from 游戏: 轮到 AI玩家 落子
+[2025-12-23 22:38:42.080] [DEBUG] GameManager::onMakeMove called, x: 0, y: 3, isLocalGame: 1
+[2025-12-23 22:38:42.082] [DEBUG] Chat message from 游戏: 无效的落子位置
+[2025-12-23 22:38:44.744] [DEBUG] Chat message from 游戏: AI玩家 在 (0, 4) 落白子
+[2025-12-23 22:38:44.748] [DEBUG] Chat message from 游戏: 轮到 玩家 落子
+[2025-12-23 22:39:09.907] [DEBUG] Back to lobby button clicked
+[2025-12-23 22:39:09.907] [DEBUG] Chat message from 游戏: 已退出本地游戏
+[2025-12-23 22:39:09.911] [DEBUG] Switching widget to index: 0
+[2025-12-23 22:39:09.911] [INFO] Switching to Lobby widget
+[2025-12-23 22:39:09.912] [DEBUG] Widget switch completed
+[2025-12-23 22:39:09.916] [DEBUG] Initializing GameWidget, islocal: 0
+[2025-12-23 22:39:09.916] [DEBUG] Updating player seat status: blackTaken=0, whiteTaken=0
+[2025-12-23 22:39:09.918] [INFO] GameWidget initialized successfully
+[2025-12-23 22:39:09.918] [DEBUG] GameManager::setLocalGame called with isLocal: 0, enableAI: 0
+[2025-12-23 22:39:09.918] [DEBUG] GameManager::setLocalGame: isLocal is false, resetting game state for online play
+[2025-12-23 22:39:12.044] [INFO] MainWindow destructor called
+[2025-12-23 22:39:12.044] [DEBUG] Cleaning up UI...
+[2025-12-23 22:39:12.044] [DEBUG] Cleaning up Manager...
+[2025-12-23 22:39:12.045] [INFO] Manager destructor called
+[2025-12-23 22:39:12.045] [DEBUG] Disconnecting client...
+[2025-12-23 22:39:12.045] [DEBUG] Disconnect called, setting is_running to false
+[2025-12-23 22:39:12.045] [DEBUG] Current socket value before disconnect: 1056
+[2025-12-23 22:39:12.045] [DEBUG] Waiting for worker thread to finish...
+[2025-12-23 22:39:12.092] [DEBUG] Worker thread joined successfully.
+[2025-12-23 22:39:12.092] [DEBUG] Closing socket
+[2025-12-23 22:39:12.093] [DEBUG] Socket closed and set to INVALID_SOCKET
+[2025-12-23 22:39:12.093] [DEBUG] Resetting session context
+[2025-12-23 22:39:12.093] [DEBUG] Calling disconnectedCallback from Disconnect()
+[2025-12-23 22:39:12.094] [INFO] Disconnected from server callback triggered
+[2025-12-23 22:39:12.098] [INFO] Client disconnected successfully.
+[2025-12-23 22:39:12.098] [DEBUG] Client destructor called
+[2025-12-23 22:39:12.098] [DEBUG] Disconnect called, setting is_running to false
+[2025-12-23 22:39:12.099] [DEBUG] Current socket value before disconnect: -1
+[2025-12-23 22:39:12.099] [DEBUG] Worker thread is not joinable or already finished
+[2025-12-23 22:39:12.099] [DEBUG] Socket is already INVALID_SOCKET, skipping close
+[2025-12-23 22:39:12.099] [DEBUG] Calling disconnectedCallback from Disconnect()
+[2025-12-23 22:39:12.099] [INFO] Disconnected from server callback triggered
+[2025-12-23 22:39:12.101] [INFO] Client disconnected successfully.
+[2025-12-23 22:39:12.101] [DEBUG] Client cleanup completed
+[2025-12-23 22:39:12.101] [DEBUG] Client disconnected and reset
+[2025-12-23 22:39:12.101] [INFO] Manager cleanup completed
+[2025-12-23 22:39:12.101] [DEBUG] Cleaning up ToastWidget...
+[2025-12-23 22:39:12.105] [DEBUG] Shutting down Logger...
+[2025-12-23 22:39:12.105] [INFO] Logger shutting down.
+[2025-12-23 22:54:33.549] [INFO] Logger initialized. Log file: logs/gomoku.log
+[2025-12-23 22:54:33.550] [DEBUG] Logger initialized with DEBUG level
+[2025-12-23 22:54:33.550] [DEBUG] Setting up UI...
+[2025-12-23 22:54:33.588] [DEBUG] Creating Manager instance...
+[2025-12-23 22:54:33.588] [INFO] Manager initialized for server
+[2025-12-23 22:54:33.588] [DEBUG] Client constructor called for 127.0.0.1:8080
+[2025-12-23 22:54:33.611] [DEBUG] Session activated callback set
+[2025-12-23 22:54:33.611] [INFO] Attempting to connect to server...
+[2025-12-23 22:54:33.612] [DEBUG] Connecting to 127.0.0.1:8080...
+[2025-12-23 22:54:33.617] [DEBUG] New socket created successfully, socket value: 972
+[2025-12-23 22:54:33.618] [INFO] Connected to server successfully!
+[2025-12-23 22:54:33.618] [DEBUG] Socket set to non-blocking mode
+[2025-12-23 22:54:33.619] [DEBUG] Disconnect called, setting is_running to false
+[2025-12-23 22:54:33.619] [DEBUG] Worker thread is not joinable or already finished
+[2025-12-23 22:54:33.621] [DEBUG] Worker thread started
+[2025-12-23 22:54:33.621] [DEBUG] Sending Hello frame to initiate handshake
+[2025-12-23 22:54:33.621] [INFO] Connection established and handshake initiated
+[2025-12-23 22:54:33.621] [DEBUG] Creating LobbyWidget...
+[2025-12-23 22:54:33.622] [DEBUG] LobbyWidget Initializing...
+[2025-12-23 22:54:33.623] [INFO] Client loop started.
+[2025-12-23 22:54:33.627] [DEBUG] Configuring room table properties...
+[2025-12-23 22:54:33.628] [DEBUG] Room table properties configured
+[2025-12-23 22:54:33.628] [DEBUG] Initializing room table...
+[2025-12-23 22:54:33.629] [DEBUG] Initializing player list...
+[2025-12-23 22:54:33.630] [DEBUG] Setting up signals...
+[2025-12-23 22:54:33.630] [INFO] LobbyWidget initialized successfully
+[2025-12-23 22:54:33.630] [DEBUG] Creating GameWidget...
+[2025-12-23 22:54:33.633] [DEBUG] GameWidget UI initialized
+[2025-12-23 22:54:33.634] [DEBUG] GameWidget signal connections established
+[2025-12-23 22:54:33.634] [DEBUG] GameWidget constructed successfully
+[2025-12-23 22:54:33.634] [DEBUG] Creating GameManager instance...
+[2025-12-23 22:54:33.634] [DEBUG] Setting up signal connections...
+[2025-12-23 22:54:33.635] [DEBUG] Connecting LobbyWidget::localGame to GameManager::setLocalGame...
+[2025-12-23 22:54:33.635] [DEBUG] localGame connection result: 1
+[2025-12-23 22:54:33.635] [DEBUG] Initializing window components...
+[2025-12-23 22:54:33.635] [DEBUG] Initializing window style...
+[2025-12-23 22:54:33.636] [DEBUG] [Handshake] Received NewSession. ID: 6183259501240631390
+[2025-12-23 22:54:33.637] [DEBUG] Saved server public key
+[2025-12-23 22:54:33.644] [DEBUG] Set main window background to white
+[2025-12-23 22:54:33.645] [DEBUG] Setting window flags: FramelessWindowHint | WindowSystemMenuHint | WindowMinimizeButtonHint
+[2025-12-23 22:54:33.651] [DEBUG] WA_TranslucentBackground is commented out (not set)
+[2025-12-23 22:54:33.651] [DEBUG] WA_OpaquePaintEvent attribute set
+[2025-12-23 22:54:33.652] [DEBUG] Added Qt::Window flag for taskbar interaction
+[2025-12-23 22:54:33.652] [DEBUG] Window size set to: 1000x700
+[2025-12-23 22:54:33.652] [DEBUG] Set window palette to white background
+[2025-12-23 22:54:33.653] [DEBUG] Current stylesheet: QMainWindow {    background-color: white;    border: none;}
+[2025-12-23 22:54:33.653] [DEBUG] Window background role color: #ffffff
+[2025-12-23 22:54:33.653] [INFO] [Handshake] Session Activated!
+[2025-12-23 22:54:33.653] [DEBUG] Calling sessionActivatedCallback with sessionId: 6183259501240631390
+[2025-12-23 22:54:33.653] [DEBUG] Initializing layout...
+[2025-12-23 22:54:33.653] [DEBUG] centralwidget found at address: 2484938519168
+[2025-12-23 22:54:33.654] [INFO] Session activated callback received, sessionId: 6183259501240631390
+[2025-12-23 22:54:33.654] [DEBUG] centralwidget object name: centralwidget
+[2025-12-23 22:54:33.654] [DEBUG] centralwidget geometry: 100x30
+[2025-12-23 22:54:33.654] [DEBUG] centralwidget object name set to: centralContainer
+[2025-12-23 22:54:33.654] [DEBUG] centralwidget WA_StyledBackground attribute set
+[2025-12-23 22:54:33.654] [DEBUG] centralwidget palette background color: #f3f3f3
+[2025-12-23 22:54:33.655] [DEBUG] Set centralwidget palette to white background
+[2025-12-23 22:54:33.655] [DEBUG] Layout initialized successfully
+[2025-12-23 22:54:33.655] [DEBUG] Initializing title bar and status bar...
+[2025-12-23 22:54:33.655] [DEBUG] Initializing title bar components...
+[2025-12-23 22:54:33.655] [DEBUG] titleBarWidget found at address: 2484938660336
+[2025-12-23 22:54:33.655] [DEBUG] titleBarWidget object name: titleBarWidget
+[2025-12-23 22:54:33.655] [DEBUG] titleLabel found at address: 2484938662336
+[2025-12-23 22:54:33.655] [DEBUG] titleLabel text: 五子棋大厅
+[2025-12-23 22:54:33.656] [DEBUG] minimizeButton found at address: 2484938677728
+[2025-12-23 22:54:33.656] [DEBUG] maximizeButton found at address: 2484938681120
+[2025-12-23 22:54:33.656] [DEBUG] closeButton found at address: 2484938691984
+[2025-12-23 22:54:33.656] [DEBUG] Title bar initialization completed
+[2025-12-23 22:54:33.656] [DEBUG] Initializing status bar components...
+[2025-12-23 22:54:33.656] [DEBUG] statusBarWidget found
+[2025-12-23 22:54:33.656] [DEBUG] statusMessageLabel found
+[2025-12-23 22:54:33.656] [DEBUG] networkStatusButton found
+[2025-12-23 22:54:33.656] [DEBUG] userInfoButton found
+[2025-12-23 22:54:33.657] [DEBUG] Status bar initialization completed
+[2025-12-23 22:54:33.657] [DEBUG] Getting stackedWidget from UI...
+[2025-12-23 22:54:33.657] [DEBUG] stackedWidget found in UI
+[2025-12-23 22:54:33.665] [DEBUG] StackedWidget initialized with Lobby as default
+[2025-12-23 22:54:33.666] [DEBUG] Creating ToastWidget...
+[2025-12-23 22:54:33.667] [DEBUG] ====== Validating Window Background ======
+[2025-12-23 22:54:33.667] [DEBUG] CentralWidget palette background color: #ffffff
+[2025-12-23 22:54:33.667] [INFO] CentralWidget background is correctly set to white
+[2025-12-23 22:54:33.667] [DEBUG] Current window stylesheet length: 59 characters
+[2025-12-23 22:54:33.667] [DEBUG] Stylesheet contains background-color definition
+[2025-12-23 22:54:33.668] [DEBUG] Window has WA_StyledBackground: 1
+[2025-12-23 22:54:33.668] [DEBUG] Window has WA_OpaquePaintEvent: 1
+[2025-12-23 22:54:33.668] [DEBUG] Window has WA_TranslucentBackground: 0
+[2025-12-23 22:54:33.668] [DEBUG] ====== Background Validation Complete ======
+[2025-12-23 22:54:33.668] [INFO] MainWindow initialization completed successfully
+[2025-12-23 22:54:41.434] [DEBUG] Local game button clicked, emitting localGame signal
+[2025-12-23 22:54:41.434] [DEBUG] localGame signal received, initializing local game
+[2025-12-23 22:54:41.435] [DEBUG] GameManager::setLocalGame called with isLocal: 1, enableAI: 0
+[2025-12-23 22:54:41.436] [DEBUG] Player list updated, count: 2
+[2025-12-23 22:54:41.436] [DEBUG] Updating player seat status: blackTaken=0, whiteTaken=0
+[2025-12-23 22:54:41.437] [DEBUG] Chat message from 游戏: 本地游戏已就绪，请在设置中启用AI对手，或点击玩家头像选择对手
+[2025-12-23 22:54:41.439] [DEBUG] Chat message from 游戏: 本地游戏已就绪
+[2025-12-23 22:54:41.441] [DEBUG] Initializing GameWidget, islocal: 1
+[2025-12-23 22:54:41.441] [DEBUG] Updating player seat status: blackTaken=0, whiteTaken=0
+[2025-12-23 22:54:41.442] [INFO] GameWidget initialized successfully
+[2025-12-23 22:54:41.442] [DEBUG] Switching widget to index: 1
+[2025-12-23 22:54:41.443] [INFO] Switching to Game widget
+[2025-12-23 22:54:41.445] [DEBUG] Widget switch completed
+[2025-12-23 22:55:05.065] [DEBUG] AI toggled: enabled
+[2025-12-23 22:55:05.066] [DEBUG] GameManager::onAIToggled called with enabled: 1
+[2025-12-23 22:55:05.066] [DEBUG] Chat message from 游戏: AI对手已启用，AI将执白棋
+[2025-12-23 22:55:05.067] [DEBUG] Player list updated, count: 2
+[2025-12-23 22:55:05.067] [DEBUG] Updating player seat status: blackTaken=0, whiteTaken=1
+[2025-12-23 22:55:07.403] [DEBUG] Player 1 avatar clicked (black seat)
+[2025-12-23 22:55:07.406] [DEBUG] Chat message from 系统: 玩家 选择了黑棋
+[2025-12-23 22:55:07.407] [DEBUG] Player list updated, count: 2
+[2025-12-23 22:55:07.407] [DEBUG] Updating player seat status: blackTaken=1, whiteTaken=1
+[2025-12-23 22:55:07.424] [INFO] Game started for player: 玩家, rating: 1500
+[2025-12-23 22:55:07.425] [DEBUG] Chat message from 游戏: 游戏开始！玩家 执黑先行
+[2025-12-23 22:55:07.425] [DEBUG] Updating player seat status: blackTaken=1, whiteTaken=1
+[2025-12-23 22:55:10.788] [DEBUG] GameManager::onMakeMove called, x: 7, y: 5, isLocalGame: 1
+[2025-12-23 22:55:10.789] [DEBUG] Chat message from 游戏: 玩家 在 (7, 5) 落黑子
+[2025-12-23 22:55:10.790] [DEBUG] Chat message from 游戏: 轮到 AI玩家 落子
+[2025-12-23 22:55:11.932] [DEBUG] Chat message from 游戏: AI玩家 在 (0, 0) 落白子
+[2025-12-23 22:55:11.936] [DEBUG] Chat message from 游戏: 轮到 玩家 落子
+[2025-12-23 22:55:14.219] [DEBUG] Back to lobby button clicked
+[2025-12-23 22:55:14.220] [DEBUG] Chat message from 游戏: 已退出本地游戏
+[2025-12-23 22:55:14.221] [DEBUG] Switching widget to index: 0
+[2025-12-23 22:55:14.221] [INFO] Switching to Lobby widget
+[2025-12-23 22:55:14.222] [DEBUG] Widget switch completed
+[2025-12-23 22:55:14.224] [DEBUG] Initializing GameWidget, islocal: 0
+[2025-12-23 22:55:14.224] [DEBUG] Updating player seat status: blackTaken=0, whiteTaken=0
+[2025-12-23 22:55:14.225] [INFO] GameWidget initialized successfully
+[2025-12-23 22:55:14.225] [DEBUG] GameManager::setLocalGame called with isLocal: 0, enableAI: 0
+[2025-12-23 22:55:14.225] [DEBUG] GameManager::setLocalGame: isLocal is false, resetting game state for online play
+[2025-12-23 22:55:17.959] [DEBUG] User info button clicked, showing login dialog
+[2025-12-23 22:55:19.280] [DEBUG] User chose to login with account
+[2025-12-23 22:55:28.809] [INFO] Login attempt for user: xixi
+[2025-12-23 22:55:28.809] [DEBUG] Login packet created with session ID: 6183259501240631390
+[2025-12-23 22:55:28.809] [DEBUG] Sending login packet...
+[2025-12-23 22:55:28.810] [DEBUG] Sent packet (type: 256)
+[2025-12-23 22:55:28.810] [INFO] Login request sent for user: xixi
+[2025-12-23 22:55:28.813] [DEBUG] Received packet (type: 256)
+[2025-12-23 22:55:34.488] [DEBUG] Creating room
+[2025-12-23 22:55:34.488] [DEBUG] Sent packet (type: 512)
+[2025-12-23 22:55:34.497] [DEBUG] Received packet (type: 512)
+[2025-12-23 22:55:34.497] [INFO] Room created successfully, room ID: 0
+[2025-12-23 22:55:34.500] [DEBUG] Switching widget to index: 1
+[2025-12-23 22:55:34.500] [INFO] Switching to Game widget
+[2025-12-23 22:55:34.501] [DEBUG] Widget switch completed
+[2025-12-23 22:55:34.505] [DEBUG] Initializing GameWidget, islocal: 0
+[2025-12-23 22:55:34.505] [DEBUG] Updating player seat status: blackTaken=0, whiteTaken=0
+[2025-12-23 22:55:34.506] [INFO] GameWidget initialized successfully
+[2025-12-23 22:55:34.506] [DEBUG] GameManager::setLocalGame called with isLocal: 0, enableAI: 0
+[2025-12-23 22:55:34.506] [DEBUG] GameManager::setLocalGame: isLocal is false, resetting game state for online play
+[2025-12-23 22:55:36.986] [DEBUG] Player 1 avatar clicked (black seat)
+[2025-12-23 22:55:36.990] [INFO] Taking black pieces
+[2025-12-23 22:55:36.990] [DEBUG] Updating player seat status: blackTaken=1, whiteTaken=0
+[2025-12-23 22:55:42.852] [DEBUG] Player 2 avatar clicked (white seat)
+[2025-12-23 22:55:42.854] [INFO] Taking white pieces
+[2025-12-23 22:55:42.854] [DEBUG] Updating player seat status: blackTaken=1, whiteTaken=1
+[2025-12-23 22:55:45.375] [DEBUG] Back to lobby button clicked
+[2025-12-23 22:55:52.155] [DEBUG] AI toggled: disabled
+[2025-12-23 22:55:52.155] [DEBUG] GameManager::onAIToggled called with enabled: 0
+[2025-12-23 22:55:58.795] [DEBUG] GameManager::onMakeMove called, x: 7, y: 5, isLocalGame: 0
+[2025-12-23 22:55:59.957] [DEBUG] GameManager::onMakeMove called, x: 7, y: 5, isLocalGame: 0
+[2025-12-23 22:56:00.580] [DEBUG] GameManager::onMakeMove called, x: 7, y: 5, isLocalGame: 0
+[2025-12-23 22:56:01.787] [DEBUG] GameManager::onMakeMove called, x: 7, y: 6, isLocalGame: 0
+[2025-12-23 22:56:09.915] [DEBUG] GameManager::onMakeMove called, x: 9, y: 4, isLocalGame: 0
+[2025-12-23 22:56:12.061] [INFO] MainWindow destructor called
+[2025-12-23 22:56:12.061] [DEBUG] Cleaning up UI...
+[2025-12-23 22:56:12.062] [DEBUG] Cleaning up Manager...
+[2025-12-23 22:56:12.062] [INFO] Manager destructor called
+[2025-12-23 22:56:12.062] [DEBUG] Disconnecting client...
+[2025-12-23 22:56:12.062] [DEBUG] Disconnect called, setting is_running to false
+[2025-12-23 22:56:12.062] [DEBUG] Current socket value before disconnect: 972
+[2025-12-23 22:56:12.062] [DEBUG] Waiting for worker thread to finish...
+[2025-12-23 22:56:12.087] [DEBUG] Worker thread joined successfully.
+[2025-12-23 22:56:12.087] [DEBUG] Closing socket
+[2025-12-23 22:56:12.088] [DEBUG] Socket closed and set to INVALID_SOCKET
+[2025-12-23 22:56:12.088] [DEBUG] Resetting session context
+[2025-12-23 22:56:12.088] [DEBUG] Calling disconnectedCallback from Disconnect()
+[2025-12-23 22:56:12.088] [INFO] Disconnected from server callback triggered
+[2025-12-23 22:56:12.091] [INFO] Client disconnected successfully.
+[2025-12-23 22:56:12.092] [DEBUG] Client destructor called
+[2025-12-23 22:56:12.092] [DEBUG] Disconnect called, setting is_running to false
+[2025-12-23 22:56:12.092] [DEBUG] Current socket value before disconnect: -1
+[2025-12-23 22:56:12.092] [DEBUG] Worker thread is not joinable or already finished
+[2025-12-23 22:56:12.092] [DEBUG] Socket is already INVALID_SOCKET, skipping close
+[2025-12-23 22:56:12.092] [DEBUG] Calling disconnectedCallback from Disconnect()
+[2025-12-23 22:56:12.092] [INFO] Disconnected from server callback triggered
+[2025-12-23 22:56:12.093] [INFO] Client disconnected successfully.
+[2025-12-23 22:56:12.093] [DEBUG] Client cleanup completed
+[2025-12-23 22:56:12.093] [DEBUG] Client disconnected and reset
+[2025-12-23 22:56:12.093] [INFO] Manager cleanup completed
+[2025-12-23 22:56:12.094] [DEBUG] Cleaning up ToastWidget...
+[2025-12-23 22:56:12.098] [DEBUG] Shutting down Logger...
+[2025-12-23 22:56:12.098] [INFO] Logger shutting down.
+[2025-12-23 22:56:58.160] [INFO] Logger initialized. Log file: logs/gomoku.log
+[2025-12-23 22:56:58.160] [DEBUG] Logger initialized with DEBUG level
+[2025-12-23 22:56:58.160] [DEBUG] Setting up UI...
+[2025-12-23 22:56:58.174] [DEBUG] Creating Manager instance...
+[2025-12-23 22:56:58.174] [INFO] Manager initialized for server
+[2025-12-23 22:56:58.174] [DEBUG] Client constructor called for 127.0.0.1:8080
+[2025-12-23 22:56:58.196] [DEBUG] Session activated callback set
+[2025-12-23 22:56:58.197] [INFO] Attempting to connect to server...
+[2025-12-23 22:56:58.197] [DEBUG] Connecting to 127.0.0.1:8080...
+[2025-12-23 22:56:58.200] [DEBUG] New socket created successfully, socket value: 1048
+[2025-12-23 22:56:58.201] [INFO] Connected to server successfully!
+[2025-12-23 22:56:58.201] [DEBUG] Socket set to non-blocking mode
+[2025-12-23 22:56:58.201] [DEBUG] Disconnect called, setting is_running to false
+[2025-12-23 22:56:58.201] [DEBUG] Worker thread is not joinable or already finished
+[2025-12-23 22:56:58.202] [DEBUG] Worker thread started
+[2025-12-23 22:56:58.202] [DEBUG] Sending Hello frame to initiate handshake
+[2025-12-23 22:56:58.202] [INFO] Connection established and handshake initiated
+[2025-12-23 22:56:58.202] [DEBUG] Creating LobbyWidget...
+[2025-12-23 22:56:58.202] [DEBUG] LobbyWidget Initializing...
+[2025-12-23 22:56:58.204] [INFO] Client loop started.
+[2025-12-23 22:56:58.208] [DEBUG] Configuring room table properties...
+[2025-12-23 22:56:58.208] [DEBUG] Room table properties configured
+[2025-12-23 22:56:58.208] [DEBUG] Initializing room table...
+[2025-12-23 22:56:58.209] [DEBUG] Initializing player list...
+[2025-12-23 22:56:58.210] [DEBUG] Setting up signals...
+[2025-12-23 22:56:58.210] [INFO] LobbyWidget initialized successfully
+[2025-12-23 22:56:58.210] [DEBUG] Creating GameWidget...
+[2025-12-23 22:56:58.213] [DEBUG] GameWidget UI initialized
+[2025-12-23 22:56:58.213] [DEBUG] GameWidget signal connections established
+[2025-12-23 22:56:58.213] [DEBUG] GameWidget constructed successfully
+[2025-12-23 22:56:58.213] [DEBUG] Creating GameManager instance...
+[2025-12-23 22:56:58.214] [DEBUG] Setting up signal connections...
+[2025-12-23 22:56:58.214] [DEBUG] Connecting LobbyWidget::localGame to GameManager::setLocalGame...
+[2025-12-23 22:56:58.214] [DEBUG] localGame connection result: 1
+[2025-12-23 22:56:58.214] [DEBUG] Initializing window components...
+[2025-12-23 22:56:58.214] [DEBUG] Initializing window style...
+[2025-12-23 22:56:58.223] [DEBUG] Set main window background to white
+[2025-12-23 22:56:58.223] [DEBUG] Setting window flags: FramelessWindowHint | WindowSystemMenuHint | WindowMinimizeButtonHint
+[2025-12-23 22:56:58.230] [DEBUG] WA_TranslucentBackground is commented out (not set)
+[2025-12-23 22:56:58.230] [DEBUG] WA_OpaquePaintEvent attribute set
+[2025-12-23 22:56:58.230] [DEBUG] Added Qt::Window flag for taskbar interaction
+[2025-12-23 22:56:58.230] [DEBUG] Window size set to: 1000x700
+[2025-12-23 22:56:58.230] [DEBUG] Set window palette to white background
+[2025-12-23 22:56:58.230] [DEBUG] Current stylesheet: QMainWindow {    background-color: white;    border: none;}
+[2025-12-23 22:56:58.230] [DEBUG] Window background role color: #ffffff
+[2025-12-23 22:56:58.231] [DEBUG] Initializing layout...
+[2025-12-23 22:56:58.231] [DEBUG] centralwidget found at address: 1743928275584
+[2025-12-23 22:56:58.231] [DEBUG] centralwidget object name: centralwidget
+[2025-12-23 22:56:58.231] [DEBUG] [Handshake] Received NewSession. ID: 4308456940185701291
+[2025-12-23 22:56:58.232] [DEBUG] centralwidget geometry: 100x30
+[2025-12-23 22:56:58.232] [DEBUG] centralwidget object name set to: centralContainer
+[2025-12-23 22:56:58.232] [DEBUG] centralwidget WA_StyledBackground attribute set
+[2025-12-23 22:56:58.232] [DEBUG] centralwidget palette background color: #f3f3f3
+[2025-12-23 22:56:58.232] [DEBUG] Set centralwidget palette to white background
+[2025-12-23 22:56:58.232] [DEBUG] Layout initialized successfully
+[2025-12-23 22:56:58.232] [DEBUG] Initializing title bar and status bar...
+[2025-12-23 22:56:58.232] [DEBUG] Initializing title bar components...
+[2025-12-23 22:56:58.233] [DEBUG] titleBarWidget found at address: 1743928416752
+[2025-12-23 22:56:58.233] [DEBUG] titleBarWidget object name: titleBarWidget
+[2025-12-23 22:56:58.233] [DEBUG] titleLabel found at address: 1743928418752
+[2025-12-23 22:56:58.233] [DEBUG] Saved server public key
+[2025-12-23 22:56:58.233] [DEBUG] titleLabel text: 五子棋大厅
+[2025-12-23 22:56:58.233] [DEBUG] minimizeButton found at address: 1743928434144
+[2025-12-23 22:56:58.233] [DEBUG] maximizeButton found at address: 1743928437536
+[2025-12-23 22:56:58.234] [DEBUG] closeButton found at address: 1743928448400
+[2025-12-23 22:56:58.234] [DEBUG] Title bar initialization completed
+[2025-12-23 22:56:58.234] [DEBUG] Initializing status bar components...
+[2025-12-23 22:56:58.234] [DEBUG] statusBarWidget found
+[2025-12-23 22:56:58.234] [DEBUG] statusMessageLabel found
+[2025-12-23 22:56:58.234] [DEBUG] networkStatusButton found
+[2025-12-23 22:56:58.234] [DEBUG] userInfoButton found
+[2025-12-23 22:56:58.234] [DEBUG] Status bar initialization completed
+[2025-12-23 22:56:58.234] [DEBUG] Getting stackedWidget from UI...
+[2025-12-23 22:56:58.235] [DEBUG] stackedWidget found in UI
+[2025-12-23 22:56:58.243] [INFO] [Handshake] Session Activated!
+[2025-12-23 22:56:58.243] [DEBUG] Calling sessionActivatedCallback with sessionId: 4308456940185701291
+[2025-12-23 22:56:58.243] [INFO] Session activated callback received, sessionId: 4308456940185701291
+[2025-12-23 22:56:58.243] [DEBUG] StackedWidget initialized with Lobby as default
+[2025-12-23 22:56:58.244] [DEBUG] Creating ToastWidget...
+[2025-12-23 22:56:58.244] [DEBUG] ====== Validating Window Background ======
+[2025-12-23 22:56:58.245] [DEBUG] CentralWidget palette background color: #ffffff
+[2025-12-23 22:56:58.245] [INFO] CentralWidget background is correctly set to white
+[2025-12-23 22:56:58.245] [DEBUG] Current window stylesheet length: 59 characters
+[2025-12-23 22:56:58.245] [DEBUG] Stylesheet contains background-color definition
+[2025-12-23 22:56:58.245] [DEBUG] Window has WA_StyledBackground: 1
+[2025-12-23 22:56:58.245] [DEBUG] Window has WA_OpaquePaintEvent: 1
+[2025-12-23 22:56:58.245] [DEBUG] Window has WA_TranslucentBackground: 0
+[2025-12-23 22:56:58.245] [DEBUG] ====== Background Validation Complete ======
+[2025-12-23 22:56:58.245] [INFO] MainWindow initialization completed successfully
+[2025-12-23 22:57:00.578] [DEBUG] Local game button clicked, emitting localGame signal
+[2025-12-23 22:57:00.579] [DEBUG] localGame signal received, initializing local game
+[2025-12-23 22:57:00.579] [DEBUG] GameManager::setLocalGame called with isLocal: 1, enableAI: 0
+[2025-12-23 22:57:00.580] [DEBUG] Player list updated, count: 2
+[2025-12-23 22:57:00.581] [DEBUG] Updating player seat status: blackTaken=0, whiteTaken=0
+[2025-12-23 22:57:00.581] [DEBUG] Chat message from 游戏: 本地游戏已就绪，请在设置中启用AI对手，或点击玩家头像选择对手
+[2025-12-23 22:57:00.581] [DEBUG] Chat message from 游戏: 本地游戏已就绪
+[2025-12-23 22:57:00.583] [DEBUG] Initializing GameWidget, islocal: 1
+[2025-12-23 22:57:00.583] [DEBUG] Updating player seat status: blackTaken=0, whiteTaken=0
+[2025-12-23 22:57:00.584] [INFO] GameWidget initialized successfully
+[2025-12-23 22:57:00.584] [DEBUG] Switching widget to index: 1
+[2025-12-23 22:57:00.585] [INFO] Switching to Game widget
+[2025-12-23 22:57:00.586] [DEBUG] Widget switch completed
+[2025-12-23 22:57:04.627] [DEBUG] Back to lobby button clicked
+[2025-12-23 22:57:04.628] [DEBUG] Chat message from 游戏: 已退出本地游戏
+[2025-12-23 22:57:04.630] [DEBUG] Switching widget to index: 0
+[2025-12-23 22:57:04.630] [INFO] Switching to Lobby widget
+[2025-12-23 22:57:04.631] [DEBUG] Widget switch completed
+[2025-12-23 22:57:04.634] [DEBUG] Initializing GameWidget, islocal: 0
+[2025-12-23 22:57:04.634] [DEBUG] Updating player seat status: blackTaken=0, whiteTaken=0
+[2025-12-23 22:57:04.636] [INFO] GameWidget initialized successfully
+[2025-12-23 22:57:04.636] [DEBUG] GameManager::setLocalGame called with isLocal: 0, enableAI: 0
+[2025-12-23 22:57:04.636] [DEBUG] GameManager::setLocalGame: isLocal is false, resetting game state for online play
+[2025-12-23 22:57:05.555] [DEBUG] User info button clicked, showing login dialog
+[2025-12-23 22:57:06.725] [DEBUG] User chose to login with account
+[2025-12-23 22:57:14.447] [INFO] Login attempt for user: xixi
+[2025-12-23 22:57:14.448] [DEBUG] Login packet created with session ID: 4308456940185701291
+[2025-12-23 22:57:14.448] [DEBUG] Sending login packet...
+[2025-12-23 22:57:14.448] [DEBUG] Sent packet (type: 256)
+[2025-12-23 22:57:14.449] [INFO] Login request sent for user: xixi
+[2025-12-23 22:57:14.467] [DEBUG] Received packet (type: 256)
+[2025-12-23 22:57:17.361] [DEBUG] Creating room
+[2025-12-23 22:57:17.361] [DEBUG] Sent packet (type: 512)
+[2025-12-23 22:57:17.375] [DEBUG] Received packet (type: 512)
+[2025-12-23 22:57:17.375] [INFO] Room created successfully, room ID: 0
+[2025-12-23 22:57:17.381] [DEBUG] Switching widget to index: 1
+[2025-12-23 22:57:17.382] [INFO] Switching to Game widget
+[2025-12-23 22:57:17.382] [DEBUG] Widget switch completed
+[2025-12-23 22:57:17.385] [DEBUG] Initializing GameWidget, islocal: 0
+[2025-12-23 22:57:17.386] [DEBUG] Updating player seat status: blackTaken=0, whiteTaken=0
+[2025-12-23 22:57:17.387] [INFO] GameWidget initialized successfully
+[2025-12-23 22:57:17.387] [DEBUG] GameManager::setLocalGame called with isLocal: 0, enableAI: 0
+[2025-12-23 22:57:17.387] [DEBUG] GameManager::setLocalGame: isLocal is false, resetting game state for online play
+[2025-12-23 22:57:22.290] [INFO] MainWindow destructor called
+[2025-12-23 22:57:22.290] [DEBUG] Cleaning up UI...
+[2025-12-23 22:57:22.291] [DEBUG] Cleaning up Manager...
+[2025-12-23 22:57:22.291] [INFO] Manager destructor called
+[2025-12-23 22:57:22.291] [DEBUG] Disconnecting client...
+[2025-12-23 22:57:22.291] [DEBUG] Disconnect called, setting is_running to false
+[2025-12-23 22:57:22.291] [DEBUG] Current socket value before disconnect: 1048
+[2025-12-23 22:57:22.291] [DEBUG] Waiting for worker thread to finish...
+[2025-12-23 22:57:22.353] [DEBUG] Worker thread joined successfully.
+[2025-12-23 22:57:22.353] [DEBUG] Closing socket
+[2025-12-23 22:57:22.353] [DEBUG] Socket closed and set to INVALID_SOCKET
+[2025-12-23 22:57:22.353] [DEBUG] Resetting session context
+[2025-12-23 22:57:22.353] [DEBUG] Calling disconnectedCallback from Disconnect()
+[2025-12-23 22:57:22.354] [INFO] Disconnected from server callback triggered
+[2025-12-23 22:57:22.356] [INFO] Client disconnected successfully.
+[2025-12-23 22:57:22.356] [DEBUG] Client destructor called
+[2025-12-23 22:57:22.357] [DEBUG] Disconnect called, setting is_running to false
+[2025-12-23 22:57:22.357] [DEBUG] Current socket value before disconnect: -1
+[2025-12-23 22:57:22.357] [DEBUG] Worker thread is not joinable or already finished
+[2025-12-23 22:57:22.357] [DEBUG] Socket is already INVALID_SOCKET, skipping close
+[2025-12-23 22:57:22.357] [DEBUG] Calling disconnectedCallback from Disconnect()
+[2025-12-23 22:57:22.357] [INFO] Disconnected from server callback triggered
+[2025-12-23 22:57:22.358] [INFO] Client disconnected successfully.
+[2025-12-23 22:57:22.358] [DEBUG] Client cleanup completed
+[2025-12-23 22:57:22.358] [DEBUG] Client disconnected and reset
+[2025-12-23 22:57:22.358] [INFO] Manager cleanup completed
+[2025-12-23 22:57:22.358] [DEBUG] Cleaning up ToastWidget...
+[2025-12-23 22:57:22.360] [DEBUG] Shutting down Logger...
+[2025-12-23 22:57:22.360] [INFO] Logger shutting down.
+[2025-12-23 23:06:32.792] [INFO] Logger initialized. Log file: logs/gomoku.log
+[2025-12-23 23:06:32.793] [DEBUG] Logger initialized with DEBUG level
+[2025-12-23 23:06:32.793] [DEBUG] Setting up UI...
+[2025-12-23 23:06:32.807] [DEBUG] Creating Manager instance...
+[2025-12-23 23:06:32.807] [INFO] Manager initialized for server
+[2025-12-23 23:06:32.807] [DEBUG] Client constructor called for 127.0.0.1:8080
+[2025-12-23 23:06:32.829] [DEBUG] Session activated callback set
+[2025-12-23 23:06:32.830] [INFO] Attempting to connect to server...
+[2025-12-23 23:06:32.830] [DEBUG] Connecting to 127.0.0.1:8080...
+[2025-12-23 23:06:32.834] [DEBUG] New socket created successfully, socket value: 1068
+[2025-12-23 23:06:32.835] [INFO] Connected to server successfully!
+[2025-12-23 23:06:32.835] [DEBUG] Socket set to non-blocking mode
+[2025-12-23 23:06:32.835] [DEBUG] Disconnect called, setting is_running to false
+[2025-12-23 23:06:32.836] [DEBUG] Worker thread is not joinable or already finished
+[2025-12-23 23:06:32.836] [DEBUG] Worker thread started
+[2025-12-23 23:06:32.836] [DEBUG] Sending Hello frame to initiate handshake
+[2025-12-23 23:06:32.836] [INFO] Connection established and handshake initiated
+[2025-12-23 23:06:32.836] [DEBUG] Creating LobbyWidget...
+[2025-12-23 23:06:32.837] [DEBUG] LobbyWidget Initializing...
+[2025-12-23 23:06:32.839] [INFO] Client loop started.
+[2025-12-23 23:06:32.843] [DEBUG] Configuring room table properties...
+[2025-12-23 23:06:32.843] [DEBUG] Room table properties configured
+[2025-12-23 23:06:32.843] [DEBUG] Initializing room table...
+[2025-12-23 23:06:32.845] [DEBUG] Initializing player list...
+[2025-12-23 23:06:32.845] [DEBUG] Setting up signals...
+[2025-12-23 23:06:32.845] [INFO] LobbyWidget initialized successfully
+[2025-12-23 23:06:32.845] [DEBUG] Creating GameWidget...
+[2025-12-23 23:06:32.849] [DEBUG] GameWidget UI initialized
+[2025-12-23 23:06:32.852] [DEBUG] GameWidget signal connections established
+[2025-12-23 23:06:32.852] [DEBUG] GameWidget constructed successfully
+[2025-12-23 23:06:32.853] [DEBUG] Creating GameManager instance...
+[2025-12-23 23:06:32.853] [DEBUG] [Handshake] Received NewSession. ID: 17838658421202335909
+[2025-12-23 23:06:32.853] [DEBUG] Setting up signal connections...
+[2025-12-23 23:06:32.853] [DEBUG] Connecting LobbyWidget::localGame to GameManager::setLocalGame...
+[2025-12-23 23:06:32.854] [DEBUG] localGame connection result: 1
+[2025-12-23 23:06:32.854] [DEBUG] Initializing window components...
+[2025-12-23 23:06:32.854] [DEBUG] Initializing window style...
+[2025-12-23 23:06:32.854] [DEBUG] Saved server public key
+[2025-12-23 23:06:32.865] [DEBUG] Set main window background to white
+[2025-12-23 23:06:32.866] [DEBUG] Setting window flags: FramelessWindowHint | WindowSystemMenuHint | WindowMinimizeButtonHint
+[2025-12-23 23:06:32.870] [INFO] [Handshake] Session Activated!
+[2025-12-23 23:06:32.871] [DEBUG] Calling sessionActivatedCallback with sessionId: 17838658421202335909
+[2025-12-23 23:06:32.871] [INFO] Session activated callback received, sessionId: 17838658421202335909
+[2025-12-23 23:06:32.878] [DEBUG] WA_TranslucentBackground is commented out (not set)
+[2025-12-23 23:06:32.879] [DEBUG] WA_OpaquePaintEvent attribute set
+[2025-12-23 23:06:32.879] [DEBUG] Added Qt::Window flag for taskbar interaction
+[2025-12-23 23:06:32.880] [DEBUG] Window size set to: 1000x700
+[2025-12-23 23:06:32.880] [DEBUG] Set window palette to white background
+[2025-12-23 23:06:32.881] [DEBUG] Current stylesheet: QMainWindow {    background-color: white;    border: none;}
+[2025-12-23 23:06:32.881] [DEBUG] Window background role color: #ffffff
+[2025-12-23 23:06:32.882] [DEBUG] Initializing layout...
+[2025-12-23 23:06:32.883] [DEBUG] centralwidget found at address: 1848950829696
+[2025-12-23 23:06:32.883] [DEBUG] centralwidget object name: centralwidget
+[2025-12-23 23:06:32.884] [DEBUG] centralwidget geometry: 100x30
+[2025-12-23 23:06:32.884] [DEBUG] centralwidget object name set to: centralContainer
+[2025-12-23 23:06:32.884] [DEBUG] centralwidget WA_StyledBackground attribute set
+[2025-12-23 23:06:32.884] [DEBUG] centralwidget palette background color: #f3f3f3
+[2025-12-23 23:06:32.885] [DEBUG] Set centralwidget palette to white background
+[2025-12-23 23:06:32.885] [DEBUG] Layout initialized successfully
+[2025-12-23 23:06:32.885] [DEBUG] Initializing title bar and status bar...
+[2025-12-23 23:06:32.885] [DEBUG] Initializing title bar components...
+[2025-12-23 23:06:32.886] [DEBUG] titleBarWidget found at address: 1848950970864
+[2025-12-23 23:06:32.886] [DEBUG] titleBarWidget object name: titleBarWidget
+[2025-12-23 23:06:32.887] [DEBUG] titleLabel found at address: 1848950972864
+[2025-12-23 23:06:32.887] [DEBUG] titleLabel text: 五子棋大厅
+[2025-12-23 23:06:32.887] [DEBUG] minimizeButton found at address: 1848950988256
+[2025-12-23 23:06:32.888] [DEBUG] maximizeButton found at address: 1848950991648
+[2025-12-23 23:06:32.888] [DEBUG] closeButton found at address: 1848951002512
+[2025-12-23 23:06:32.888] [DEBUG] Title bar initialization completed
+[2025-12-23 23:06:32.888] [DEBUG] Initializing status bar components...
+[2025-12-23 23:06:32.889] [DEBUG] statusBarWidget found
+[2025-12-23 23:06:32.889] [DEBUG] statusMessageLabel found
+[2025-12-23 23:06:32.889] [DEBUG] networkStatusButton found
+[2025-12-23 23:06:32.889] [DEBUG] userInfoButton found
+[2025-12-23 23:06:32.889] [DEBUG] Status bar initialization completed
+[2025-12-23 23:06:32.889] [DEBUG] Getting stackedWidget from UI...
+[2025-12-23 23:06:32.889] [DEBUG] stackedWidget found in UI
+[2025-12-23 23:06:32.897] [DEBUG] StackedWidget initialized with Lobby as default
+[2025-12-23 23:06:32.898] [DEBUG] Creating ToastWidget...
+[2025-12-23 23:06:32.899] [DEBUG] ====== Validating Window Background ======
+[2025-12-23 23:06:32.899] [DEBUG] CentralWidget palette background color: #ffffff
+[2025-12-23 23:06:32.900] [INFO] CentralWidget background is correctly set to white
+[2025-12-23 23:06:32.900] [DEBUG] Current window stylesheet length: 59 characters
+[2025-12-23 23:06:32.900] [DEBUG] Stylesheet contains background-color definition
+[2025-12-23 23:06:32.900] [DEBUG] Window has WA_StyledBackground: 1
+[2025-12-23 23:06:32.900] [DEBUG] Window has WA_OpaquePaintEvent: 1
+[2025-12-23 23:06:32.900] [DEBUG] Window has WA_TranslucentBackground: 0
+[2025-12-23 23:06:32.900] [DEBUG] ====== Background Validation Complete ======
+[2025-12-23 23:06:32.900] [INFO] MainWindow initialization completed successfully
+[2025-12-23 23:06:54.336] [DEBUG] Local game button clicked, emitting localGame signal
+[2025-12-23 23:06:54.337] [DEBUG] localGame signal received, initializing local game
+[2025-12-23 23:06:54.338] [DEBUG] GameManager::setLocalGame called with isLocal: 1, enableAI: 0
+[2025-12-23 23:06:54.339] [DEBUG] Player list updated, count: 2
+[2025-12-23 23:06:54.339] [DEBUG] Updating player seat status: blackTaken=0, whiteTaken=0
+[2025-12-23 23:06:54.340] [DEBUG] Chat message from 游戏: 本地游戏已就绪，请在设置中启用AI对手，或点击玩家头像选择对手
+[2025-12-23 23:06:54.343] [DEBUG] Chat message from 游戏: 本地游戏已就绪
+[2025-12-23 23:06:54.345] [DEBUG] Initializing GameWidget, islocal: 1
+[2025-12-23 23:06:54.346] [DEBUG] Updating player seat status: blackTaken=0, whiteTaken=0
+[2025-12-23 23:06:54.348] [INFO] GameWidget initialized successfully
+[2025-12-23 23:06:54.348] [DEBUG] Switching widget to index: 1
+[2025-12-23 23:06:54.352] [INFO] Switching to Game widget
+[2025-12-23 23:06:54.354] [DEBUG] Widget switch completed
+[2025-12-23 23:06:56.140] [DEBUG] Player 1 avatar clicked (black seat)
+[2025-12-23 23:06:56.142] [DEBUG] Chat message from 系统: 玩家 选择了黑棋
+[2025-12-23 23:06:56.142] [DEBUG] Player list updated, count: 2
+[2025-12-23 23:06:56.142] [DEBUG] Updating player seat status: blackTaken=1, whiteTaken=0
+[2025-12-23 23:06:56.144] [DEBUG] Updating player seat status: blackTaken=1, whiteTaken=0
+[2025-12-23 23:06:58.893] [DEBUG] Player 2 avatar clicked (white seat)
+[2025-12-23 23:06:58.896] [DEBUG] Chat message from 系统: 玩家2 选择了白棋
+[2025-12-23 23:06:58.896] [DEBUG] Player list updated, count: 2
+[2025-12-23 23:06:58.896] [DEBUG] Updating player seat status: blackTaken=1, whiteTaken=1
+[2025-12-23 23:06:58.907] [INFO] Game started for player: 玩家, rating: 1500
+[2025-12-23 23:06:58.908] [DEBUG] Chat message from 游戏: 游戏开始！玩家 执黑先行
+[2025-12-23 23:06:58.908] [DEBUG] Updating player seat status: blackTaken=1, whiteTaken=1
+[2025-12-23 23:07:05.670] [DEBUG] GameManager::onMakeMove called, x: 6, y: 3, isLocalGame: 1
+[2025-12-23 23:07:05.670] [DEBUG] Chat message from 游戏: 玩家 在 (6, 3) 落黑子
+[2025-12-23 23:07:05.672] [DEBUG] Chat message from 游戏: 轮到 玩家2 落子
+[2025-12-23 23:07:17.060] [DEBUG] GameManager::onMakeMove called, x: 7, y: 4, isLocalGame: 1
+[2025-12-23 23:07:17.061] [DEBUG] Chat message from 游戏: 玩家2 在 (7, 4) 落白子
+[2025-12-23 23:07:17.063] [DEBUG] Chat message from 游戏: 轮到 玩家 落子
+[2025-12-23 23:07:27.415] [DEBUG] GameManager::onMakeMove called, x: 7, y: 5, isLocalGame: 1
+[2025-12-23 23:07:27.416] [DEBUG] Chat message from 游戏: 玩家 在 (7, 5) 落黑子
+[2025-12-23 23:07:27.419] [DEBUG] Chat message from 游戏: 轮到 玩家2 落子
+[2025-12-23 23:07:31.362] [DEBUG] GameManager::onMakeMove called, x: 7, y: 3, isLocalGame: 1
+[2025-12-23 23:07:31.363] [DEBUG] Chat message from 游戏: 玩家2 在 (7, 3) 落白子
+[2025-12-23 23:07:31.365] [DEBUG] Chat message from 游戏: 轮到 玩家 落子
+[2025-12-23 23:07:35.009] [DEBUG] GameManager::onMakeMove called, x: 8, y: 3, isLocalGame: 1
+[2025-12-23 23:07:35.009] [DEBUG] Chat message from 游戏: 玩家 在 (8, 3) 落黑子
+[2025-12-23 23:07:35.014] [DEBUG] Chat message from 游戏: 轮到 玩家2 落子
+[2025-12-23 23:07:36.184] [DEBUG] GameManager::onMakeMove called, x: 6, y: 4, isLocalGame: 1
+[2025-12-23 23:07:36.185] [DEBUG] Chat message from 游戏: 玩家2 在 (6, 4) 落白子
+[2025-12-23 23:07:36.188] [DEBUG] Chat message from 游戏: 轮到 玩家 落子
+[2025-12-23 23:07:37.769] [DEBUG] GameManager::onMakeMove called, x: 8, y: 5, isLocalGame: 1
+[2025-12-23 23:07:37.770] [DEBUG] Chat message from 游戏: 玩家 在 (8, 5) 落黑子
+[2025-12-23 23:07:37.772] [DEBUG] Chat message from 游戏: 轮到 玩家2 落子
+[2025-12-23 23:07:42.901] [DEBUG] GameManager::onMakeMove called, x: 7, y: 6, isLocalGame: 1
+[2025-12-23 23:07:42.902] [DEBUG] Chat message from 游戏: 玩家2 在 (7, 6) 落白子
+[2025-12-23 23:07:42.905] [DEBUG] Chat message from 游戏: 轮到 玩家 落子
+[2025-12-23 23:07:48.608] [DEBUG] GameManager::onMakeMove called, x: 9, y: 4, isLocalGame: 1
+[2025-12-23 23:07:48.609] [DEBUG] Chat message from 游戏: 玩家 在 (9, 4) 落黑子
+[2025-12-23 23:07:48.612] [DEBUG] Chat message from 游戏: 轮到 玩家2 落子
+[2025-12-23 23:07:49.924] [DEBUG] GameManager::onMakeMove called, x: 8, y: 4, isLocalGame: 1
+[2025-12-23 23:07:49.925] [DEBUG] Chat message from 游戏: 玩家2 在 (8, 4) 落白子
+[2025-12-23 23:07:49.927] [DEBUG] Chat message from 游戏: 轮到 玩家 落子
+[2025-12-23 23:07:55.688] [DEBUG] GameManager::onMakeMove called, x: 10, y: 3, isLocalGame: 1
+[2025-12-23 23:07:55.689] [DEBUG] Chat message from 游戏: 玩家 在 (10, 3) 落黑子
+[2025-12-23 23:07:55.691] [DEBUG] Chat message from 游戏: 轮到 玩家2 落子
+[2025-12-23 23:07:57.630] [DEBUG] GameManager::onMakeMove called, x: 5, y: 4, isLocalGame: 1
+[2025-12-23 23:07:57.631] [DEBUG] Chat message from 游戏: 玩家2 在 (5, 4) 落白子
+[2025-12-23 23:07:57.634] [DEBUG] Chat message from 游戏: 轮到 玩家 落子
+[2025-12-23 23:08:00.714] [DEBUG] GameManager::onMakeMove called, x: 9, y: 3, isLocalGame: 1
+[2025-12-23 23:08:00.714] [DEBUG] Chat message from 游戏: 玩家 在 (9, 3) 落黑子
+[2025-12-23 23:08:00.719] [DEBUG] Chat message from 游戏: 轮到 玩家2 落子
+[2025-12-23 23:08:05.626] [DEBUG] GameManager::onMakeMove called, x: 4, y: 4, isLocalGame: 1
+[2025-12-23 23:08:05.627] [DEBUG] Chat message from 游戏: 玩家2 在 (4, 4) 落白子
+[2025-12-23 23:08:05.629] [DEBUG] Chat message from 游戏: 玩家2 五子连珠，获胜！
+[2025-12-23 23:08:05.629] [INFO] Game ended for player: 玩家2, won: 1
+[2025-12-23 23:08:25.552] [DEBUG] GameManager::onMakeMove called, x: 9, y: 7, isLocalGame: 1
+[2025-12-23 23:08:25.553] [DEBUG] Chat message from 游戏: 游戏未开始或已结束
+[2025-12-23 23:08:26.368] [DEBUG] GameManager::onMakeMove called, x: 9, y: 7, isLocalGame: 1
+[2025-12-23 23:08:26.369] [DEBUG] Chat message from 游戏: 游戏未开始或已结束
+[2025-12-23 23:08:27.306] [DEBUG] GameManager::onMakeMove called, x: 4, y: 5, isLocalGame: 1
+[2025-12-23 23:08:27.307] [DEBUG] Chat message from 游戏: 游戏未开始或已结束
+[2025-12-23 23:08:46.292] [DEBUG] Back to lobby button clicked
+[2025-12-23 23:08:46.292] [DEBUG] Chat message from 游戏: 已退出本地游戏
+[2025-12-23 23:08:46.295] [DEBUG] Switching widget to index: 0
+[2025-12-23 23:08:46.297] [INFO] Switching to Lobby widget
+[2025-12-23 23:08:46.298] [DEBUG] Widget switch completed
+[2025-12-23 23:08:46.302] [DEBUG] Initializing GameWidget, islocal: 0
+[2025-12-23 23:08:46.303] [DEBUG] Updating player seat status: blackTaken=0, whiteTaken=0
+[2025-12-23 23:08:46.306] [INFO] GameWidget initialized successfully
+[2025-12-23 23:08:46.306] [DEBUG] GameManager::setLocalGame called with isLocal: 0, enableAI: 0
+[2025-12-23 23:08:46.306] [DEBUG] GameManager::setLocalGame: isLocal is false, resetting game state for online play
+[2025-12-23 23:09:36.304] [DEBUG] Local game button clicked, emitting localGame signal
+[2025-12-23 23:09:36.305] [DEBUG] localGame signal received, initializing local game
+[2025-12-23 23:09:36.305] [DEBUG] GameManager::setLocalGame called with isLocal: 1, enableAI: 0
+[2025-12-23 23:09:36.307] [DEBUG] Player list updated, count: 2
+[2025-12-23 23:09:36.307] [DEBUG] Updating player seat status: blackTaken=0, whiteTaken=0
+[2025-12-23 23:09:36.308] [DEBUG] Chat message from 游戏: 本地游戏已就绪，请在设置中启用AI对手，或点击玩家头像选择对手
+[2025-12-23 23:09:36.308] [DEBUG] Chat message from 游戏: 本地游戏已就绪
+[2025-12-23 23:09:36.309] [DEBUG] Initializing GameWidget, islocal: 1
+[2025-12-23 23:09:36.309] [DEBUG] Updating player seat status: blackTaken=0, whiteTaken=0
+[2025-12-23 23:09:36.310] [INFO] GameWidget initialized successfully
+[2025-12-23 23:09:36.310] [DEBUG] Switching widget to index: 1
+[2025-12-23 23:09:36.311] [INFO] Switching to Game widget
+[2025-12-23 23:09:36.311] [DEBUG] Widget switch completed
+[2025-12-23 23:09:43.816] [DEBUG] GameManager::onMakeMove called, x: 10, y: 6, isLocalGame: 1
+[2025-12-23 23:09:43.817] [DEBUG] Chat message from 游戏: 游戏未开始或已结束
+[2025-12-23 23:09:44.293] [DEBUG] GameManager::onMakeMove called, x: 9, y: 6, isLocalGame: 1
+[2025-12-23 23:09:44.293] [DEBUG] Chat message from 游戏: 游戏未开始或已结束
+[2025-12-23 23:09:44.813] [DEBUG] GameManager::onMakeMove called, x: 9, y: 6, isLocalGame: 1
+[2025-12-23 23:09:44.814] [DEBUG] Chat message from 游戏: 游戏未开始或已结束
+[2025-12-23 23:09:46.477] [DEBUG] Player 1 avatar clicked (black seat)
+[2025-12-23 23:09:46.479] [DEBUG] Chat message from 系统: 玩家 选择了黑棋
+[2025-12-23 23:09:46.480] [DEBUG] Player list updated, count: 2
+[2025-12-23 23:09:46.480] [DEBUG] Updating player seat status: blackTaken=1, whiteTaken=0
+[2025-12-23 23:09:46.482] [DEBUG] Updating player seat status: blackTaken=1, whiteTaken=0
+[2025-12-23 23:09:47.083] [DEBUG] Player 2 avatar clicked (white seat)
+[2025-12-23 23:09:47.084] [DEBUG] Chat message from 系统: 玩家2 选择了白棋
+[2025-12-23 23:09:47.085] [DEBUG] Player list updated, count: 2
+[2025-12-23 23:09:47.085] [DEBUG] Updating player seat status: blackTaken=1, whiteTaken=1
+[2025-12-23 23:09:47.092] [INFO] Game started for player: 玩家, rating: 1500
+[2025-12-23 23:09:47.092] [DEBUG] Chat message from 游戏: 游戏开始！玩家 执黑先行
+[2025-12-23 23:09:47.092] [DEBUG] Updating player seat status: blackTaken=1, whiteTaken=1
+[2025-12-23 23:09:48.037] [DEBUG] GameManager::onMakeMove called, x: 6, y: 4, isLocalGame: 1
+[2025-12-23 23:09:48.037] [DEBUG] Chat message from 游戏: 玩家 在 (6, 4) 落黑子
+[2025-12-23 23:09:48.039] [DEBUG] Chat message from 游戏: 轮到 玩家2 落子
+[2025-12-23 23:09:49.119] [DEBUG] GameManager::onMakeMove called, x: 7, y: 5, isLocalGame: 1
+[2025-12-23 23:09:49.120] [DEBUG] Chat message from 游戏: 玩家2 在 (7, 5) 落白子
+[2025-12-23 23:09:49.122] [DEBUG] Chat message from 游戏: 轮到 玩家 落子
+[2025-12-23 23:09:53.221] [DEBUG] Back to lobby button clicked
+[2025-12-23 23:09:53.221] [DEBUG] Chat message from 游戏: 已退出本地游戏
+[2025-12-23 23:09:53.223] [DEBUG] Switching widget to index: 0
+[2025-12-23 23:09:53.224] [INFO] Switching to Lobby widget
+[2025-12-23 23:09:53.224] [DEBUG] Widget switch completed
+[2025-12-23 23:09:53.227] [DEBUG] Initializing GameWidget, islocal: 0
+[2025-12-23 23:09:53.227] [DEBUG] Updating player seat status: blackTaken=0, whiteTaken=0
+[2025-12-23 23:09:53.229] [INFO] GameWidget initialized successfully
+[2025-12-23 23:09:53.229] [DEBUG] GameManager::setLocalGame called with isLocal: 0, enableAI: 0
+[2025-12-23 23:09:53.229] [DEBUG] GameManager::setLocalGame: isLocal is false, resetting game state for online play
+[2025-12-23 23:10:01.364] [DEBUG] User info button clicked, showing login dialog
+[2025-12-23 23:10:02.301] [DEBUG] User chose to login with account
+[2025-12-23 23:10:14.682] [INFO] Login attempt for user: xixi
+[2025-12-23 23:10:14.682] [DEBUG] Login packet created with session ID: 17838658421202335909
+[2025-12-23 23:10:14.682] [DEBUG] Sending login packet...
+[2025-12-23 23:10:14.683] [DEBUG] Sent packet (type: 256)
+[2025-12-23 23:10:14.683] [INFO] Login request sent for user: xixi
+[2025-12-23 23:10:14.699] [DEBUG] Received packet (type: 256)
+[2025-12-23 23:10:20.969] [DEBUG] Creating room
+[2025-12-23 23:10:20.969] [DEBUG] Sent packet (type: 512)
+[2025-12-23 23:10:20.974] [DEBUG] Received packet (type: 512)
+[2025-12-23 23:10:20.974] [INFO] Room created successfully, room ID: 0
+[2025-12-23 23:10:20.978] [DEBUG] Switching widget to index: 1
+[2025-12-23 23:10:20.978] [INFO] Switching to Game widget
+[2025-12-23 23:10:20.979] [DEBUG] Widget switch completed
+[2025-12-23 23:10:20.982] [DEBUG] Initializing GameWidget, islocal: 0
+[2025-12-23 23:10:20.983] [DEBUG] Updating player seat status: blackTaken=0, whiteTaken=0
+[2025-12-23 23:10:20.984] [INFO] GameWidget initialized successfully
+[2025-12-23 23:10:20.984] [DEBUG] GameManager::setLocalGame called with isLocal: 0, enableAI: 0
+[2025-12-23 23:10:20.984] [DEBUG] GameManager::setLocalGame: isLocal is false, resetting game state for online play
+[2025-12-23 23:10:24.810] [DEBUG] Back to lobby button clicked
+[2025-12-23 23:10:29.856] [DEBUG] Back to lobby button clicked
+[2025-12-23 23:10:30.588] [DEBUG] Back to lobby button clicked
+[2025-12-23 23:10:35.444] [DEBUG] Player 1 avatar clicked (black seat)
+[2025-12-23 23:10:35.446] [INFO] Taking black pieces
+[2025-12-23 23:10:35.446] [DEBUG] Updating player seat status: blackTaken=1, whiteTaken=0
+[2025-12-23 23:10:38.750] [DEBUG] Player 2 avatar clicked (white seat)
+[2025-12-23 23:10:38.752] [INFO] Taking white pieces
+[2025-12-23 23:10:38.752] [DEBUG] Updating player seat status: blackTaken=1, whiteTaken=1
+[2025-12-23 23:11:09.902] [DEBUG] GameManager::onMakeMove called, x: 7, y: 4, isLocalGame: 0
+[2025-12-23 23:11:13.095] [DEBUG] GameManager::onMakeMove called, x: 1, y: 5, isLocalGame: 0
+[2025-12-23 23:11:13.551] [DEBUG] GameManager::onMakeMove called, x: 1, y: 5, isLocalGame: 0
+[2025-12-23 23:11:14.094] [DEBUG] GameManager::onMakeMove called, x: 3, y: 3, isLocalGame: 0
+[2025-12-23 23:11:14.446] [DEBUG] GameManager::onMakeMove called, x: 3, y: 3, isLocalGame: 0
+[2025-12-23 23:11:15.981] [DEBUG] GameManager::onMakeMove called, x: 10, y: 3, isLocalGame: 0
+[2025-12-23 23:11:16.316] [DEBUG] GameManager::onMakeMove called, x: 11, y: 3, isLocalGame: 0
+[2025-12-23 23:11:16.717] [DEBUG] GameManager::onMakeMove called, x: 11, y: 3, isLocalGame: 0
+[2025-12-23 23:11:17.030] [DEBUG] GameManager::onMakeMove called, x: 11, y: 5, isLocalGame: 0
+[2025-12-23 23:11:17.328] [DEBUG] GameManager::onMakeMove called, x: 12, y: 5, isLocalGame: 0
+[2025-12-23 23:11:22.567] [INFO] MainWindow destructor called
+[2025-12-23 23:11:22.567] [DEBUG] Cleaning up UI...
+[2025-12-23 23:11:22.567] [DEBUG] Cleaning up Manager...
+[2025-12-23 23:11:22.568] [INFO] Manager destructor called
+[2025-12-23 23:11:22.568] [DEBUG] Disconnecting client...
+[2025-12-23 23:11:22.568] [DEBUG] Disconnect called, setting is_running to false
+[2025-12-23 23:11:22.568] [DEBUG] Current socket value before disconnect: 1068
+[2025-12-23 23:11:22.568] [DEBUG] Waiting for worker thread to finish...
+[2025-12-23 23:11:22.636] [DEBUG] Worker thread joined successfully.
+[2025-12-23 23:11:22.636] [DEBUG] Closing socket
+[2025-12-23 23:11:22.636] [DEBUG] Socket closed and set to INVALID_SOCKET
+[2025-12-23 23:11:22.637] [DEBUG] Resetting session context
+[2025-12-23 23:11:22.637] [DEBUG] Calling disconnectedCallback from Disconnect()
+[2025-12-23 23:11:22.637] [INFO] Disconnected from server callback triggered
+[2025-12-23 23:11:22.638] [INFO] Client disconnected successfully.
+[2025-12-23 23:11:22.639] [DEBUG] Client destructor called
+[2025-12-23 23:11:22.639] [DEBUG] Disconnect called, setting is_running to false
+[2025-12-23 23:11:22.639] [DEBUG] Current socket value before disconnect: -1
+[2025-12-23 23:11:22.639] [DEBUG] Worker thread is not joinable or already finished
+[2025-12-23 23:11:22.639] [DEBUG] Socket is already INVALID_SOCKET, skipping close
+[2025-12-23 23:11:22.640] [DEBUG] Calling disconnectedCallback from Disconnect()
+[2025-12-23 23:11:22.640] [INFO] Disconnected from server callback triggered
+[2025-12-23 23:11:22.640] [INFO] Client disconnected successfully.
+[2025-12-23 23:11:22.641] [DEBUG] Client cleanup completed
+[2025-12-23 23:11:22.641] [DEBUG] Client disconnected and reset
+[2025-12-23 23:11:22.641] [INFO] Manager cleanup completed
+[2025-12-23 23:11:22.641] [DEBUG] Cleaning up ToastWidget...
+[2025-12-23 23:11:22.644] [DEBUG] Shutting down Logger...
+[2025-12-23 23:11:22.644] [INFO] Logger shutting down.
+[2025-12-23 23:16:39.085] [INFO] Logger initialized. Log file: logs/gomoku.log
+[2025-12-23 23:16:39.085] [DEBUG] Logger initialized with DEBUG level
+[2025-12-23 23:16:39.085] [DEBUG] Setting up UI...
+[2025-12-23 23:16:39.099] [DEBUG] Creating Manager instance...
+[2025-12-23 23:16:39.099] [INFO] Manager initialized for server
+[2025-12-23 23:16:39.099] [DEBUG] Client constructor called for 127.0.0.1:8080
+[2025-12-23 23:16:39.122] [DEBUG] Session activated callback set
+[2025-12-23 23:16:39.122] [INFO] Attempting to connect to server...
+[2025-12-23 23:16:39.123] [DEBUG] Connecting to 127.0.0.1:8080...
+[2025-12-23 23:16:39.127] [DEBUG] New socket created successfully, socket value: 1064
+[2025-12-23 23:16:39.127] [INFO] Connected to server successfully!
+[2025-12-23 23:16:39.127] [DEBUG] Socket set to non-blocking mode
+[2025-12-23 23:16:39.128] [DEBUG] Disconnect called, setting is_running to false
+[2025-12-23 23:16:39.128] [DEBUG] Worker thread is not joinable or already finished
+[2025-12-23 23:16:39.128] [DEBUG] Worker thread started
+[2025-12-23 23:16:39.129] [DEBUG] Sending Hello frame to initiate handshake
+[2025-12-23 23:16:39.129] [INFO] Connection established and handshake initiated
+[2025-12-23 23:16:39.129] [DEBUG] Creating LobbyWidget...
+[2025-12-23 23:16:39.129] [DEBUG] LobbyWidget Initializing...
+[2025-12-23 23:16:39.131] [INFO] Client loop started.
+[2025-12-23 23:16:39.134] [DEBUG] Configuring room table properties...
+[2025-12-23 23:16:39.135] [DEBUG] Room table properties configured
+[2025-12-23 23:16:39.135] [DEBUG] Initializing room table...
+[2025-12-23 23:16:39.136] [DEBUG] Initializing player list...
+[2025-12-23 23:16:39.137] [DEBUG] Setting up signals...
+[2025-12-23 23:16:39.137] [INFO] LobbyWidget initialized successfully
+[2025-12-23 23:16:39.137] [DEBUG] Creating GameWidget...
+[2025-12-23 23:16:39.140] [DEBUG] GameWidget UI initialized
+[2025-12-23 23:16:39.141] [DEBUG] GameWidget signal connections established
+[2025-12-23 23:16:39.141] [DEBUG] GameWidget constructed successfully
+[2025-12-23 23:16:39.141] [DEBUG] Creating GameManager instance...
+[2025-12-23 23:16:39.141] [DEBUG] Setting up signal connections...
+[2025-12-23 23:16:39.142] [DEBUG] Connecting LobbyWidget::localGame to GameManager::setLocalGame...
+[2025-12-23 23:16:39.142] [DEBUG] localGame connection result: 1
+[2025-12-23 23:16:39.142] [DEBUG] Initializing window components...
+[2025-12-23 23:16:39.142] [DEBUG] Initializing window style...
+[2025-12-23 23:16:39.147] [DEBUG] [Handshake] Received NewSession. ID: 927277114675340285
+[2025-12-23 23:16:39.148] [DEBUG] Saved server public key
+[2025-12-23 23:16:39.151] [DEBUG] Set main window background to white
+[2025-12-23 23:16:39.151] [DEBUG] Setting window flags: FramelessWindowHint | WindowSystemMenuHint | WindowMinimizeButtonHint
+[2025-12-23 23:16:39.158] [DEBUG] WA_TranslucentBackground is commented out (not set)
+[2025-12-23 23:16:39.158] [DEBUG] WA_OpaquePaintEvent attribute set
+[2025-12-23 23:16:39.159] [DEBUG] Added Qt::Window flag for taskbar interaction
+[2025-12-23 23:16:39.159] [DEBUG] Window size set to: 1000x700
+[2025-12-23 23:16:39.159] [INFO] [Handshake] Session Activated!
+[2025-12-23 23:16:39.159] [DEBUG] Set window palette to white background
+[2025-12-23 23:16:39.159] [DEBUG] Calling sessionActivatedCallback with sessionId: 927277114675340285
+[2025-12-23 23:16:39.159] [DEBUG] Current stylesheet: QMainWindow {    background-color: white;    border: none;}
+[2025-12-23 23:16:39.159] [INFO] Session activated callback received, sessionId: 927277114675340285
+[2025-12-23 23:16:39.160] [DEBUG] Window background role color: #ffffff
+[2025-12-23 23:16:39.160] [DEBUG] Initializing layout...
+[2025-12-23 23:16:39.160] [DEBUG] centralwidget found at address: 2401783886464
+[2025-12-23 23:16:39.160] [DEBUG] centralwidget object name: centralwidget
+[2025-12-23 23:16:39.160] [DEBUG] centralwidget geometry: 100x30
+[2025-12-23 23:16:39.160] [DEBUG] centralwidget object name set to: centralContainer
+[2025-12-23 23:16:39.160] [DEBUG] centralwidget WA_StyledBackground attribute set
+[2025-12-23 23:16:39.161] [DEBUG] centralwidget palette background color: #f3f3f3
+[2025-12-23 23:16:39.161] [DEBUG] Set centralwidget palette to white background
+[2025-12-23 23:16:39.161] [DEBUG] Layout initialized successfully
+[2025-12-23 23:16:39.161] [DEBUG] Initializing title bar and status bar...
+[2025-12-23 23:16:39.161] [DEBUG] Initializing title bar components...
+[2025-12-23 23:16:39.161] [DEBUG] titleBarWidget found at address: 2401784027632
+[2025-12-23 23:16:39.161] [DEBUG] titleBarWidget object name: titleBarWidget
+[2025-12-23 23:16:39.162] [DEBUG] titleLabel found at address: 2401784029632
+[2025-12-23 23:16:39.162] [DEBUG] titleLabel text: 五子棋大厅
+[2025-12-23 23:16:39.162] [DEBUG] minimizeButton found at address: 2401784045024
+[2025-12-23 23:16:39.162] [DEBUG] maximizeButton found at address: 2401784048416
+[2025-12-23 23:16:39.162] [DEBUG] closeButton found at address: 2401784059280
+[2025-12-23 23:16:39.162] [DEBUG] Title bar initialization completed
+[2025-12-23 23:16:39.162] [DEBUG] Initializing status bar components...
+[2025-12-23 23:16:39.162] [DEBUG] statusBarWidget found
+[2025-12-23 23:16:39.162] [DEBUG] statusMessageLabel found
+[2025-12-23 23:16:39.163] [DEBUG] networkStatusButton found
+[2025-12-23 23:16:39.163] [DEBUG] userInfoButton found
+[2025-12-23 23:16:39.163] [DEBUG] Status bar initialization completed
+[2025-12-23 23:16:39.163] [DEBUG] Getting stackedWidget from UI...
+[2025-12-23 23:16:39.163] [DEBUG] stackedWidget found in UI
+[2025-12-23 23:16:39.171] [DEBUG] StackedWidget initialized with Lobby as default
+[2025-12-23 23:16:39.171] [DEBUG] Creating ToastWidget...
+[2025-12-23 23:16:39.172] [DEBUG] ====== Validating Window Background ======
+[2025-12-23 23:16:39.172] [DEBUG] CentralWidget palette background color: #ffffff
+[2025-12-23 23:16:39.172] [INFO] CentralWidget background is correctly set to white
+[2025-12-23 23:16:39.173] [DEBUG] Current window stylesheet length: 59 characters
+[2025-12-23 23:16:39.173] [DEBUG] Stylesheet contains background-color definition
+[2025-12-23 23:16:39.173] [DEBUG] Window has WA_StyledBackground: 1
+[2025-12-23 23:16:39.173] [DEBUG] Window has WA_OpaquePaintEvent: 1
+[2025-12-23 23:16:39.174] [DEBUG] Window has WA_TranslucentBackground: 0
+[2025-12-23 23:16:39.174] [DEBUG] ====== Background Validation Complete ======
+[2025-12-23 23:16:39.174] [INFO] MainWindow initialization completed successfully
+[2025-12-23 23:16:45.537] [DEBUG] User info button clicked, showing login dialog
+[2025-12-23 23:17:06.502] [DEBUG] User chose to login with account
+[2025-12-23 23:17:18.671] [INFO] Login attempt for user: xixi
+[2025-12-23 23:17:18.671] [DEBUG] Login packet created with session ID: 927277114675340285
+[2025-12-23 23:17:18.671] [DEBUG] Sending login packet...
+[2025-12-23 23:17:18.672] [DEBUG] Sent packet (type: 256)
+[2025-12-23 23:17:18.672] [INFO] Login request sent for user: xixi
+[2025-12-23 23:17:18.683] [DEBUG] Received packet (type: 256)
+[2025-12-23 23:17:27.878] [DEBUG] Creating room
+[2025-12-23 23:17:27.879] [DEBUG] Sent packet (type: 512)
+[2025-12-23 23:17:27.890] [DEBUG] Received packet (type: 512)
+[2025-12-23 23:17:27.890] [INFO] Room created successfully, room ID: 0
+[2025-12-23 23:17:27.892] [DEBUG] Switching widget to index: 1
+[2025-12-23 23:17:27.892] [INFO] Switching to Game widget
+[2025-12-23 23:17:27.893] [DEBUG] Widget switch completed
+[2025-12-23 23:17:27.896] [DEBUG] Initializing GameWidget, islocal: 0
+[2025-12-23 23:17:27.897] [DEBUG] Updating player seat status: blackTaken=0, whiteTaken=0
+[2025-12-23 23:17:27.898] [INFO] GameWidget initialized successfully
+[2025-12-23 23:17:27.899] [DEBUG] GameManager::setLocalGame called with isLocal: 0, enableAI: 0
+[2025-12-23 23:17:27.899] [DEBUG] GameManager::setLocalGame: isLocal is false, resetting game state for online play
+[2025-12-23 23:17:29.557] [DEBUG] Player 1 avatar clicked (black seat)
+[2025-12-23 23:17:29.559] [INFO] Taking black pieces
+[2025-12-23 23:17:29.560] [DEBUG] Updating player seat status: blackTaken=1, whiteTaken=0
+[2025-12-23 23:17:43.592] [DEBUG] Player 2 avatar clicked (white seat)
+[2025-12-23 23:17:43.594] [INFO] Taking white pieces
+[2025-12-23 23:17:43.594] [DEBUG] Updating player seat status: blackTaken=1, whiteTaken=1
+[2025-12-23 23:17:45.100] [DEBUG] GameManager::onMakeMove called, x: 8, y: 4, isLocalGame: 0
+[2025-12-23 23:17:48.506] [DEBUG] GameManager::onMakeMove called, x: 3, y: 3, isLocalGame: 0
+[2025-12-23 23:17:49.241] [DEBUG] GameManager::onMakeMove called, x: 4, y: 3, isLocalGame: 0
+[2025-12-23 23:17:56.748] [DEBUG] GameManager::onMakeMove called, x: 6, y: 8, isLocalGame: 0
+[2025-12-23 23:17:58.381] [DEBUG] GameManager::onMakeMove called, x: 8, y: 9, isLocalGame: 0
+[2025-12-23 23:18:02.043] [DEBUG] GameManager::onMakeMove called, x: 4, y: 3, isLocalGame: 0
+[2025-12-23 23:18:03.202] [DEBUG] GameManager::onMakeMove called, x: 10, y: 3, isLocalGame: 0
+[2025-12-23 23:18:03.495] [DEBUG] GameManager::onMakeMove called, x: 11, y: 3, isLocalGame: 0
+[2025-12-23 23:18:06.151] [DEBUG] GameManager::onMakeMove called, x: 3, y: 6, isLocalGame: 0
+[2025-12-23 23:18:28.741] [DEBUG] GameManager::onMakeMove called, x: 6, y: 1, isLocalGame: 0
+[2025-12-23 23:18:31.454] [DEBUG] Back to lobby button clicked
+[2025-12-23 23:18:35.638] [DEBUG] Back to lobby button clicked
+[2025-12-23 23:18:47.093] [INFO] MainWindow destructor called
+[2025-12-23 23:18:47.093] [DEBUG] Cleaning up UI...
+[2025-12-23 23:18:47.093] [DEBUG] Cleaning up Manager...
+[2025-12-23 23:18:47.093] [INFO] Manager destructor called
+[2025-12-23 23:18:47.094] [DEBUG] Disconnecting client...
+[2025-12-23 23:18:47.094] [DEBUG] Disconnect called, setting is_running to false
+[2025-12-23 23:18:47.094] [DEBUG] Current socket value before disconnect: 1064
+[2025-12-23 23:18:47.094] [DEBUG] Waiting for worker thread to finish...
+[2025-12-23 23:18:47.117] [DEBUG] Worker thread joined successfully.
+[2025-12-23 23:18:47.117] [DEBUG] Closing socket
+[2025-12-23 23:18:47.117] [DEBUG] Socket closed and set to INVALID_SOCKET
+[2025-12-23 23:18:47.117] [DEBUG] Resetting session context
+[2025-12-23 23:18:47.118] [DEBUG] Calling disconnectedCallback from Disconnect()
+[2025-12-23 23:18:47.118] [INFO] Disconnected from server callback triggered
+[2025-12-23 23:18:47.120] [INFO] Client disconnected successfully.
+[2025-12-23 23:18:47.121] [DEBUG] Client destructor called
+[2025-12-23 23:18:47.121] [DEBUG] Disconnect called, setting is_running to false
+[2025-12-23 23:18:47.121] [DEBUG] Current socket value before disconnect: -1
+[2025-12-23 23:18:47.121] [DEBUG] Worker thread is not joinable or already finished
+[2025-12-23 23:18:47.121] [DEBUG] Socket is already INVALID_SOCKET, skipping close
+[2025-12-23 23:18:47.121] [DEBUG] Calling disconnectedCallback from Disconnect()
+[2025-12-23 23:18:47.121] [INFO] Disconnected from server callback triggered
+[2025-12-23 23:18:47.122] [INFO] Client disconnected successfully.
+[2025-12-23 23:18:47.122] [DEBUG] Client cleanup completed
+[2025-12-23 23:18:47.122] [DEBUG] Client disconnected and reset
+[2025-12-23 23:18:47.122] [INFO] Manager cleanup completed
+[2025-12-23 23:18:47.123] [DEBUG] Cleaning up ToastWidget...
+[2025-12-23 23:18:47.127] [DEBUG] Shutting down Logger...
+[2025-12-23 23:18:47.127] [INFO] Logger shutting down.
+[2025-12-23 23:19:41.456] [INFO] Logger initialized. Log file: logs/gomoku.log
+[2025-12-23 23:19:41.457] [DEBUG] Logger initialized with DEBUG level
+[2025-12-23 23:19:41.457] [DEBUG] Setting up UI...
+[2025-12-23 23:19:41.492] [DEBUG] Creating Manager instance...
+[2025-12-23 23:19:41.493] [INFO] Manager initialized for server
+[2025-12-23 23:19:41.493] [DEBUG] Client constructor called for 127.0.0.1:8080
+[2025-12-23 23:19:41.514] [DEBUG] Session activated callback set
+[2025-12-23 23:19:41.514] [INFO] Attempting to connect to server...
+[2025-12-23 23:19:41.515] [DEBUG] Connecting to 127.0.0.1:8080...
+[2025-12-23 23:19:41.520] [DEBUG] New socket created successfully, socket value: 996
+[2025-12-23 23:19:41.521] [INFO] Connected to server successfully!
+[2025-12-23 23:19:41.521] [DEBUG] Socket set to non-blocking mode
+[2025-12-23 23:19:41.522] [DEBUG] Disconnect called, setting is_running to false
+[2025-12-23 23:19:41.522] [DEBUG] Worker thread is not joinable or already finished
+[2025-12-23 23:19:41.523] [DEBUG] Worker thread started
+[2025-12-23 23:19:41.523] [DEBUG] Sending Hello frame to initiate handshake
+[2025-12-23 23:19:41.523] [INFO] Connection established and handshake initiated
+[2025-12-23 23:19:41.524] [DEBUG] Creating LobbyWidget...
+[2025-12-23 23:19:41.524] [DEBUG] LobbyWidget Initializing...
+[2025-12-23 23:19:41.525] [INFO] Client loop started.
+[2025-12-23 23:19:41.529] [DEBUG] Configuring room table properties...
+[2025-12-23 23:19:41.530] [DEBUG] Room table properties configured
+[2025-12-23 23:19:41.530] [DEBUG] Initializing room table...
+[2025-12-23 23:19:41.531] [DEBUG] Initializing player list...
+[2025-12-23 23:19:41.532] [DEBUG] Setting up signals...
+[2025-12-23 23:19:41.532] [INFO] LobbyWidget initialized successfully
+[2025-12-23 23:19:41.532] [DEBUG] Creating GameWidget...
+[2025-12-23 23:19:41.536] [DEBUG] GameWidget UI initialized
+[2025-12-23 23:19:41.536] [DEBUG] GameWidget signal connections established
+[2025-12-23 23:19:41.536] [DEBUG] GameWidget constructed successfully
+[2025-12-23 23:19:41.537] [DEBUG] Creating GameManager instance...
+[2025-12-23 23:19:41.537] [DEBUG] Setting up signal connections...
+[2025-12-23 23:19:41.537] [DEBUG] Connecting LobbyWidget::localGame to GameManager::setLocalGame...
+[2025-12-23 23:19:41.537] [DEBUG] localGame connection result: 1
+[2025-12-23 23:19:41.537] [DEBUG] Initializing window components...
+[2025-12-23 23:19:41.538] [DEBUG] Initializing window style...
+[2025-12-23 23:19:41.538] [DEBUG] [Handshake] Received NewSession. ID: 2905721490287305630
+[2025-12-23 23:19:41.539] [DEBUG] Saved server public key
+[2025-12-23 23:19:41.546] [DEBUG] Set main window background to white
+[2025-12-23 23:19:41.547] [DEBUG] Setting window flags: FramelessWindowHint | WindowSystemMenuHint | WindowMinimizeButtonHint
+[2025-12-23 23:19:41.550] [INFO] [Handshake] Session Activated!
+[2025-12-23 23:19:41.550] [DEBUG] Calling sessionActivatedCallback with sessionId: 2905721490287305630
+[2025-12-23 23:19:41.551] [INFO] Session activated callback received, sessionId: 2905721490287305630
+[2025-12-23 23:19:41.554] [DEBUG] WA_TranslucentBackground is commented out (not set)
+[2025-12-23 23:19:41.554] [DEBUG] WA_OpaquePaintEvent attribute set
+[2025-12-23 23:19:41.554] [DEBUG] Added Qt::Window flag for taskbar interaction
+[2025-12-23 23:19:41.554] [DEBUG] Window size set to: 1000x700
+[2025-12-23 23:19:41.554] [DEBUG] Set window palette to white background
+[2025-12-23 23:19:41.555] [DEBUG] Current stylesheet: QMainWindow {    background-color: white;    border: none;}
+[2025-12-23 23:19:41.555] [DEBUG] Window background role color: #ffffff
+[2025-12-23 23:19:41.555] [DEBUG] Initializing layout...
+[2025-12-23 23:19:41.555] [DEBUG] centralwidget found at address: 1469581472880
+[2025-12-23 23:19:41.555] [DEBUG] centralwidget object name: centralwidget
+[2025-12-23 23:19:41.555] [DEBUG] centralwidget geometry: 100x30
+[2025-12-23 23:19:41.556] [DEBUG] centralwidget object name set to: centralContainer
+[2025-12-23 23:19:41.556] [DEBUG] centralwidget WA_StyledBackground attribute set
+[2025-12-23 23:19:41.556] [DEBUG] centralwidget palette background color: #f3f3f3
+[2025-12-23 23:19:41.556] [DEBUG] Set centralwidget palette to white background
+[2025-12-23 23:19:41.556] [DEBUG] Layout initialized successfully
+[2025-12-23 23:19:41.556] [DEBUG] Initializing title bar and status bar...
+[2025-12-23 23:19:41.556] [DEBUG] Initializing title bar components...
+[2025-12-23 23:19:41.556] [DEBUG] titleBarWidget found at address: 1469581613984
+[2025-12-23 23:19:41.556] [DEBUG] titleBarWidget object name: titleBarWidget
+[2025-12-23 23:19:41.557] [DEBUG] titleLabel found at address: 1469581615984
+[2025-12-23 23:19:41.557] [DEBUG] titleLabel text: 五子棋大厅
+[2025-12-23 23:19:41.557] [DEBUG] minimizeButton found at address: 1469581631408
+[2025-12-23 23:19:41.557] [DEBUG] maximizeButton found at address: 1469581635008
+[2025-12-23 23:19:41.557] [DEBUG] closeButton found at address: 1469581645696
+[2025-12-23 23:19:41.557] [DEBUG] Title bar initialization completed
+[2025-12-23 23:19:41.557] [DEBUG] Initializing status bar components...
+[2025-12-23 23:19:41.557] [DEBUG] statusBarWidget found
+[2025-12-23 23:19:41.558] [DEBUG] statusMessageLabel found
+[2025-12-23 23:19:41.558] [DEBUG] networkStatusButton found
+[2025-12-23 23:19:41.558] [DEBUG] userInfoButton found
+[2025-12-23 23:19:41.558] [DEBUG] Status bar initialization completed
+[2025-12-23 23:19:41.558] [DEBUG] Getting stackedWidget from UI...
+[2025-12-23 23:19:41.558] [DEBUG] stackedWidget found in UI
+[2025-12-23 23:19:41.567] [DEBUG] StackedWidget initialized with Lobby as default
+[2025-12-23 23:19:41.567] [DEBUG] Creating ToastWidget...
+[2025-12-23 23:19:41.568] [DEBUG] ====== Validating Window Background ======
+[2025-12-23 23:19:41.568] [DEBUG] CentralWidget palette background color: #ffffff
+[2025-12-23 23:19:41.568] [INFO] CentralWidget background is correctly set to white
+[2025-12-23 23:19:41.568] [DEBUG] Current window stylesheet length: 59 characters
+[2025-12-23 23:19:41.569] [DEBUG] Stylesheet contains background-color definition
+[2025-12-23 23:19:41.569] [DEBUG] Window has WA_StyledBackground: 1
+[2025-12-23 23:19:41.569] [DEBUG] Window has WA_OpaquePaintEvent: 1
+[2025-12-23 23:19:41.569] [DEBUG] Window has WA_TranslucentBackground: 0
+[2025-12-23 23:19:41.569] [DEBUG] ====== Background Validation Complete ======
+[2025-12-23 23:19:41.569] [INFO] MainWindow initialization completed successfully
+[2025-12-23 23:19:45.831] [DEBUG] User info button clicked, showing login dialog
+[2025-12-23 23:19:46.951] [DEBUG] User chose to login with account
+[2025-12-23 23:19:53.950] [INFO] Login attempt for user: xixi
+[2025-12-23 23:19:53.950] [DEBUG] Login packet created with session ID: 2905721490287305630
+[2025-12-23 23:19:53.950] [DEBUG] Sending login packet...
+[2025-12-23 23:19:53.950] [DEBUG] Sent packet (type: 256)
+[2025-12-23 23:19:53.951] [INFO] Login request sent for user: xixi
+[2025-12-23 23:19:53.951] [DEBUG] Received packet (type: 256)
+[2025-12-23 23:19:55.581] [DEBUG] Creating room
+[2025-12-23 23:19:55.581] [DEBUG] Sent packet (type: 512)
+[2025-12-23 23:19:55.589] [DEBUG] Received packet (type: 512)
+[2025-12-23 23:19:55.589] [INFO] Room created successfully, room ID: 0
+[2025-12-23 23:19:55.591] [DEBUG] Switching widget to index: 1
+[2025-12-23 23:19:55.594] [INFO] Switching to Game widget
+[2025-12-23 23:19:55.594] [DEBUG] Widget switch completed
+[2025-12-23 23:19:55.597] [DEBUG] Initializing GameWidget, islocal: 0
+[2025-12-23 23:19:55.598] [DEBUG] Updating player seat status: blackTaken=0, whiteTaken=0
+[2025-12-23 23:19:55.601] [INFO] GameWidget initialized successfully
+[2025-12-23 23:19:55.601] [DEBUG] GameManager::setLocalGame called with isLocal: 0, enableAI: 0
+[2025-12-23 23:19:55.601] [DEBUG] GameManager::setLocalGame: isLocal is false, resetting game state for online play
+[2025-12-23 23:19:57.243] [DEBUG] Player 1 avatar clicked (black seat)
+[2025-12-23 23:19:57.245] [INFO] Taking black pieces
+[2025-12-23 23:19:57.245] [DEBUG] Updating player seat status: blackTaken=1, whiteTaken=0
+[2025-12-23 23:19:57.832] [DEBUG] Player 2 avatar clicked (white seat)
+[2025-12-23 23:19:57.835] [INFO] Taking white pieces
+[2025-12-23 23:19:57.835] [DEBUG] Updating player seat status: blackTaken=1, whiteTaken=1
+[2025-12-23 23:19:59.644] [DEBUG] GameManager::onMakeMove called, x: 7, y: 3, isLocalGame: 0
+[2025-12-23 23:20:01.181] [DEBUG] GameManager::onMakeMove called, x: 8, y: 3, isLocalGame: 0
+[2025-12-23 23:20:02.169] [DEBUG] GameManager::onMakeMove called, x: 10, y: 3, isLocalGame: 0
+[2025-12-23 23:20:02.690] [DEBUG] GameManager::onMakeMove called, x: 11, y: 3, isLocalGame: 0
+[2025-12-23 23:20:06.468] [DEBUG] GameManager::onMakeMove called, x: 10, y: 5, isLocalGame: 0
+[2025-12-23 23:20:08.756] [INFO] MainWindow destructor called
+[2025-12-23 23:20:08.757] [DEBUG] Cleaning up UI...
+[2025-12-23 23:20:08.757] [DEBUG] Cleaning up Manager...
+[2025-12-23 23:20:08.757] [INFO] Manager destructor called
+[2025-12-23 23:20:08.757] [DEBUG] Disconnecting client...
+[2025-12-23 23:20:08.757] [DEBUG] Disconnect called, setting is_running to false
+[2025-12-23 23:20:08.757] [DEBUG] Current socket value before disconnect: 996
+[2025-12-23 23:20:08.757] [DEBUG] Waiting for worker thread to finish...
+[2025-12-23 23:20:08.765] [DEBUG] Worker thread joined successfully.
+[2025-12-23 23:20:08.766] [DEBUG] Closing socket
+[2025-12-23 23:20:08.766] [DEBUG] Socket closed and set to INVALID_SOCKET
+[2025-12-23 23:20:08.766] [DEBUG] Resetting session context
+[2025-12-23 23:20:08.766] [DEBUG] Calling disconnectedCallback from Disconnect()
+[2025-12-23 23:20:08.766] [INFO] Disconnected from server callback triggered
+[2025-12-23 23:20:08.771] [INFO] Client disconnected successfully.
+[2025-12-23 23:20:08.772] [DEBUG] Client destructor called
+[2025-12-23 23:20:08.772] [DEBUG] Disconnect called, setting is_running to false
+[2025-12-23 23:20:08.772] [DEBUG] Current socket value before disconnect: -1
+[2025-12-23 23:20:08.772] [DEBUG] Worker thread is not joinable or already finished
+[2025-12-23 23:20:08.773] [DEBUG] Socket is already INVALID_SOCKET, skipping close
+[2025-12-23 23:20:08.773] [DEBUG] Calling disconnectedCallback from Disconnect()
+[2025-12-23 23:20:08.773] [INFO] Disconnected from server callback triggered
+[2025-12-23 23:20:08.775] [INFO] Client disconnected successfully.
+[2025-12-23 23:20:08.775] [DEBUG] Client cleanup completed
+[2025-12-23 23:20:08.776] [DEBUG] Client disconnected and reset
+[2025-12-23 23:20:08.776] [INFO] Manager cleanup completed
+[2025-12-23 23:20:08.776] [DEBUG] Cleaning up ToastWidget...
+[2025-12-23 23:20:08.785] [DEBUG] Shutting down Logger...
+[2025-12-23 23:20:08.785] [INFO] Logger shutting down.

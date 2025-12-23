@@ -39,6 +39,8 @@ signals:
     void drawRequested();
     void drawResponse(bool accept);
     void giveup();
+    void aiToggled(bool enabled);
+    void restartGame();
 
 public slots:
     // 从Manager接收的槽
@@ -65,6 +67,8 @@ private slots:
     void onCloseBtnClicked();
     void onPlayer1AvatarClicked();
     void onPlayer2AvatarClicked();
+    void onAIToggled(bool checked);
+    void onRestartButtonClicked();
 
 private:
     // 初始化函数

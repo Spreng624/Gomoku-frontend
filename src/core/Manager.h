@@ -81,6 +81,7 @@ signals:
     void chatMessageReceived(const QString &username, const QString &message);
     void gameStarted(const QString &username, int rating);
     void gameEnded(const QString &username, int rating, bool won);
+    void moveMade(int x, int y);
 
 private slots:
 

@@ -2,9 +2,12 @@
 #include "GameWidget.h"
 #include "Manager.h"
 #include "Logger.h"
+#include "AiPlayer.h"
+#include <QTimer>
 
 GameManager::GameManager(QObject *parent) : QObject(parent),
                                             isLocalGame(true),
+                                            enableAI(false),
                                             gameStartedFlag(false),
                                             gameOverFlag(false),
                                             currentPlayer(Piece::BLACK),
@@ -18,6 +21,7 @@ GameManager::GameManager(QObject *parent) : QObject(parent),
                                             waitingForDrawResponse(false)
 {
     localGame = std::make_unique<Game>();
+    aiPlayer = std::make_unique<AiPlayer>(Piece::WHITE); // 默认AI执白棋
 }
 
 GameManager::~GameManager()
@@ -31,8 +35,14 @@ Game *GameManager::getLocalGame() const
 
 void GameManager::setLocalGame(bool isLocal)
 {
-    LOG_DEBUG_FMT("GameManager::setLocalGame called with isLocal: %d", isLocal ? 1 : 0);
+    setLocalGame(isLocal, false);
+}
+
+void GameManager::setLocalGame(bool isLocal, bool enableAI)
+{
+    LOG_DEBUG_FMT("GameManager::setLocalGame called with isLocal: %d, enableAI: %d", isLocal ? 1 : 0, enableAI ? 1 : 0);
     isLocalGame = isLocal;
+    this->enableAI = enableAI;
     if (isLocalGame)
     {
         initLocalGame();
@@ -59,6 +69,11 @@ void GameManager::setLocalGame(bool isLocal)
     }
 }
 
+void GameManager::setCurrentUsername(const QString &username)
+{
+    currentUsername = username;
+}
+
 void GameManager::initLocalGame()
 {
     qDebug() << "GameManager::initLocalGame called";
@@ -73,7 +88,7 @@ void GameManager::initLocalGame()
     // 本地游戏中，初始时玩家未就坐，等待玩家选择
     blackTaken = false;
     whiteTaken = false;
-    playerBlackName = "等待玩家...";
+    playerBlackName = currentUsername.isEmpty() ? "等待玩家..." : currentUsername;
     playerWhiteName = "等待玩家...";
     playerBlackRating = 1500;
     playerWhiteRating = 1500;
@@ -87,10 +102,69 @@ void GameManager::initLocalGame()
     emit playerListUpdated(players);
 
     // 发送游戏就绪消息
-    sendLocalGameMessage("本地游戏已就绪，请点击玩家头像选择座位");
+    sendLocalGameMessage("本地游戏已就绪，请在设置中启用AI对手，或点击玩家头像选择对手");
 
     // 注意：不再直接操作GameWidget，通过信号通知UI更新
     // 如果需要更新棋盘当前玩家显示，可以通过信号实现
+}
+
+// AI toggle handler
+void GameManager::onAIToggled(bool enabled)
+{
+    LOG_DEBUG_FMT("GameManager::onAIToggled called with enabled: %d", enabled ? 1 : 0);
+    if (isLocalGame && !gameStartedFlag)
+    {
+        enableAI = enabled;
+        if (enabled)
+        {
+            // 启用AI：自动设置AI为白棋玩家
+            whiteTaken = true;
+            playerWhiteName = "AI玩家";
+            sendLocalGameMessage("AI对手已启用，AI将执白棋");
+        }
+        else
+        {
+            // 禁用AI：如果AI之前占用白棋位置，现在释放
+            if (playerWhiteName == "AI玩家")
+            {
+                whiteTaken = false;
+                playerWhiteName = "等待玩家...";
+                sendLocalGameMessage("AI对手已禁用");
+            }
+        }
+
+        // 更新玩家列表
+        QStringList players;
+        players << playerBlackName << playerWhiteName;
+        emit playerListUpdated(players);
+    }
+}
+
+// Restart game handler
+void GameManager::onRestartGame()
+{
+    LOG_DEBUG("GameManager::onRestartGame called");
+    if (isLocalGame)
+    {
+        // 重置本地游戏状态
+        gameStartedFlag = false;
+        gameOverFlag = false;
+        currentPlayer = Piece::BLACK;
+        blackTaken = false;
+        whiteTaken = false;
+
+        // 重新初始化游戏
+        initLocalGame();
+
+        // 发送重新开始消息
+        sendLocalGameMessage("游戏已重新开始");
+    }
+    else
+    {
+        // 在线游戏：可以发送重新开始请求
+        // 这里可能需要实现具体的重新开始逻辑
+        LOG_INFO("Restart game requested for online game");
+    }
 }
 
 // 从 GameWidget 接收的槽（需要转发给 Manager）
@@ -118,7 +192,10 @@ void GameManager::onTakeBlack()
     if (isLocalGame)
     {
         blackTaken = true;
-        playerBlackName = "玩家1";
+        // 如果还没有设置玩家名，使用当前用户名
+        if (playerBlackName == "等待玩家..." || playerBlackName.isEmpty()) {
+            playerBlackName = currentUsername.isEmpty() ? "玩家" : currentUsername;
+        }
         sendLocalChatMessage(playerBlackName + " 选择了黑棋");
 
         // 发送更新后的玩家列表
@@ -254,28 +331,8 @@ void GameManager::onMakeMove(int x, int y)
     {
         qDebug() << "Online game, emitting makeMove signal";
 
-        // 在线游戏时，也尝试更新本地棋盘（乐观更新）
-        // 注意：我们不知道当前玩家是黑棋还是白棋，这需要从服务器获取
-        // 暂时先不更新，等待服务器确认
-        // 但为了棋子能显示，我们可以尝试更新
-        if (localGame && gameStartedFlag && !gameOverFlag)
-        {
-            qDebug() << "Online game: attempting optimistic update of local board";
-            // 这里我们不知道当前玩家，暂时使用currentPlayer
-            // 这可能在多玩家游戏中不正确，但至少能让棋子显示
-            bool success = localGame->makeMove(x, y, currentPlayer);
-            qDebug() << "Optimistic update result:" << success;
-
-            // 触发棋盘重绘
-            if (success)
-            {
-                // 发送信号通知棋盘更新
-                // 棋盘部件会通过Game实例获取更新后的状态
-                qDebug() << "Optimistic update successful, emitting boardUpdated signal";
-                emit boardUpdated();
-            }
-        }
-
+        // 在线游戏：不立即更新棋盘，等待服务器确认
+        // 服务器会发送MakeMove包确认落子
         emit makeMove(x, y);
     }
 }
@@ -354,8 +411,17 @@ void GameManager::onGameStarted(const QString &username, int rating)
     gameStartedFlag = true;
     gameOverFlag = false;
 
-    // 在线游戏时，我们不知道当前玩家，但可以设置默认值
-    // 服务器会通知我们谁是当前玩家
+    // 在线游戏时，设置玩家名称
+    if (!isLocalGame)
+    {
+        playerBlackName = username; // 当前用户执黑
+        playerWhiteName = "对手"; // 暂时设置为对手
+        playerBlackRating = rating;
+        playerWhiteRating = 1500; // 默认值
+        currentPlayer = Piece::BLACK; // 黑方先手
+        blackTaken = true;
+        whiteTaken = true; // 假设双方都已就坐
+    }
 
     qDebug() << "GameManager: gameStartedFlag set to true for online game";
 
@@ -370,6 +436,30 @@ void GameManager::onGameEnded(const QString &username, int rating, bool won)
 void GameManager::onPlayerListUpdated(const QStringList &players)
 {
     emit playerListUpdated(players);
+}
+
+void GameManager::onMoveMade(int x, int y)
+{
+    LOG_DEBUG_FMT("GameManager::onMoveMade called, x: %d, y: %d", x, y);
+    if (!isLocalGame && localGame && gameStartedFlag && !gameOverFlag)
+    {
+        // 在线游戏：服务器确认的落子，更新本地棋盘
+        // 假设这是对手的落子，用相反的颜色
+        Piece opponentPiece = (currentPlayer == Piece::BLACK) ? Piece::WHITE : Piece::BLACK;
+        bool success = localGame->makeMove(x, y, opponentPiece);
+
+        if (success)
+        {
+            LOG_DEBUG("Opponent move applied to local board");
+            // 切换当前玩家
+            currentPlayer = opponentPiece;
+            emit boardUpdated();
+        }
+        else
+        {
+            LOG_ERROR("Failed to apply opponent move to local board");
+        }
+    }
 }
 
 void GameManager::onUpdateRoomPlayerList(const QStringList &players)
@@ -410,6 +500,24 @@ void GameManager::handleLocalMove(int x, int y)
     if (!gameOverFlag)
     {
         switchLocalPlayer();
+
+        // 如果启用AI且当前是AI的回合，自动让AI落子
+        if (enableAI && ((currentPlayer == Piece::WHITE && playerWhiteName == "AI玩家") ||
+                        (currentPlayer == Piece::BLACK && playerBlackName == "AI玩家")))
+        {
+            // 延迟一点时间再让AI落子，给用户更好的体验
+            QTimer::singleShot(500, this, [this]() {
+                if (aiPlayer && localGame && gameStartedFlag && !gameOverFlag)
+                {
+                    auto board = localGame->getBoard();
+                    auto aiMove = aiPlayer->getNextMove(board);
+                    if (aiMove.first >= 0 && aiMove.second >= 0)
+                    {
+                        handleLocalMove(aiMove.first, aiMove.second);
+                    }
+                }
+            });
+        }
     }
 }
 

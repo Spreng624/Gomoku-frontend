@@ -228,8 +228,11 @@ void Manager::exitRoom()
     packet.AddParam("room_id", currentRoomId);
     sendPacket(packet);
 
-    currentRoomId = 0;
-    inGame = false;
+    // 不立即切换，等待服务器确认
+    emit statusBarMessageChanged("正在退出房间...");
+
+    // currentRoomId = 0; // 在服务器确认后设置
+    // inGame = false;
 }
 
 void Manager::takeBlack()
@@ -584,7 +587,9 @@ void Manager::handlePacket(const Packet &packet)
         currentRoomId = 0;
         inGame = false;
         emit logToUser("已退出房间");
-        // emit roomLeft();
+        // 切换回大厅界面
+        emit switchWidget(0);
+        emit statusBarMessageChanged("已返回大厅");
         break;
     case MsgType::QuickMatch:
     {
@@ -639,7 +644,7 @@ void Manager::handlePacket(const Packet &packet)
     {
         int x = packet.GetParam<int>("x");
         int y = packet.GetParam<int>("y");
-        // emit moveMade(x, y);
+        emit moveMade(x, y);
         break;
     }
     case MsgType::UndoMoveRequest:

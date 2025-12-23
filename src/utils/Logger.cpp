@@ -2,7 +2,6 @@
 #include <cstdarg>
 #include <cstdio>
 #include <ctime>
-#include <filesystem>
 #include <algorithm>
 
 // 静态成员初始化
@@ -119,12 +118,6 @@ void Logger::init(const std::string &filePath, LogLevel level, bool consoleOutpu
 
         if (!filePath.empty())
         {
-            std::filesystem::path path(filePath);
-            if (path.has_parent_path())
-            {
-                std::filesystem::create_directories(path.parent_path());
-            }
-
             logger.logFile.open(filePath, std::ios::out | std::ios::app);
             if (logger.logFile.is_open())
             {

@@ -7,6 +7,7 @@
 #include <QPair>
 #include <memory>
 #include "Game.h"
+#include "AiPlayer.h"
 
 // 前向声明（保留，因为信号槽中使用了这些类型）
 class GameWidget;
@@ -21,6 +22,8 @@ public:
     ~GameManager();
     Game *getLocalGame() const;
     void setLocalGame(bool isLocal);
+    void setLocalGame(bool isLocal, bool enableAI);
+    void setCurrentUsername(const QString &username);
 
 public slots:
     // 从 GameWidget 接收的槽（需要转发给 Manager）
@@ -38,12 +41,19 @@ public slots:
     void onDrawResponse(bool accept);
     void onGiveup();
 
+    // AI toggle slot
+    void onAIToggled(bool enabled);
+
+    // Restart game slot
+    void onRestartGame();
+
     // 从 Manager 接收的槽（需要转发给 GameWidget）
     void onChatMessageReceived(const QString &username, const QString &message);
     void onGameStarted(const QString &username, int rating);
     void onGameEnded(const QString &username, int rating, bool won);
     void onPlayerListUpdated(const QStringList &players);
     void onUpdateRoomPlayerList(const QStringList &players);
+    void onMoveMade(int x, int y);
 
 signals:
     // 转发给 Manager 的信号
@@ -95,7 +105,10 @@ private:
 private:
     // 本地游戏相关成员
     std::unique_ptr<Game> localGame;
+    std::unique_ptr<AiPlayer> aiPlayer;
     bool isLocalGame;
+    bool enableAI;
+    QString currentUsername;
     bool gameStartedFlag;
     bool gameOverFlag;
     Piece currentPlayer; // 当前执子方

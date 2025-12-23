@@ -397,6 +397,16 @@
            <set>Qt::AlignTop</set>
           </property>
           <item>
+           <widget class="QCheckBox" name="enableAICheckBox">
+            <property name="text">
+             <string>启用AI对手</string>
+            </property>
+            <property name="checked">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
            <widget class="QPushButton" name="soundToggle">
             <property name="text">
              <string>音效: 開</string>

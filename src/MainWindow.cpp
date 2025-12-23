@@ -141,8 +141,10 @@ void MainWindow::SetUpSignals()
                                       {
         LOG_DEBUG("localGame signal received, initializing local game");
         if (gameManager && game) {
-            // 设置本地游戏标志
-            gameManager->setLocalGame(true);
+            // 设置用户名
+            gameManager->setCurrentUsername(currentUsername);
+            // 设置本地游戏标志（默认不启用AI）
+            gameManager->setLocalGame(true, false);
             // 初始化游戏部件为本地模式
             game->initGameWidget(true);
             // 切换到游戏界面
@@ -175,6 +177,12 @@ void MainWindow::SetUpSignals()
     connect(game, &GameWidget::drawRequested, gameManager.get(), &GameManager::onDrawRequested);
     connect(game, &GameWidget::drawResponse, gameManager.get(), &GameManager::onDrawResponse);
     connect(game, &GameWidget::giveup, gameManager.get(), &GameManager::onGiveup);
+
+    // GameWidget -> GameManager (AI toggle)
+    connect(game, &GameWidget::aiToggled, gameManager.get(), &GameManager::onAIToggled);
+
+    // GameWidget -> GameManager (restart game)
+    connect(game, &GameWidget::restartGame, gameManager.get(), &GameManager::onRestartGame);
 
     // GameManager -> Manager
     connect(gameManager.get(), &GameManager::backToLobby, manager.get(), &Manager::exitRoom);
@@ -220,6 +228,8 @@ void MainWindow::SetUpSignals()
             gameManager.get(), &GameManager::onPlayerListUpdated);
     connect(manager.get(), &Manager::updateRoomPlayerList,
             gameManager.get(), &GameManager::onUpdateRoomPlayerList);
+    connect(manager.get(), &Manager::moveMade,
+            gameManager.get(), &GameManager::onMoveMade);
 
     // Manager -> GameWidget (保留必要的直接连接)
     connect(manager.get(), &Manager::initGameWidget, this, [this](bool isLocal)
