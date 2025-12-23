@@ -53,8 +53,8 @@ enum MsgType : uint32_t
 
     // 0x500-0x5FF 查询和订阅（请求）
     GetUser = 0x500,
-    SubscribeUserList,
-    SubscribeRoomList,
+    GetUserList,
+    GetRoomList,
 
     // 0x1000-0x1FFF 服务器推送（无需 requestId）
     OpponentMoved = 0x1000,     // 对手落子推送

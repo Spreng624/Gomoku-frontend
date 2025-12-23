@@ -69,6 +69,7 @@ private slots:
     void onPlayer2AvatarClicked();
     void onAIToggled(bool checked);
     void onRestartButtonClicked();
+    void onStartGameButtonClicked();
 
 private:
     // 初始化函数

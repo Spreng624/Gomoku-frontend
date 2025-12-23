@@ -167,7 +167,7 @@ std::pair<int, int> AiPlayer::getNextMove(const std::vector<std::vector<Piece>> 
     {
         // 模拟落子
         boardCopy[move.first][move.second] = aiColor;
-        int score = minimax(boardCopy, 2, false, INT_MIN, INT_MAX, aiColor);
+        int score = minimax(boardCopy, 3, false, INT_MIN, INT_MAX, aiColor);
         // 撤销落子
         boardCopy[move.first][move.second] = Piece::EMPTY;
 

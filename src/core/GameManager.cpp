@@ -193,7 +193,8 @@ void GameManager::onTakeBlack()
     {
         blackTaken = true;
         // 如果还没有设置玩家名，使用当前用户名
-        if (playerBlackName == "等待玩家..." || playerBlackName.isEmpty()) {
+        if (playerBlackName == "等待玩家..." || playerBlackName.isEmpty())
+        {
             playerBlackName = currentUsername.isEmpty() ? "玩家" : currentUsername;
         }
         sendLocalChatMessage(playerBlackName + " 选择了黑棋");
@@ -267,10 +268,8 @@ void GameManager::onCancelTake()
 
 void GameManager::onStartGame()
 {
-    qDebug() << "GameManager::onStartGame called, isLocalGame:" << isLocalGame;
     if (isLocalGame)
     {
-        qDebug() << "Local game: gameStartedFlag:" << gameStartedFlag << "blackTaken:" << blackTaken << "whiteTaken:" << whiteTaken;
         if (!gameStartedFlag && blackTaken && whiteTaken)
         {
             gameStartedFlag = true;
@@ -330,9 +329,7 @@ void GameManager::onMakeMove(int x, int y)
     else
     {
         qDebug() << "Online game, emitting makeMove signal";
-
-        // 在线游戏：不立即更新棋盘，等待服务器确认
-        // 服务器会发送MakeMove包确认落子
+        // 在线游戏：不立即更新棋盘，等待服务器确认，服务器会发送MakeMove包确认落子
         emit makeMove(x, y);
     }
 }
@@ -415,9 +412,9 @@ void GameManager::onGameStarted(const QString &username, int rating)
     if (!isLocalGame)
     {
         playerBlackName = username; // 当前用户执黑
-        playerWhiteName = "对手"; // 暂时设置为对手
+        playerWhiteName = "对手";   // 暂时设置为对手
         playerBlackRating = rating;
-        playerWhiteRating = 1500; // 默认值
+        playerWhiteRating = 1500;     // 默认值
         currentPlayer = Piece::BLACK; // 黑方先手
         blackTaken = true;
         whiteTaken = true; // 假设双方都已就坐
@@ -503,10 +500,11 @@ void GameManager::handleLocalMove(int x, int y)
 
         // 如果启用AI且当前是AI的回合，自动让AI落子
         if (enableAI && ((currentPlayer == Piece::WHITE && playerWhiteName == "AI玩家") ||
-                        (currentPlayer == Piece::BLACK && playerBlackName == "AI玩家")))
+                         (currentPlayer == Piece::BLACK && playerBlackName == "AI玩家")))
         {
             // 延迟一点时间再让AI落子，给用户更好的体验
-            QTimer::singleShot(500, this, [this]() {
+            QTimer::singleShot(500, this, [this]()
+                               {
                 if (aiPlayer && localGame && gameStartedFlag && !gameOverFlag)
                 {
                     auto board = localGame->getBoard();
@@ -515,8 +513,7 @@ void GameManager::handleLocalMove(int x, int y)
                     {
                         handleLocalMove(aiMove.first, aiMove.second);
                     }
-                }
-            });
+                } });
         }
     }
 }
