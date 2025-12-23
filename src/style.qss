@@ -1,0 +1,61 @@
+/* 主窗口背景 - 解决黑边问题 */
+QMainWindow {
+    background-color: #ffffff; /* 设置主窗口背景为白色，避免黑边 */
+}
+
+/* 中央容器：设置总体的圆角和背景 */
+#centralContainer {
+    background-color: #ffffff;      /* 主内容区背景（白色） */
+    border: 1px solid #d0d7de;      /* GitHub 风格的灰色边框 */
+    border-radius: 12px;            /* 所有角都有圆角 */
+    margin: 0px;                    /* 移除外边距 */
+}
+
+/* 自定义标题栏 */
+#titleBarWidget {
+    background-color: #f6f8fa;      /* GitHub 风格标题栏背景（淡灰色） */
+    border-top-left-radius: 12px;   /* 必须与父容器同步，否则会遮挡圆角 */
+    border-top-right-radius: 12px;
+    border-bottom: 1px solid #d0d7de;
+    color: #24292f;
+    font-weight: bold;
+    padding-left: 15px;
+}
+
+/* 通用按钮样式 */
+#titleBarWidget QPushButton {
+    border: none;
+    background: transparent;
+    width: 45px;
+    height: 40px;
+    font-size: 16px;
+    color: #57606a;
+}
+
+#titleBarWidget QPushButton:hover {
+    background-color: #eaeef2;
+}
+
+/* 特殊处理关闭按钮：悬停变红 */
+#closeButton:hover {
+    background-color: #cf222e !important;
+    color: white !important;
+    border-top-right-radius: 12px; /* 确保悬停背景也不超出圆角 */
+}
+
+/* 状态栏样式 */
+#statusBarWidget {
+    background-color: #f6f8fa;
+    border-top: 1px solid #d0d7de;
+    color: #57606a;
+    border-bottom-left-radius: 12px; /* 与中央容器圆角一致 */
+    border-bottom-right-radius: 12px;
+}
+
+/* 中间内容区：确保它也有背景，或者让它继承主容器背景 */
+QStackedWidget {
+    background-color: white;
+    border-radius: 0px; /* 内部不需要圆角 */
+}
+
+/* 移除重复的样式定义，只保留一份 */
