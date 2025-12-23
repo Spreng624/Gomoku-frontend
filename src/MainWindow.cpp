@@ -227,12 +227,15 @@ void MainWindow::SetUpSignals()
         game->initGameWidget(isLocal);
         if (gameManager) {
             gameManager->setLocalGame(isLocal);
-            // 如果是本地游戏，设置棋盘部件的Game实例
-            if (isLocal && gameManager->getLocalGame()) {
-                // 获取GameWidget的棋盘部件并设置Game实例
-                if (game && game->getChessBoard()) {
-                    game->getChessBoard()->setGame(gameManager->getLocalGame());
-                }
+            // 无论是本地游戏还是在线游戏，都需要设置棋盘部件的Game实例
+            // 在线游戏也需要一个Game实例来跟踪棋盘状态
+            Game* gameInstance = gameManager->getLocalGame();
+            if (gameInstance && game && game->getChessBoard()) {
+                game->getChessBoard()->setGame(gameInstance);
+                qDebug() << "ChessBoardWidget Game instance set for" << (isLocal ? "local" : "online") << "game";
+            } else {
+                qDebug() << "Warning: Could not set Game instance for ChessBoardWidget";
+                qDebug() << "gameInstance:" << gameInstance << "game:" << game << "chessBoard:" << (game ? game->getChessBoard() : nullptr);
             }
         } });
 
@@ -637,14 +640,14 @@ void MainWindow::mouseDoubleClickEvent(QMouseEvent *event)
 // 验证窗口背景设置
 void MainWindow::validateWindowBackground()
 {
-    LOG_DEBUG("=== Validating Window Background ===");
+    LOG_DEBUG("====== Validating Window Background ======");
 
     // 检查主窗口背景
     QPalette windowPalette = palette();
     QColor windowBgColor = windowPalette.color(QPalette::Window);
-    LOG_DEBUG_FMT("MainWindow palette background color: %s (RGB: %d,%d,%d)",
-                  windowBgColor.name().toStdString().c_str(),
-                  windowBgColor.red(), windowBgColor.green(), windowBgColor.blue());
+    // LOG_DEBUG_FMT("MainWindow palette background color: %s (RGB: %d,%d,%d)",
+    //               windowBgColor.name().toStdString().c_str(),
+    //               windowBgColor.red(), windowBgColor.green(), windowBgColor.blue());
 
     // 检查centralwidget背景
     if (ui && ui->centralwidget)
@@ -682,7 +685,7 @@ void MainWindow::validateWindowBackground()
     LOG_DEBUG_FMT("Window has WA_OpaquePaintEvent: %d", testAttribute(Qt::WA_OpaquePaintEvent));
     LOG_DEBUG_FMT("Window has WA_TranslucentBackground: %d", testAttribute(Qt::WA_TranslucentBackground));
 
-    LOG_DEBUG("=== Background Validation Complete ===");
+    LOG_DEBUG("====== Background Validation Complete ======");
 }
 
 void MainWindow::onUserInfoButtonClicked()

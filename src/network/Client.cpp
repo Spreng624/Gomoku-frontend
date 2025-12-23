@@ -62,14 +62,6 @@ Client::Client(const std::string &ip, int port)
         LOG_ERROR("Net init failed.");
         return;
     }
-    sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-    if (sock == (SOCKET_TYPE)INVALID_SOCKET)
-    {
-        LOG_ERROR("Socket create failed: " + std::to_string(GET_LAST_ERROR()));
-        return;
-    }
-
-    LOG_DEBUG("Socket created successfully");
 }
 
 Client::~Client()
@@ -95,9 +87,22 @@ bool Client::Connect()
     inet_pton(AF_INET, server_ip.c_str(), &server_addr.sin_addr);
 
     LOG_DEBUG("Connecting to " + server_ip + ":" + std::to_string(server_port) + "...");
+
+    // 创建新的套接字
+    sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+    if (sock == (SOCKET_TYPE)INVALID_SOCKET)
+    {
+        LOG_ERROR("Socket create failed in Connect(): " + std::to_string(GET_LAST_ERROR()));
+        return false;
+    }
+    LOG_DEBUG("New socket created successfully, socket value: " + std::to_string((int)sock));
+
     if (connect(sock, (struct sockaddr *)&server_addr, sizeof(server_addr)) == -1)
     {
-        LOG_ERROR("Connect failed: " + std::to_string(GET_LAST_ERROR()));
+        int err = GET_LAST_ERROR();
+        LOG_ERROR("Connect failed with error: " + std::to_string(err));
+        CLOSE_SOCKET(sock);
+        sock = (SOCKET_TYPE)INVALID_SOCKET;
         return false;
     }
 
@@ -129,7 +134,6 @@ bool Client::Connect()
     is_running = true;
     worker_thread = std::thread(&Client::MainLoop, this);
     LOG_DEBUG("Worker thread started");
-
     LOG_DEBUG("Sending Hello frame to initiate handshake");
     SendFrame(Frame(Frame::Status::Hello, 0, {}, {}));
 
@@ -140,6 +144,7 @@ bool Client::Connect()
 int Client::Disconnect()
 {
     LOG_DEBUG("Disconnect called, setting is_running to false");
+    LOG_DEBUG("Current socket value before disconnect: " + std::to_string((int)sock));
     is_running = false;
 
     if (worker_thread.joinable())
@@ -157,6 +162,12 @@ int Client::Disconnect()
     {
         LOG_DEBUG("Closing socket");
         CLOSE_SOCKET(sock);
+        sock = (SOCKET_TYPE)INVALID_SOCKET;
+        LOG_DEBUG("Socket closed and set to INVALID_SOCKET");
+    }
+    else
+    {
+        LOG_DEBUG("Socket is already INVALID_SOCKET, skipping close");
     }
 
     if (context)

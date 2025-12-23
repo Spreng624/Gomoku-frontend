@@ -17,6 +17,7 @@ public:
     void setGame(Game *game);
     void setCurrentPlayer(bool currentPlayer);
     void setGameOver(bool gameOver, const QString &winner = "");
+    void refreshBoard();
 
 protected:
     void paintEvent(QPaintEvent *event) override;

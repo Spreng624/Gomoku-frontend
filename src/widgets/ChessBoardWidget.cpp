@@ -28,6 +28,13 @@ void ChessBoardWidget::setGame(Game *game)
     qDebug() << "ChessBoardWidget::setGame called with game pointer:" << game;
     this->game = game;
     update(); // 设置游戏实例后立即重绘
+    qDebug() << "ChessBoardWidget::setGame: update() called, game pointer set to:" << this->game;
+}
+
+void ChessBoardWidget::refreshBoard()
+{
+    qDebug() << "ChessBoardWidget::refreshBoard called, forcing repaint";
+    update();
 }
 
 void ChessBoardWidget::setCurrentPlayer(bool currentPlayer)
@@ -126,12 +133,16 @@ void ChessBoardWidget::drawPieces(QPainter &painter)
 {
     if (!game)
     {
-        qDebug() << "ChessBoardWidget::drawPieces: game is null";
+        qDebug() << "ChessBoardWidget::drawPieces: game is null, cannot draw pieces";
         return;
     }
 
+    qDebug() << "ChessBoardWidget::drawPieces: game pointer:" << game;
     const auto &board = game->getBoard();
     int pieceCount = 0;
+
+    // 调试：输出棋盘状态
+    qDebug() << "ChessBoardWidget::drawPieces: board size:" << board.size() << "x" << (board.size() > 0 ? board[0].size() : 0);
 
     for (int i = 0; i < boardSize; i++)
     {
@@ -140,6 +151,8 @@ void ChessBoardWidget::drawPieces(QPainter &painter)
             if (board[i][j] != Piece::EMPTY)
             {
                 pieceCount++;
+                qDebug() << "  Piece at (" << i << "," << j << "):"
+                         << (board[i][j] == Piece::BLACK ? "BLACK" : "WHITE");
                 QPoint piecePos(boardTopLeft.x() + i * gridSize,
                                 boardTopLeft.y() + j * gridSize);
 
@@ -225,17 +238,34 @@ void ChessBoardWidget::drawCurrentPlayerIndicator(QPainter &painter)
 
 void ChessBoardWidget::mousePressEvent(QMouseEvent *event)
 {
-    if (isGameOver || !game)
+    qDebug() << "ChessBoardWidget::mousePressEvent called, isGameOver:" << isGameOver << "game pointer:" << game;
+
+    if (isGameOver)
+    {
+        qDebug() << "Game is over, ignoring click";
         return;
+    }
+
+    if (!game)
+    {
+        qDebug() << "Game pointer is null, cannot process move";
+        return;
+    }
 
     QPoint clickPos = event->pos();
     QPoint boardPos = boardPosToGrid(clickPos);
 
+    qDebug() << "Click position:" << clickPos << "Board position:" << boardPos;
+
     if (boardPos.x() >= 0 && boardPos.x() < boardSize &&
         boardPos.y() >= 0 && boardPos.y() < boardSize)
     {
-
+        qDebug() << "Emitting moveMade signal for position (" << boardPos.x() << "," << boardPos.y() << ")";
         emit moveMade(boardPos.x(), boardPos.y());
+    }
+    else
+    {
+        qDebug() << "Click outside board bounds";
     }
 }
 

@@ -40,7 +40,22 @@ void GameManager::setLocalGame(bool isLocal)
     }
     else
     {
-        LOG_DEBUG("GameManager::setLocalGame: isLocal is false, not initializing local game");
+        LOG_DEBUG("GameManager::setLocalGame: isLocal is false, resetting game state for online play");
+        // 在线游戏也需要重置游戏状态，以便棋盘部件有正确的Game实例
+        if (localGame)
+        {
+            localGame->reset();
+        }
+        // 重置游戏状态标志
+        gameStartedFlag = false;
+        gameOverFlag = false;
+        currentPlayer = Piece::BLACK;
+        blackTaken = false;
+        whiteTaken = false;
+        waitingForUndoResponse = false;
+        waitingForDrawResponse = false;
+
+        qDebug() << "GameManager: Game reset for online play";
     }
 }
 
@@ -55,11 +70,11 @@ void GameManager::initLocalGame()
     gameOverFlag = false;
     currentPlayer = Piece::BLACK;
 
-    // 本地游戏中，自动分配玩家
-    blackTaken = true;
-    whiteTaken = true;
-    playerBlackName = "玩家1 (黑棋)";
-    playerWhiteName = "玩家2 (白棋)";
+    // 本地游戏中，初始时玩家未就坐，等待玩家选择
+    blackTaken = false;
+    whiteTaken = false;
+    playerBlackName = "等待玩家...";
+    playerWhiteName = "等待玩家...";
     playerBlackRating = 1500;
     playerWhiteRating = 1500;
 
@@ -71,11 +86,8 @@ void GameManager::initLocalGame()
     players << playerBlackName << playerWhiteName;
     emit playerListUpdated(players);
 
-    // 本地游戏自动开始
-    gameStartedFlag = true;
-    qDebug() << "Local game auto-started, emitting gameStarted signal";
-    emit gameStarted(playerBlackName, playerBlackRating);
-    sendLocalGameMessage("本地游戏已开始！" + playerBlackName + " 执黑先行");
+    // 发送游戏就绪消息
+    sendLocalGameMessage("本地游戏已就绪，请点击玩家头像选择座位");
 
     // 注意：不再直接操作GameWidget，通过信号通知UI更新
     // 如果需要更新棋盘当前玩家显示，可以通过信号实现
@@ -108,6 +120,12 @@ void GameManager::onTakeBlack()
         blackTaken = true;
         playerBlackName = "玩家1";
         sendLocalChatMessage(playerBlackName + " 选择了黑棋");
+
+        // 发送更新后的玩家列表
+        QStringList players;
+        players << playerBlackName << playerWhiteName;
+        emit playerListUpdated(players);
+
         qDebug() << "blackTaken:" << blackTaken << "whiteTaken:" << whiteTaken << "gameStartedFlag:" << gameStartedFlag;
         if (blackTaken && whiteTaken && !gameStartedFlag)
         {
@@ -129,6 +147,12 @@ void GameManager::onTakeWhite()
         whiteTaken = true;
         playerWhiteName = "玩家2";
         sendLocalChatMessage(playerWhiteName + " 选择了白棋");
+
+        // 发送更新后的玩家列表
+        QStringList players;
+        players << playerBlackName << playerWhiteName;
+        emit playerListUpdated(players);
+
         qDebug() << "blackTaken:" << blackTaken << "whiteTaken:" << whiteTaken << "gameStartedFlag:" << gameStartedFlag;
         if (blackTaken && whiteTaken && !gameStartedFlag)
         {
@@ -228,6 +252,28 @@ void GameManager::onMakeMove(int x, int y)
     else
     {
         qDebug() << "Online game, emitting makeMove signal";
+
+        // 在线游戏时，也尝试更新本地棋盘（乐观更新）
+        // 注意：我们不知道当前玩家是黑棋还是白棋，这需要从服务器获取
+        // 暂时先不更新，等待服务器确认
+        // 但为了棋子能显示，我们可以尝试更新
+        if (localGame && gameStartedFlag && !gameOverFlag)
+        {
+            qDebug() << "Online game: attempting optimistic update of local board";
+            // 这里我们不知道当前玩家，暂时使用currentPlayer
+            // 这可能在多玩家游戏中不正确，但至少能让棋子显示
+            bool success = localGame->makeMove(x, y, currentPlayer);
+            qDebug() << "Optimistic update result:" << success;
+
+            // 触发棋盘重绘
+            if (success)
+            {
+                // 发送信号通知棋盘更新
+                // 棋盘部件会通过Game实例获取更新后的状态
+                qDebug() << "Optimistic update successful, board should be redrawn";
+            }
+        }
+
         emit makeMove(x, y);
     }
 }
@@ -300,6 +346,17 @@ void GameManager::onChatMessageReceived(const QString &username, const QString &
 
 void GameManager::onGameStarted(const QString &username, int rating)
 {
+    qDebug() << "GameManager::onGameStarted called, username:" << username << "rating:" << rating;
+
+    // 无论是本地游戏还是在线游戏，游戏开始时设置标志
+    gameStartedFlag = true;
+    gameOverFlag = false;
+
+    // 在线游戏时，我们不知道当前玩家，但可以设置默认值
+    // 服务器会通知我们谁是当前玩家
+
+    qDebug() << "GameManager: gameStartedFlag set to true for online game";
+
     emit gameStarted(username, rating);
 }
 

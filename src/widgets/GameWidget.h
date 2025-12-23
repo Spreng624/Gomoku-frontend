@@ -63,6 +63,8 @@ private slots:
     void onSendButtonClicked();
     void onMinimizeBtnClicked();
     void onCloseBtnClicked();
+    void onPlayer1AvatarClicked();
+    void onPlayer2AvatarClicked();
 
 private:
     // 初始化函数
@@ -71,10 +73,15 @@ private:
     // 更新UI的辅助方法（现在接收参数）
     void updatePlayerInfo(int player1Time, int player2Time, bool currentPlayer);
     void updateGameStatus(bool isGameStarted, bool isGameOver);
+    // 更新玩家就坐状态
+    void updatePlayerSeatStatus(bool blackTaken, bool whiteTaken);
 
     // 成员变量
     Ui::GameWidget *ui;
     ChessBoardWidget *chessBoard;
+    // 玩家就坐状态
+    bool m_blackTaken;
+    bool m_whiteTaken;
 
 public:
     // 获取棋盘部件

@@ -161,7 +161,7 @@
             <item>
              <widget class="QPushButton" name="player1Avatar">
               <property name="text">
-               <string>P1</string>
+               <string>黑棋</string>
               </property>
               <property name="minimumSize">
                <size>
@@ -175,6 +175,9 @@
                 <height>40</height>
                </size>
               </property>
+              <property name="toolTip">
+               <string>点击就坐（黑棋）</string>
+              </property>
              </widget>
             </item>
             <item>
@@ -185,14 +188,14 @@
               <item>
                <widget class="QLabel" name="player1NameLabel">
                 <property name="text">
-                 <string>張三</string>
+                 <string>等待玩家...</string>
                 </property>
                </widget>
               </item>
               <item>
                <widget class="QLabel" name="player1ScoreLabel">
                 <property name="text">
-                 <string>等級分: 1500</string>
+                 <string>等級分: 0</string>
                 </property>
                </widget>
               </item>
@@ -217,7 +220,7 @@
             <item>
              <widget class="QPushButton" name="player2Avatar">
               <property name="text">
-               <string>P2</string>
+               <string>白棋</string>
               </property>
               <property name="minimumSize">
                <size>
@@ -231,6 +234,9 @@
                 <height>40</height>
                </size>
               </property>
+              <property name="toolTip">
+               <string>点击就坐（白棋）</string>
+              </property>
              </widget>
             </item>
             <item>
@@ -241,14 +247,14 @@
               <item>
                <widget class="QLabel" name="player2NameLabel">
                 <property name="text">
-                 <string>李四</string>
+                 <string>等待玩家...</string>
                 </property>
                </widget>
               </item>
               <item>
                <widget class="QLabel" name="player2ScoreLabel">
                 <property name="text">
-                 <string>等級分: 1520</string>
+                 <string>等級分: 0</string>
                 </property>
                </widget>
               </item>

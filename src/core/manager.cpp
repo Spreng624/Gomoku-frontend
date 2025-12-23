@@ -169,7 +169,10 @@ void Manager::createRoom()
 {
     LOG_DEBUG("Creating room");
     if (!connected)
+    {
+        logToUser("未连接到服务器");
         return;
+    }
 
     Packet packet(sessionId, MsgType::CreateRoom);
     sendPacket(packet);
@@ -497,19 +500,86 @@ void Manager::handlePacket(const Packet &packet)
 
     // 房间操作响应
     case MsgType::CreateRoom:
-        currentRoomId = packet.GetParam<int>("room_id");
-        emit logToUser(QString("房间创建成功，房间号: %1").arg(currentRoomId));
-        // emit roomCreated(currentRoomId);
+    {
+        bool success = packet.GetParam<bool>("success", true); // 默认为true以保持向后兼容
+        if (success)
+        {
+            currentRoomId = packet.GetParam<int>("room_id");
+            LOG_INFO("Room created successfully, room ID: " + std::to_string(currentRoomId));
+            emit logToUser(QString("房间创建成功，房间号: %1").arg(currentRoomId));
+
+            // 切换到游戏界面
+            emit switchWidget(1);       // 切换到GameWidget
+            emit initGameWidget(false); // 初始化在线游戏模式
+
+            // 更新状态
+            inGame = false; // 房间创建但游戏尚未开始
+            emit statusBarMessageChanged("已创建房间 " + QString::number(currentRoomId));
+
+            // 可以发射房间创建信号，如果需要的话
+            // emit roomCreated(currentRoomId);
+        }
+        else
+        {
+            std::string error = packet.GetParam<std::string>("error", "未知错误");
+            LOG_ERROR("Failed to create room: " + error);
+            emit logToUser(QString::fromStdString("房间创建失败: " + error));
+        }
         break;
+    }
     case MsgType::CreateSingleRoom:
-        currentRoomId = packet.GetParam<int>("room_id");
-        emit logToUser(QString("单人房间创建成功，房间号: %1").arg(currentRoomId));
+    {
+        bool success = packet.GetParam<bool>("success", true);
+        if (success)
+        {
+            currentRoomId = packet.GetParam<int>("room_id");
+            LOG_INFO("Single player room created successfully, room ID: " + std::to_string(currentRoomId));
+            emit logToUser(QString("单人房间创建成功，房间号: %1").arg(currentRoomId));
+
+            // 切换到游戏界面
+            emit switchWidget(1);
+            emit initGameWidget(false); // 单人房间也是在线模式
+
+            // 更新状态
+            inGame = false;
+            emit statusBarMessageChanged("已创建单人房间 " + QString::number(currentRoomId));
+        }
+        else
+        {
+            std::string error = packet.GetParam<std::string>("error", "未知错误");
+            LOG_ERROR("Failed to create single player room: " + error);
+            emit logToUser(QString::fromStdString("单人房间创建失败: " + error));
+        }
         break;
+    }
     case MsgType::JoinRoom:
-        currentRoomId = packet.GetParam<int>("room_id");
-        emit logToUser(QString("加入房间成功，房间号: %1").arg(currentRoomId));
-        // emit roomJoined(currentRoomId);
+    {
+        bool success = packet.GetParam<bool>("success", true);
+        if (success)
+        {
+            currentRoomId = packet.GetParam<int>("room_id");
+            LOG_INFO("Joined room successfully, room ID: " + std::to_string(currentRoomId));
+            emit logToUser(QString("加入房间成功，房间号: %1").arg(currentRoomId));
+
+            // 切换到游戏界面
+            emit switchWidget(1);
+            emit initGameWidget(false);
+
+            // 更新状态
+            inGame = false;
+            emit statusBarMessageChanged("已加入房间 " + QString::number(currentRoomId));
+
+            // 发射房间加入信号
+            // emit roomJoined(currentRoomId);
+        }
+        else
+        {
+            std::string error = packet.GetParam<std::string>("error", "未知错误");
+            LOG_ERROR("Failed to join room: " + error);
+            emit logToUser(QString::fromStdString("加入房间失败: " + error));
+        }
         break;
+    }
     case MsgType::ExitRoom:
         currentRoomId = 0;
         inGame = false;
@@ -517,10 +587,33 @@ void Manager::handlePacket(const Packet &packet)
         // emit roomLeft();
         break;
     case MsgType::QuickMatch:
-        currentRoomId = packet.GetParam<int>("room_id");
-        emit logToUser(QString("快速匹配成功，房间号: %1").arg(currentRoomId));
-        // emit quickMatchJoined(currentRoomId);
+    {
+        bool success = packet.GetParam<bool>("success", true);
+        if (success)
+        {
+            currentRoomId = packet.GetParam<int>("room_id");
+            LOG_INFO("Quick match successful, room ID: " + std::to_string(currentRoomId));
+            emit logToUser(QString("快速匹配成功，房间号: %1").arg(currentRoomId));
+
+            // 切换到游戏界面
+            emit switchWidget(1);
+            emit initGameWidget(false);
+
+            // 更新状态
+            inGame = false;
+            emit statusBarMessageChanged("快速匹配到房间 " + QString::number(currentRoomId));
+
+            // 发射快速匹配成功信号
+            // emit quickMatchJoined(currentRoomId);
+        }
+        else
+        {
+            std::string error = packet.GetParam<std::string>("error", "未知错误");
+            LOG_ERROR("Quick match failed: " + error);
+            emit logToUser(QString::fromStdString("快速匹配失败: " + error));
+        }
         break;
+    }
 
     // 座位操作响应
     case MsgType::TakeBlack:

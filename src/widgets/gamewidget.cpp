@@ -11,7 +11,8 @@
 #include <QDateTime>
 
 GameWidget::GameWidget(QWidget *parent)
-    : QWidget(parent), ui(new Ui::GameWidget), chessBoard(nullptr)
+    : QWidget(parent), ui(new Ui::GameWidget), chessBoard(nullptr),
+      m_blackTaken(false), m_whiteTaken(false)
 {
     ui->setupUi(this);
 
@@ -74,6 +75,10 @@ void GameWidget::setupConnections()
     connect(ui->sendButton, &QPushButton::clicked, this, &GameWidget::onSendButtonClicked);
     connect(ui->minimizeBtn, &QPushButton::clicked, this, &GameWidget::onMinimizeBtnClicked);
     connect(ui->closeBtn, &QPushButton::clicked, this, &GameWidget::onCloseBtnClicked);
+
+    // 连接玩家头像点击信号
+    connect(ui->player1Avatar, &QPushButton::clicked, this, &GameWidget::onPlayer1AvatarClicked);
+    connect(ui->player2Avatar, &QPushButton::clicked, this, &GameWidget::onPlayer2AvatarClicked);
 
     // 连接消息输入框回车键
     connect(ui->messageInput, &QLineEdit::returnPressed, this, &GameWidget::onSendButtonClicked);
@@ -165,6 +170,11 @@ void GameWidget::initGameWidget(bool islocal)
     ui->player2NameLabel->setText("等待玩家...");
     ui->player2ScoreLabel->setText("等级分: 0");
     ui->player2TimeLabel->setText("20:00");
+
+    // 重置就坐状态
+    m_blackTaken = false;
+    m_whiteTaken = false;
+    updatePlayerSeatStatus(false, false);
 
     // 更新UI状态
     updatePlayerInfo(1200, 1200, true); // 默认20分钟，黑棋先行
@@ -274,6 +284,24 @@ void GameWidget::onPlayerListUpdated(const QStringList &players)
     {
         ui->onlinePlayers->addItem(player);
     }
+
+    // 更新玩家就坐状态
+    // 假设players列表包含两个玩家：黑棋玩家和白棋玩家
+    if (players.size() >= 2)
+    {
+        QString blackPlayer = players[0];
+        QString whitePlayer = players[1];
+
+        // 判断座位是否被占用
+        bool blackTaken = (blackPlayer != "等待玩家..." && !blackPlayer.isEmpty());
+        bool whiteTaken = (whitePlayer != "等待玩家..." && !whitePlayer.isEmpty());
+
+        updatePlayerSeatStatus(blackTaken, whiteTaken);
+
+        // 更新玩家名称显示
+        ui->player1NameLabel->setText(blackPlayer);
+        ui->player2NameLabel->setText(whitePlayer);
+    }
 }
 
 // ==================== 内部槽函数 ====================
@@ -358,4 +386,85 @@ void GameWidget::updateGameState(bool isGameStarted, bool isGameOver, bool curre
     // 记录状态更新
     qDebug() << "GameWidget: Game state updated - isGameStarted:" << isGameStarted
              << "isGameOver:" << isGameOver << "currentPlayer:" << currentPlayer;
+}
+
+// ==================== 玩家就坐相关函数 ====================
+
+void GameWidget::onPlayer1AvatarClicked()
+{
+    LOG_DEBUG("Player 1 avatar clicked (black seat)");
+    if (!m_blackTaken)
+    {
+        // 黑棋位置未被占用，触发takeBlack信号
+        emit takeBlack();
+        // 更新本地状态（实际状态应由GameManager更新后通知回来）
+        // 这里先乐观更新
+        m_blackTaken = true;
+        updatePlayerSeatStatus(m_blackTaken, m_whiteTaken);
+    }
+    else
+    {
+        LOG_DEBUG("Black seat already taken");
+        // 可以显示提示信息
+        ui->chatHistory->append("<font color='orange'>黑棋位置已被占用</font>");
+    }
+}
+
+void GameWidget::onPlayer2AvatarClicked()
+{
+    LOG_DEBUG("Player 2 avatar clicked (white seat)");
+    if (!m_whiteTaken)
+    {
+        // 白棋位置未被占用，触发takeWhite信号
+        emit takeWhite();
+        // 更新本地状态
+        m_whiteTaken = true;
+        updatePlayerSeatStatus(m_blackTaken, m_whiteTaken);
+    }
+    else
+    {
+        LOG_DEBUG("White seat already taken");
+        ui->chatHistory->append("<font color='orange'>白棋位置已被占用</font>");
+    }
+}
+
+void GameWidget::updatePlayerSeatStatus(bool blackTaken, bool whiteTaken)
+{
+    LOG_DEBUG_FMT("Updating player seat status: blackTaken=%d, whiteTaken=%d",
+                  blackTaken ? 1 : 0, whiteTaken ? 1 : 0);
+
+    m_blackTaken = blackTaken;
+    m_whiteTaken = whiteTaken;
+
+    // 更新黑棋位置显示
+    if (blackTaken)
+    {
+        ui->player1Avatar->setText("黑棋");
+        ui->player1Avatar->setToolTip("黑棋位置已被占用");
+        ui->player1Avatar->setEnabled(false);
+        ui->player1NameLabel->setText("玩家1");
+    }
+    else
+    {
+        ui->player1Avatar->setText("点击就坐");
+        ui->player1Avatar->setToolTip("点击就坐（黑棋）");
+        ui->player1Avatar->setEnabled(true);
+        ui->player1NameLabel->setText("等待玩家...");
+    }
+
+    // 更新白棋位置显示
+    if (whiteTaken)
+    {
+        ui->player2Avatar->setText("白棋");
+        ui->player2Avatar->setToolTip("白棋位置已被占用");
+        ui->player2Avatar->setEnabled(false);
+        ui->player2NameLabel->setText("玩家2");
+    }
+    else
+    {
+        ui->player2Avatar->setText("点击就坐");
+        ui->player2Avatar->setToolTip("点击就坐（白棋）");
+        ui->player2Avatar->setEnabled(true);
+        ui->player2NameLabel->setText("等待玩家...");
+    }
 }
