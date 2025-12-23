@@ -7091,3 +7091,333 @@
 [2025-12-23 23:20:08.776] [DEBUG] Cleaning up ToastWidget...
 [2025-12-23 23:20:08.785] [DEBUG] Shutting down Logger...
 [2025-12-23 23:20:08.785] [INFO] Logger shutting down.
+[2025-12-24 00:50:16.475] [INFO] Logger initialized. Log file: logs/gomoku.log
+[2025-12-24 00:50:16.475] [DEBUG] Logger initialized with DEBUG level
+[2025-12-24 00:50:16.476] [DEBUG] Setting up UI...
+[2025-12-24 00:50:16.506] [DEBUG] Creating Manager instance...
+[2025-12-24 00:50:16.507] [INFO] Manager initialized for server
+[2025-12-24 00:50:16.507] [DEBUG] Client constructor called for 127.0.0.1:8080
+[2025-12-24 00:50:16.510] [DEBUG] Session activated callback set
+[2025-12-24 00:50:16.510] [INFO] Attempting to connect to server...
+[2025-12-24 00:50:16.511] [DEBUG] Connecting to 127.0.0.1:8080...
+[2025-12-24 00:50:16.513] [DEBUG] New socket created successfully, socket value: 1068
+[2025-12-24 00:50:16.514] [INFO] Connected to server successfully!
+[2025-12-24 00:50:16.514] [DEBUG] Socket set to non-blocking mode
+[2025-12-24 00:50:16.514] [DEBUG] Disconnect called, setting is_running to false
+[2025-12-24 00:50:16.514] [DEBUG] Worker thread is not joinable or already finished
+[2025-12-24 00:50:16.515] [DEBUG] Worker thread started
+[2025-12-24 00:50:16.515] [DEBUG] Sending Hello frame to initiate handshake
+[2025-12-24 00:50:16.515] [INFO] Connection established and handshake initiated
+[2025-12-24 00:50:16.515] [DEBUG] Creating LobbyWidget...
+[2025-12-24 00:50:16.515] [INFO] Client loop started.
+[2025-12-24 00:50:16.516] [DEBUG] LobbyWidget Initializing...
+[2025-12-24 00:50:16.520] [DEBUG] Configuring room table properties...
+[2025-12-24 00:50:16.520] [DEBUG] Room table properties configured
+[2025-12-24 00:50:16.520] [DEBUG] Initializing room table...
+[2025-12-24 00:50:16.522] [DEBUG] Initializing player list...
+[2025-12-24 00:50:16.523] [DEBUG] Setting up signals...
+[2025-12-24 00:50:16.523] [INFO] LobbyWidget initialized successfully
+[2025-12-24 00:50:16.523] [DEBUG] Creating GameWidget...
+[2025-12-24 00:50:16.528] [DEBUG] GameWidget UI initialized
+[2025-12-24 00:50:16.528] [DEBUG] GameWidget signal connections established
+[2025-12-24 00:50:16.528] [DEBUG] GameWidget constructed successfully
+[2025-12-24 00:50:16.528] [DEBUG] Creating GameManager instance...
+[2025-12-24 00:50:16.528] [DEBUG] Setting up signal connections...
+[2025-12-24 00:50:16.528] [DEBUG] Connecting LobbyWidget::localGame to GameManager::setLocalGame...
+[2025-12-24 00:50:16.529] [DEBUG] localGame connection result: 1
+[2025-12-24 00:50:16.529] [DEBUG] Initializing window components...
+[2025-12-24 00:50:16.529] [DEBUG] Initializing window style...
+[2025-12-24 00:50:16.539] [DEBUG] Set main window background to white
+[2025-12-24 00:50:16.539] [DEBUG] Setting window flags: FramelessWindowHint | WindowSystemMenuHint | WindowMinimizeButtonHint
+[2025-12-24 00:50:16.546] [DEBUG] WA_TranslucentBackground is commented out (not set)
+[2025-12-24 00:50:16.546] [DEBUG] WA_OpaquePaintEvent attribute set
+[2025-12-24 00:50:16.547] [DEBUG] Added Qt::Window flag for taskbar interaction
+[2025-12-24 00:50:16.547] [DEBUG] Window size set to: 1000x700
+[2025-12-24 00:50:16.547] [DEBUG] Set window palette to white background
+[2025-12-24 00:50:16.547] [DEBUG] Current stylesheet: QMainWindow {    background-color: white;    border: none;}
+[2025-12-24 00:50:16.547] [DEBUG] Window background role color: #ffffff
+[2025-12-24 00:50:16.547] [DEBUG] Initializing layout...
+[2025-12-24 00:50:16.548] [DEBUG] centralwidget found at address: 2345020668976
+[2025-12-24 00:50:16.548] [DEBUG] centralwidget object name: centralwidget
+[2025-12-24 00:50:16.548] [DEBUG] centralwidget geometry: 100x30
+[2025-12-24 00:50:16.548] [DEBUG] centralwidget object name set to: centralContainer
+[2025-12-24 00:50:16.548] [DEBUG] centralwidget WA_StyledBackground attribute set
+[2025-12-24 00:50:16.548] [DEBUG] centralwidget palette background color: #f3f3f3
+[2025-12-24 00:50:16.548] [DEBUG] Set centralwidget palette to white background
+[2025-12-24 00:50:16.548] [DEBUG] Layout initialized successfully
+[2025-12-24 00:50:16.549] [DEBUG] Initializing title bar and status bar...
+[2025-12-24 00:50:16.549] [DEBUG] Initializing title bar components...
+[2025-12-24 00:50:16.549] [DEBUG] titleBarWidget found at address: 2345020810144
+[2025-12-24 00:50:16.549] [DEBUG] titleBarWidget object name: titleBarWidget
+[2025-12-24 00:50:16.549] [DEBUG] titleLabel found at address: 2345020812208
+[2025-12-24 00:50:16.549] [DEBUG] titleLabel text: 五子棋大厅
+[2025-12-24 00:50:16.549] [DEBUG] minimizeButton found at address: 2345020827600
+[2025-12-24 00:50:16.549] [DEBUG] maximizeButton found at address: 2345020831296
+[2025-12-24 00:50:16.550] [DEBUG] closeButton found at address: 2345020841888
+[2025-12-24 00:50:16.550] [DEBUG] Title bar initialization completed
+[2025-12-24 00:50:16.550] [DEBUG] Initializing status bar components...
+[2025-12-24 00:50:16.550] [DEBUG] statusBarWidget found
+[2025-12-24 00:50:16.550] [DEBUG] statusMessageLabel found
+[2025-12-24 00:50:16.550] [DEBUG] networkStatusButton found
+[2025-12-24 00:50:16.551] [DEBUG] userInfoButton found
+[2025-12-24 00:50:16.551] [DEBUG] Status bar initialization completed
+[2025-12-24 00:50:16.551] [DEBUG] Getting stackedWidget from UI...
+[2025-12-24 00:50:16.551] [DEBUG] stackedWidget found in UI
+[2025-12-24 00:50:16.555] [DEBUG] [Handshake] Received NewSession. ID: 2905721490287305630
+[2025-12-24 00:50:16.555] [DEBUG] Saved server public key
+[2025-12-24 00:50:16.558] [DEBUG] StackedWidget initialized with Lobby as default
+[2025-12-24 00:50:16.559] [DEBUG] Creating ToastWidget...
+[2025-12-24 00:50:16.562] [DEBUG] ====== Validating Window Background ======
+[2025-12-24 00:50:16.562] [DEBUG] CentralWidget palette background color: #ffffff
+[2025-12-24 00:50:16.562] [INFO] CentralWidget background is correctly set to white
+[2025-12-24 00:50:16.562] [DEBUG] Current window stylesheet length: 59 characters
+[2025-12-24 00:50:16.562] [DEBUG] Stylesheet contains background-color definition
+[2025-12-24 00:50:16.562] [DEBUG] Window has WA_StyledBackground: 1
+[2025-12-24 00:50:16.563] [DEBUG] Window has WA_OpaquePaintEvent: 1
+[2025-12-24 00:50:16.563] [DEBUG] Window has WA_TranslucentBackground: 0
+[2025-12-24 00:50:16.563] [DEBUG] ====== Background Validation Complete ======
+[2025-12-24 00:50:16.563] [INFO] MainWindow initialization completed successfully
+[2025-12-24 00:50:16.570] [INFO] [Handshake] Session Activated!
+[2025-12-24 00:50:16.570] [DEBUG] Calling sessionActivatedCallback with sessionId: 2905721490287305630
+[2025-12-24 00:50:16.570] [INFO] Session activated callback received, sessionId: 2905721490287305630
+[2025-12-24 00:50:19.751] [DEBUG] Local game button clicked, emitting localGame signal
+[2025-12-24 00:50:19.751] [DEBUG] localGame signal received, initializing local game
+[2025-12-24 00:50:19.751] [DEBUG] GameManager::setLocalGame called with isLocal: 1, enableAI: 0
+[2025-12-24 00:50:19.752] [DEBUG] Player list updated, count: 2
+[2025-12-24 00:50:19.753] [DEBUG] Updating player seat status: blackTaken=0, whiteTaken=0
+[2025-12-24 00:50:19.753] [DEBUG] Chat message from 游戏: 本地游戏已就绪，请在设置中启用AI对手，或点击玩家头像选择对手
+[2025-12-24 00:50:19.757] [DEBUG] Chat message from 游戏: 本地游戏已就绪
+[2025-12-24 00:50:19.759] [DEBUG] Initializing GameWidget, islocal: 1
+[2025-12-24 00:50:19.760] [DEBUG] Updating player seat status: blackTaken=0, whiteTaken=0
+[2025-12-24 00:50:19.761] [INFO] GameWidget initialized successfully
+[2025-12-24 00:50:19.762] [DEBUG] Switching widget to index: 1
+[2025-12-24 00:50:19.763] [INFO] Switching to Game widget
+[2025-12-24 00:50:19.764] [DEBUG] Widget switch completed
+[2025-12-24 00:50:21.457] [DEBUG] Player 1 avatar clicked (black seat)
+[2025-12-24 00:50:21.459] [DEBUG] Chat message from 系统: 玩家 选择了黑棋
+[2025-12-24 00:50:21.459] [DEBUG] Player list updated, count: 2
+[2025-12-24 00:50:21.460] [DEBUG] Updating player seat status: blackTaken=1, whiteTaken=0
+[2025-12-24 00:50:21.462] [DEBUG] Updating player seat status: blackTaken=1, whiteTaken=0
+[2025-12-24 00:50:24.521] [DEBUG] AI toggled: enabled
+[2025-12-24 00:50:24.522] [DEBUG] GameManager::onAIToggled called with enabled: 1
+[2025-12-24 00:50:24.522] [DEBUG] Chat message from 游戏: AI对手已启用，AI将执白棋
+[2025-12-24 00:50:24.522] [DEBUG] Player list updated, count: 2
+[2025-12-24 00:50:24.523] [DEBUG] Updating player seat status: blackTaken=1, whiteTaken=1
+[2025-12-24 00:50:31.315] [DEBUG] GameManager::onMakeMove called, x: 7, y: 4, isLocalGame: 1
+[2025-12-24 00:50:31.316] [DEBUG] Chat message from 游戏: 游戏未开始或已结束
+[2025-12-24 00:50:39.907] [DEBUG] GameManager::onMakeMove called, x: 11, y: 3, isLocalGame: 1
+[2025-12-24 00:50:39.908] [DEBUG] Chat message from 游戏: 游戏未开始或已结束
+[2025-12-24 00:50:40.926] [DEBUG] GameManager::onMakeMove called, x: 6, y: 3, isLocalGame: 1
+[2025-12-24 00:50:40.928] [DEBUG] Chat message from 游戏: 游戏未开始或已结束
+[2025-12-24 00:50:41.712] [DEBUG] GameManager::onMakeMove called, x: 6, y: 2, isLocalGame: 1
+[2025-12-24 00:50:41.713] [DEBUG] Chat message from 游戏: 游戏未开始或已结束
+[2025-12-24 00:50:42.491] [DEBUG] GameManager::onMakeMove called, x: 7, y: 2, isLocalGame: 1
+[2025-12-24 00:50:42.492] [DEBUG] Chat message from 游戏: 游戏未开始或已结束
+[2025-12-24 00:50:43.122] [DEBUG] GameManager::onMakeMove called, x: 8, y: 2, isLocalGame: 1
+[2025-12-24 00:50:43.123] [DEBUG] Chat message from 游戏: 游戏未开始或已结束
+[2025-12-24 00:50:44.166] [DEBUG] GameManager::onMakeMove called, x: 9, y: 2, isLocalGame: 1
+[2025-12-24 00:50:44.167] [DEBUG] Chat message from 游戏: 游戏未开始或已结束
+[2025-12-24 00:50:45.169] [DEBUG] GameManager::onMakeMove called, x: 4, y: 3, isLocalGame: 1
+[2025-12-24 00:50:45.170] [DEBUG] Chat message from 游戏: 游戏未开始或已结束
+[2025-12-24 00:50:48.012] [DEBUG] GameManager::onMakeMove called, x: 7, y: 3, isLocalGame: 1
+[2025-12-24 00:50:48.013] [DEBUG] Chat message from 游戏: 游戏未开始或已结束
+[2025-12-24 00:50:48.750] [DEBUG] GameManager::onMakeMove called, x: 7, y: 4, isLocalGame: 1
+[2025-12-24 00:50:48.750] [DEBUG] Chat message from 游戏: 游戏未开始或已结束
+[2025-12-24 00:50:50.169] [DEBUG] GameManager::onMakeMove called, x: 7, y: 7, isLocalGame: 1
+[2025-12-24 00:50:50.170] [DEBUG] Chat message from 游戏: 游戏未开始或已结束
+[2025-12-24 00:50:50.832] [DEBUG] GameManager::onMakeMove called, x: 8, y: 7, isLocalGame: 1
+[2025-12-24 00:50:50.833] [DEBUG] Chat message from 游戏: 游戏未开始或已结束
+[2025-12-24 00:50:51.598] [DEBUG] GameManager::onMakeMove called, x: 8, y: 8, isLocalGame: 1
+[2025-12-24 00:50:51.599] [DEBUG] Chat message from 游戏: 游戏未开始或已结束
+[2025-12-24 00:50:54.649] [DEBUG] GameManager::onMakeMove called, x: 4, y: 8, isLocalGame: 1
+[2025-12-24 00:50:54.650] [DEBUG] Chat message from 游戏: 游戏未开始或已结束
+[2025-12-24 00:51:01.996] [DEBUG] GameManager::onMakeMove called, x: 7, y: 7, isLocalGame: 1
+[2025-12-24 00:51:01.998] [DEBUG] Chat message from 游戏: 游戏未开始或已结束
+[2025-12-24 00:51:02.492] [DEBUG] GameManager::onMakeMove called, x: 8, y: 7, isLocalGame: 1
+[2025-12-24 00:51:02.493] [DEBUG] Chat message from 游戏: 游戏未开始或已结束
+[2025-12-24 00:51:03.056] [DEBUG] GameManager::onMakeMove called, x: 6, y: 7, isLocalGame: 1
+[2025-12-24 00:51:03.057] [DEBUG] Chat message from 游戏: 游戏未开始或已结束
+[2025-12-24 00:51:07.011] [DEBUG] GameManager::onMakeMove called, x: 5, y: 3, isLocalGame: 1
+[2025-12-24 00:51:07.012] [DEBUG] Chat message from 游戏: 游戏未开始或已结束
+[2025-12-24 00:51:08.656] [DEBUG] GameManager::onMakeMove called, x: 11, y: 11, isLocalGame: 1
+[2025-12-24 00:51:08.657] [DEBUG] Chat message from 游戏: 游戏未开始或已结束
+[2025-12-24 00:51:10.144] [DEBUG] GameManager::onMakeMove called, x: 7, y: 7, isLocalGame: 1
+[2025-12-24 00:51:10.145] [DEBUG] Chat message from 游戏: 游戏未开始或已结束
+[2025-12-24 00:51:10.461] [DEBUG] GameManager::onMakeMove called, x: 7, y: 8, isLocalGame: 1
+[2025-12-24 00:51:10.462] [DEBUG] Chat message from 游戏: 游戏未开始或已结束
+[2025-12-24 00:52:47.904] [DEBUG] GameManager::onMakeMove called, x: 11, y: 3, isLocalGame: 1
+[2025-12-24 00:52:47.905] [DEBUG] Chat message from 游戏: 游戏未开始或已结束
+[2025-12-24 00:53:06.779] [DEBUG] Restart button clicked
+[2025-12-24 00:53:06.781] [DEBUG] GameManager::onRestartGame called
+[2025-12-24 00:53:06.783] [DEBUG] Player list updated, count: 2
+[2025-12-24 00:53:06.784] [DEBUG] Updating player seat status: blackTaken=0, whiteTaken=0
+[2025-12-24 00:53:06.784] [DEBUG] Chat message from 游戏: 本地游戏已就绪，请在设置中启用AI对手，或点击玩家头像选择对手
+[2025-12-24 00:53:06.785] [DEBUG] Chat message from 游戏: 游戏已重新开始
+[2025-12-24 00:53:08.651] [DEBUG] Player 1 avatar clicked (black seat)
+[2025-12-24 00:53:08.653] [DEBUG] Chat message from 系统: 玩家 选择了黑棋
+[2025-12-24 00:53:08.654] [DEBUG] Player list updated, count: 2
+[2025-12-24 00:53:08.654] [DEBUG] Updating player seat status: blackTaken=1, whiteTaken=0
+[2025-12-24 00:53:08.656] [DEBUG] Updating player seat status: blackTaken=1, whiteTaken=0
+[2025-12-24 00:53:14.946] [DEBUG] AI toggled: disabled
+[2025-12-24 00:53:14.946] [DEBUG] GameManager::onAIToggled called with enabled: 0
+[2025-12-24 00:53:14.947] [DEBUG] Player list updated, count: 2
+[2025-12-24 00:53:14.947] [DEBUG] Updating player seat status: blackTaken=1, whiteTaken=0
+[2025-12-24 00:53:15.576] [DEBUG] AI toggled: enabled
+[2025-12-24 00:53:15.577] [DEBUG] GameManager::onAIToggled called with enabled: 1
+[2025-12-24 00:53:15.577] [DEBUG] Chat message from 游戏: AI对手已启用，AI将执白棋
+[2025-12-24 00:53:15.578] [DEBUG] Player list updated, count: 2
+[2025-12-24 00:53:15.579] [DEBUG] Updating player seat status: blackTaken=1, whiteTaken=1
+[2025-12-24 00:53:24.441] [DEBUG] GameManager::onMakeMove called, x: 11, y: 3, isLocalGame: 1
+[2025-12-24 00:53:24.442] [DEBUG] Chat message from 游戏: 游戏未开始或已结束
+[2025-12-24 00:53:25.521] [DEBUG] GameManager::onMakeMove called, x: 11, y: 3, isLocalGame: 1
+[2025-12-24 00:53:25.522] [DEBUG] Chat message from 游戏: 游戏未开始或已结束
+[2025-12-24 00:53:26.102] [DEBUG] GameManager::onMakeMove called, x: 11, y: 4, isLocalGame: 1
+[2025-12-24 00:53:26.103] [DEBUG] Chat message from 游戏: 游戏未开始或已结束
+[2025-12-24 00:53:28.071] [DEBUG] Restart button clicked
+[2025-12-24 00:53:28.071] [DEBUG] GameManager::onRestartGame called
+[2025-12-24 00:53:28.072] [DEBUG] Player list updated, count: 2
+[2025-12-24 00:53:28.073] [DEBUG] Updating player seat status: blackTaken=0, whiteTaken=0
+[2025-12-24 00:53:28.073] [DEBUG] Chat message from 游戏: 本地游戏已就绪，请在设置中启用AI对手，或点击玩家头像选择对手
+[2025-12-24 00:53:28.073] [DEBUG] Chat message from 游戏: 游戏已重新开始
+[2025-12-24 00:53:30.817] [DEBUG] Player 1 avatar clicked (black seat)
+[2025-12-24 00:53:30.820] [DEBUG] Chat message from 系统: 玩家 选择了黑棋
+[2025-12-24 00:53:30.820] [DEBUG] Player list updated, count: 2
+[2025-12-24 00:53:30.821] [DEBUG] Updating player seat status: blackTaken=1, whiteTaken=0
+[2025-12-24 00:53:30.822] [DEBUG] Updating player seat status: blackTaken=1, whiteTaken=0
+[2025-12-24 00:53:31.453] [DEBUG] Player 2 avatar clicked (white seat)
+[2025-12-24 00:53:31.456] [DEBUG] Chat message from 系统: 玩家2 选择了白棋
+[2025-12-24 00:53:31.456] [DEBUG] Player list updated, count: 2
+[2025-12-24 00:53:31.456] [DEBUG] Updating player seat status: blackTaken=1, whiteTaken=1
+[2025-12-24 00:53:31.470] [INFO] Game started for player: 玩家, rating: 1500
+[2025-12-24 00:53:31.470] [DEBUG] Chat message from 游戏: 游戏开始！玩家 执黑先行
+[2025-12-24 00:53:31.470] [DEBUG] Updating player seat status: blackTaken=1, whiteTaken=1
+[2025-12-24 00:53:35.253] [DEBUG] GameManager::onMakeMove called, x: 10, y: 3, isLocalGame: 1
+[2025-12-24 00:53:35.254] [DEBUG] Chat message from 游戏: 玩家 在 (10, 3) 落黑子
+[2025-12-24 00:53:35.257] [DEBUG] Chat message from 游戏: 轮到 玩家2 落子
+[2025-12-24 00:53:43.869] [DEBUG] GameManager::onMakeMove called, x: 8, y: 4, isLocalGame: 1
+[2025-12-24 00:53:43.870] [DEBUG] Chat message from 游戏: 玩家2 在 (8, 4) 落白子
+[2025-12-24 00:53:43.873] [DEBUG] Chat message from 游戏: 轮到 玩家 落子
+[2025-12-24 00:53:49.164] [DEBUG] GameManager::onMakeMove called, x: 9, y: 5, isLocalGame: 1
+[2025-12-24 00:53:49.165] [DEBUG] Chat message from 游戏: 玩家 在 (9, 5) 落黑子
+[2025-12-24 00:53:49.169] [DEBUG] Chat message from 游戏: 轮到 玩家2 落子
+[2025-12-24 00:53:50.292] [DEBUG] GameManager::onMakeMove called, x: 9, y: 4, isLocalGame: 1
+[2025-12-24 00:53:50.293] [DEBUG] Chat message from 游戏: 玩家2 在 (9, 4) 落白子
+[2025-12-24 00:53:50.295] [DEBUG] Chat message from 游戏: 轮到 玩家 落子
+[2025-12-24 00:53:52.550] [DEBUG] GameManager::onMakeMove called, x: 10, y: 5, isLocalGame: 1
+[2025-12-24 00:53:52.551] [DEBUG] Chat message from 游戏: 玩家 在 (10, 5) 落黑子
+[2025-12-24 00:53:52.556] [DEBUG] Chat message from 游戏: 轮到 玩家2 落子
+[2025-12-24 00:54:03.588] [DEBUG] Surrender button clicked
+[2025-12-24 00:54:04.764] [DEBUG] Chat message from 游戏: 玩家2 认输，玩家 获胜
+[2025-12-24 00:54:04.764] [INFO] Game ended for player: 玩家, won: 1
+[2025-12-24 00:54:15.319] [DEBUG] Back to lobby button clicked
+[2025-12-24 00:54:15.320] [DEBUG] Chat message from 游戏: 已退出本地游戏
+[2025-12-24 00:54:15.322] [DEBUG] Switching widget to index: 0
+[2025-12-24 00:54:15.323] [INFO] Switching to Lobby widget
+[2025-12-24 00:54:15.323] [DEBUG] Widget switch completed
+[2025-12-24 00:54:15.325] [DEBUG] Initializing GameWidget, islocal: 0
+[2025-12-24 00:54:15.325] [DEBUG] Updating player seat status: blackTaken=0, whiteTaken=0
+[2025-12-24 00:54:15.326] [INFO] GameWidget initialized successfully
+[2025-12-24 00:54:15.326] [DEBUG] GameManager::setLocalGame called with isLocal: 0, enableAI: 0
+[2025-12-24 00:54:15.326] [DEBUG] GameManager::setLocalGame: isLocal is false, resetting game state for online play
+[2025-12-24 00:54:16.741] [DEBUG] Local game button clicked, emitting localGame signal
+[2025-12-24 00:54:16.741] [DEBUG] localGame signal received, initializing local game
+[2025-12-24 00:54:16.742] [DEBUG] GameManager::setLocalGame called with isLocal: 1, enableAI: 0
+[2025-12-24 00:54:16.744] [DEBUG] Player list updated, count: 2
+[2025-12-24 00:54:16.744] [DEBUG] Updating player seat status: blackTaken=0, whiteTaken=0
+[2025-12-24 00:54:16.745] [DEBUG] Chat message from 游戏: 本地游戏已就绪，请在设置中启用AI对手，或点击玩家头像选择对手
+[2025-12-24 00:54:16.745] [DEBUG] Chat message from 游戏: 本地游戏已就绪
+[2025-12-24 00:54:16.747] [DEBUG] Initializing GameWidget, islocal: 1
+[2025-12-24 00:54:16.748] [DEBUG] Updating player seat status: blackTaken=0, whiteTaken=0
+[2025-12-24 00:54:16.749] [INFO] GameWidget initialized successfully
+[2025-12-24 00:54:16.749] [DEBUG] Switching widget to index: 1
+[2025-12-24 00:54:16.749] [INFO] Switching to Game widget
+[2025-12-24 00:54:16.750] [DEBUG] Widget switch completed
+[2025-12-24 00:54:20.261] [DEBUG] AI toggled: disabled
+[2025-12-24 00:54:20.261] [DEBUG] GameManager::onAIToggled called with enabled: 0
+[2025-12-24 00:54:20.262] [DEBUG] Player list updated, count: 2
+[2025-12-24 00:54:20.262] [DEBUG] Updating player seat status: blackTaken=0, whiteTaken=0
+[2025-12-24 00:54:20.681] [DEBUG] AI toggled: enabled
+[2025-12-24 00:54:20.681] [DEBUG] GameManager::onAIToggled called with enabled: 1
+[2025-12-24 00:54:20.682] [DEBUG] Chat message from 游戏: AI对手已启用，AI将执白棋
+[2025-12-24 00:54:20.682] [DEBUG] Player list updated, count: 2
+[2025-12-24 00:54:20.683] [DEBUG] Updating player seat status: blackTaken=0, whiteTaken=1
+[2025-12-24 00:54:24.485] [DEBUG] Player 1 avatar clicked (black seat)
+[2025-12-24 00:54:24.487] [DEBUG] Chat message from 系统: 玩家 选择了黑棋
+[2025-12-24 00:54:24.487] [DEBUG] Player list updated, count: 2
+[2025-12-24 00:54:24.487] [DEBUG] Updating player seat status: blackTaken=1, whiteTaken=1
+[2025-12-24 00:54:24.503] [INFO] Game started for player: 玩家, rating: 1500
+[2025-12-24 00:54:24.504] [DEBUG] Chat message from 游戏: 游戏开始！玩家 执黑先行
+[2025-12-24 00:54:24.504] [DEBUG] Updating player seat status: blackTaken=1, whiteTaken=1
+[2025-12-24 00:54:31.498] [DEBUG] GameManager::onMakeMove called, x: 10, y: 5, isLocalGame: 1
+[2025-12-24 00:54:31.499] [DEBUG] Chat message from 游戏: 玩家 在 (10, 5) 落黑子
+[2025-12-24 00:54:31.502] [DEBUG] Chat message from 游戏: 轮到 AI玩家 落子
+[2025-12-24 00:54:32.301] [DEBUG] Chat message from 游戏: AI玩家 在 (9, 6) 落白子
+[2025-12-24 00:54:32.305] [DEBUG] Chat message from 游戏: 轮到 玩家 落子
+[2025-12-24 00:54:36.210] [DEBUG] GameManager::onMakeMove called, x: 8, y: 5, isLocalGame: 1
+[2025-12-24 00:54:36.211] [DEBUG] Chat message from 游戏: 玩家 在 (8, 5) 落黑子
+[2025-12-24 00:54:36.214] [DEBUG] Chat message from 游戏: 轮到 AI玩家 落子
+[2025-12-24 00:54:37.067] [DEBUG] Chat message from 游戏: AI玩家 在 (7, 7) 落白子
+[2025-12-24 00:54:37.071] [DEBUG] Chat message from 游戏: 轮到 玩家 落子
+[2025-12-24 00:54:39.255] [DEBUG] GameManager::onMakeMove called, x: 9, y: 7, isLocalGame: 1
+[2025-12-24 00:54:39.256] [DEBUG] Chat message from 游戏: 玩家 在 (9, 7) 落黑子
+[2025-12-24 00:54:39.258] [DEBUG] Chat message from 游戏: 轮到 AI玩家 落子
+[2025-12-24 00:54:40.289] [DEBUG] Chat message from 游戏: AI玩家 在 (10, 8) 落白子
+[2025-12-24 00:54:40.294] [DEBUG] Chat message from 游戏: 轮到 玩家 落子
+[2025-12-24 00:54:41.920] [DEBUG] GameManager::onMakeMove called, x: 10, y: 6, isLocalGame: 1
+[2025-12-24 00:54:41.921] [DEBUG] Chat message from 游戏: 玩家 在 (10, 6) 落黑子
+[2025-12-24 00:54:41.924] [DEBUG] Chat message from 游戏: 轮到 AI玩家 落子
+[2025-12-24 00:54:42.834] [DEBUG] Chat message from 游戏: AI玩家 在 (9, 5) 落白子
+[2025-12-24 00:54:42.837] [DEBUG] Chat message from 游戏: 轮到 玩家 落子
+[2025-12-24 00:54:44.442] [DEBUG] GameManager::onMakeMove called, x: 8, y: 6, isLocalGame: 1
+[2025-12-24 00:54:44.443] [DEBUG] Chat message from 游戏: 玩家 在 (8, 6) 落黑子
+[2025-12-24 00:54:44.446] [DEBUG] Chat message from 游戏: 轮到 AI玩家 落子
+[2025-12-24 00:54:45.448] [DEBUG] Chat message from 游戏: AI玩家 在 (11, 8) 落白子
+[2025-12-24 00:54:45.454] [DEBUG] Chat message from 游戏: 轮到 玩家 落子
+[2025-12-24 00:54:51.148] [DEBUG] GameManager::onMakeMove called, x: 8, y: 8, isLocalGame: 1
+[2025-12-24 00:54:51.149] [DEBUG] Chat message from 游戏: 玩家 在 (8, 8) 落黑子
+[2025-12-24 00:54:51.152] [DEBUG] Chat message from 游戏: 轮到 AI玩家 落子
+[2025-12-24 00:54:51.956] [DEBUG] Chat message from 游戏: AI玩家 在 (8, 7) 落白子
+[2025-12-24 00:54:51.960] [DEBUG] Chat message from 游戏: 轮到 玩家 落子
+[2025-12-24 00:54:52.889] [DEBUG] GameManager::onMakeMove called, x: 11, y: 6, isLocalGame: 1
+[2025-12-24 00:54:52.890] [DEBUG] Chat message from 游戏: 玩家 在 (11, 6) 落黑子
+[2025-12-24 00:54:52.893] [DEBUG] Chat message from 游戏: 轮到 AI玩家 落子
+[2025-12-24 00:54:53.885] [DEBUG] Chat message from 游戏: AI玩家 在 (9, 9) 落白子
+[2025-12-24 00:54:53.888] [DEBUG] Chat message from 游戏: 轮到 玩家 落子
+[2025-12-24 00:54:56.771] [DEBUG] GameManager::onMakeMove called, x: 11, y: 5, isLocalGame: 1
+[2025-12-24 00:54:56.772] [DEBUG] Chat message from 游戏: 玩家 在 (11, 5) 落黑子
+[2025-12-24 00:54:56.775] [DEBUG] Chat message from 游戏: 轮到 AI玩家 落子
+[2025-12-24 00:54:57.726] [DEBUG] Chat message from 游戏: AI玩家 在 (11, 7) 落白子
+[2025-12-24 00:54:57.730] [DEBUG] Chat message from 游戏: 轮到 玩家 落子
+[2025-12-24 00:55:00.723] [DEBUG] GameManager::onMakeMove called, x: 12, y: 4, isLocalGame: 1
+[2025-12-24 00:55:00.725] [DEBUG] Chat message from 游戏: 玩家 在 (12, 4) 落黑子
+[2025-12-24 00:55:00.728] [DEBUG] Chat message from 游戏: 玩家 五子连珠，获胜！
+[2025-12-24 00:55:00.728] [INFO] Game ended for player: 玩家, won: 1
+[2025-12-24 00:55:17.736] [INFO] MainWindow destructor called
+[2025-12-24 00:55:17.736] [DEBUG] Cleaning up UI...
+[2025-12-24 00:55:17.736] [DEBUG] Cleaning up Manager...
+[2025-12-24 00:55:17.736] [INFO] Manager destructor called
+[2025-12-24 00:55:17.737] [DEBUG] Disconnecting client...
+[2025-12-24 00:55:17.737] [DEBUG] Disconnect called, setting is_running to false
+[2025-12-24 00:55:17.737] [DEBUG] Current socket value before disconnect: 1068
+[2025-12-24 00:55:17.737] [DEBUG] Waiting for worker thread to finish...
+[2025-12-24 00:55:17.832] [DEBUG] Worker thread joined successfully.
+[2025-12-24 00:55:17.832] [DEBUG] Closing socket
+[2025-12-24 00:55:17.833] [DEBUG] Socket closed and set to INVALID_SOCKET
+[2025-12-24 00:55:17.833] [DEBUG] Resetting session context
+[2025-12-24 00:55:17.833] [DEBUG] Calling disconnectedCallback from Disconnect()
+[2025-12-24 00:55:17.833] [INFO] Disconnected from server callback triggered
+[2025-12-24 00:55:17.836] [INFO] Client disconnected successfully.
+[2025-12-24 00:55:17.836] [DEBUG] Client destructor called
+[2025-12-24 00:55:17.836] [DEBUG] Disconnect called, setting is_running to false
+[2025-12-24 00:55:17.836] [DEBUG] Current socket value before disconnect: -1
+[2025-12-24 00:55:17.836] [DEBUG] Worker thread is not joinable or already finished
+[2025-12-24 00:55:17.836] [DEBUG] Socket is already INVALID_SOCKET, skipping close
+[2025-12-24 00:55:17.836] [DEBUG] Calling disconnectedCallback from Disconnect()
+[2025-12-24 00:55:17.837] [INFO] Disconnected from server callback triggered
+[2025-12-24 00:55:17.837] [INFO] Client disconnected successfully.
+[2025-12-24 00:55:17.837] [DEBUG] Client cleanup completed
+[2025-12-24 00:55:17.837] [DEBUG] Client disconnected and reset
+[2025-12-24 00:55:17.838] [INFO] Manager cleanup completed
+[2025-12-24 00:55:17.838] [DEBUG] Cleaning up ToastWidget...
+[2025-12-24 00:55:17.842] [DEBUG] Shutting down Logger...
+[2025-12-24 00:55:17.842] [INFO] Logger shutting down.
