@@ -71,6 +71,9 @@ signals:
     // 本地游戏专用信号
     void localGameBackToLobby();
 
+    // 棋盘更新信号（用于触发重绘）
+    void boardUpdated();
+
 private:
     // 本地游戏处理方法
     void handleLocalMove(int x, int y);

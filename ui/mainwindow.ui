@@ -203,7 +203,7 @@ file:///E:/Dev/Gomoku-frontend/src/style.qss</string>
        <item>
         <widget class="QPushButton" name="userInfoButton">
          <property name="text">
-          <string>游客 | 等级分: 1500</string>
+          <string>未登录</string>
          </property>
          <property name="flat">
           <bool>true</bool>

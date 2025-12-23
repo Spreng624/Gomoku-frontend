@@ -246,6 +246,14 @@ void MainWindow::SetUpSignals()
     connect(gameManager.get(), &GameManager::playerListUpdated, game, &GameWidget::onPlayerListUpdated);
     connect(gameManager.get(), &GameManager::updateRoomPlayerList, game, &GameWidget::updateRoomPlayerList);
 
+    // GameManager -> ChessBoardWidget (触发棋盘重绘)
+    connect(gameManager.get(), &GameManager::boardUpdated, this, [this]()
+            {
+        qDebug() << "Board updated signal received, refreshing chess board";
+        if (game && game->getChessBoard()) {
+            game->getChessBoard()->refreshBoard();
+        } });
+
     // GameManager 本地游戏返回大厅
     connect(gameManager.get(), &GameManager::localGameBackToLobby, this, [this]()
             {
@@ -369,7 +377,7 @@ void MainWindow::setUserInfo(const QString &username, int rating)
     {
         if (username.isEmpty())
         {
-            userInfoButton->setText(QString("游客 | 等级分: %1").arg(rating));
+            userInfoButton->setText(QString("未登录").arg(rating));
         }
         else
         {
@@ -556,7 +564,7 @@ void MainWindow::initStatusBar()
     {
         LOG_DEBUG("userInfoButton found");
         // 设置初始用户信息
-        userInfoButton->setText("游客 | 等级分: 1500");
+        userInfoButton->setText("未登录");
         // 连接点击信号
         connect(userInfoButton, &QPushButton::clicked, this, &MainWindow::onUserInfoButtonClicked);
     }

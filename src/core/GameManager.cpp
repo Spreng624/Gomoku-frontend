@@ -248,6 +248,7 @@ void GameManager::onMakeMove(int x, int y)
     {
         qDebug() << "Local game, calling handleLocalMove";
         handleLocalMove(x, y);
+        // 本地游戏在handleLocalMove中会触发棋盘重绘
     }
     else
     {
@@ -270,7 +271,8 @@ void GameManager::onMakeMove(int x, int y)
             {
                 // 发送信号通知棋盘更新
                 // 棋盘部件会通过Game实例获取更新后的状态
-                qDebug() << "Optimistic update successful, board should be redrawn";
+                qDebug() << "Optimistic update successful, emitting boardUpdated signal";
+                emit boardUpdated();
             }
         }
 
@@ -397,6 +399,9 @@ void GameManager::handleLocalMove(int x, int y)
     QString playerName = (currentPlayer == Piece::BLACK) ? playerBlackName : playerWhiteName;
     QString piece = (currentPlayer == Piece::BLACK) ? "黑子" : "白子";
     sendLocalGameMessage(playerName + " 在 (" + QString::number(x) + ", " + QString::number(y) + ") 落" + piece);
+
+    // 触发棋盘重绘
+    emit boardUpdated();
 
     // 检查游戏是否结束
     checkLocalGameEnd(x, y, currentPlayer);
