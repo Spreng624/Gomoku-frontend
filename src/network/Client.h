@@ -47,6 +47,12 @@ private:
     // Packet回调函数
     std::function<void(const Packet &)> packetCallback;
 
+    // Session成功回调函数
+    std::function<void(uint64_t sessionId)> sessionActivatedCallback;
+
+    // 断开连接回调函数
+    std::function<void()> disconnectedCallback;
+
     // 网络基础函数 (复用 Server 风格)
     bool InitializeNetworking();
     void CleanupNetworking();
@@ -73,6 +79,12 @@ public:
 
     // 设置Packet回调
     void SetPacketCallback(std::function<void(const Packet &)> callback);
+
+    // 设置Session激活回调
+    void SetSessionActivatedCallback(std::function<void(uint64_t sessionId)> callback);
+
+    // 设置断开连接回调
+    void SetDisconnectedCallback(std::function<void()> callback);
 };
 
 #endif

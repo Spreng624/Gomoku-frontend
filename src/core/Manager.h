@@ -30,8 +30,6 @@ public:
     ~Manager();
 
     void connectToServer();
-    void disconnectFromServer();
-    void isOnline(); // 联网检查
 
 public slots:
     // StatusBar

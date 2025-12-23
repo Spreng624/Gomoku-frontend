@@ -35,6 +35,7 @@ signals:
 
 private slots:
     void onSwitchWidget(int index);
+    void onUserInfoButtonClicked();
 
 private:
     void initStyle();
@@ -51,6 +52,9 @@ private:
     // 提示消息方法
     void showToastMessage(const QString &message, int duration = 3000);
 
+    // 背景验证方法
+    void validateWindowBackground();
+
     // UI成员
     Ui::MainWindow *ui;
 
@@ -64,8 +68,8 @@ private:
     // 自定义状态栏组件
     QWidget *statusBarWidget;
     QLabel *statusMessageLabel;
-    QLabel *networkStatusLabel;
-    QLabel *userInfoLabel;
+    QPushButton *networkStatusButton;
+    QPushButton *userInfoButton;
 
     // 原有成员变量
     QStackedWidget *stackedWidget;

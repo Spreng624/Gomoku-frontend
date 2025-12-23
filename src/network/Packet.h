@@ -41,6 +41,8 @@ enum MsgType : uint32_t
     StartGame,
     EditRoomSetting,
 
+    ChatMessage,
+
     // 0x400-0x4FF 游戏操作（请求）
     MakeMove = 0x400,
     UndoMoveRequest,
