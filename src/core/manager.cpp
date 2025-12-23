@@ -41,6 +41,8 @@ Manager::Manager(QObject *parent)
         this->sessionId = sessionId;
         connected = true;
         emit connectionStatusChanged(true);
+        freshLobbyPlayerList();
+        freshLobbyRoomList();
         emit logToUser("已连接到服务器"); });
     client->SetDisconnectedCallback([this]()
                                     {
