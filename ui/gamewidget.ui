@@ -176,7 +176,7 @@
                </size>
               </property>
               <property name="toolTip">
-               <string>点击就坐（黑棋）</string>
+               <string>就坐</string>
               </property>
              </widget>
             </item>
@@ -235,7 +235,7 @@
                </size>
               </property>
               <property name="toolTip">
-               <string>点击就坐（白棋）</string>
+               <string>就坐</string>
               </property>
              </widget>
             </item>
@@ -292,9 +292,9 @@
           <number>0</number>
          </property>
          <item>
-          <widget class="QPushButton" name="surrenderButton">
+          <widget class="QPushButton" name="startGameButton">
            <property name="text">
-            <string>認輸</string>
+            <string>开始游戏</string>
            </property>
            <property name="minimumSize">
             <size>
@@ -308,6 +308,19 @@
           <widget class="QPushButton" name="undoButton">
            <property name="text">
             <string>悔棋</string>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>40</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="surrenderButton">
+           <property name="text">
+            <string>认输</string>
            </property>
            <property name="minimumSize">
             <size>

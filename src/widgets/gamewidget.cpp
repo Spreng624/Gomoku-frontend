@@ -63,6 +63,7 @@ void GameWidget::initUI()
     // 设置按钮状态
     ui->surrenderButton->setEnabled(false);
     ui->undoButton->setEnabled(false);
+    ui->startGameButton->setEnabled(true); // 开始游戏按钮初始可用
     ui->sendButton->setEnabled(true);
     ui->backToLobbyButton->setEnabled(true);
     ui->restartButton->setEnabled(false);
@@ -80,6 +81,7 @@ void GameWidget::setupConnections()
     connect(ui->backToLobbyButton, &QPushButton::clicked, this, &GameWidget::onBackToLobbyButtonClicked);
     connect(ui->surrenderButton, &QPushButton::clicked, this, &GameWidget::onSurrenderButtonClicked);
     connect(ui->undoButton, &QPushButton::clicked, this, &GameWidget::onUndoButtonClicked);
+    connect(ui->startGameButton, &QPushButton::clicked, this, &GameWidget::onStartGameButtonClicked);
     connect(ui->sendButton, &QPushButton::clicked, this, &GameWidget::onSendButtonClicked);
     connect(ui->minimizeBtn, &QPushButton::clicked, this, &GameWidget::onMinimizeBtnClicked);
     connect(ui->closeBtn, &QPushButton::clicked, this, &GameWidget::onCloseBtnClicked);
@@ -143,12 +145,14 @@ void GameWidget::updateGameStatus(bool isGameStarted, bool isGameOver)
         ui->gameIdLabel->setText("游戏结束");
         ui->surrenderButton->setEnabled(false);
         ui->undoButton->setEnabled(false);
+        ui->startGameButton->setEnabled(false); // 游戏结束，不能开始游戏
     }
     else if (isGameStarted)
     {
         ui->gameIdLabel->setText("游戏中");
         ui->surrenderButton->setEnabled(true);
         ui->undoButton->setEnabled(true);
+        ui->startGameButton->setEnabled(false); // 游戏已开始，不能再次开始
         ui->restartButton->setEnabled(false);
     }
     else
@@ -156,6 +160,7 @@ void GameWidget::updateGameStatus(bool isGameStarted, bool isGameOver)
         ui->gameIdLabel->setText("等待开始");
         ui->surrenderButton->setEnabled(false);
         ui->undoButton->setEnabled(false);
+        ui->startGameButton->setEnabled(true); // 游戏未开始，可以开始游戏
         ui->restartButton->setEnabled(true);
     }
 }
@@ -195,16 +200,19 @@ void GameWidget::initGameWidget(bool islocal)
     updateGameStatus(false, false);     // 游戏未开始，未结束
 
     // 根据游戏模式设置UI
-    if (islocal) {
+    if (islocal)
+    {
         // 本地游戏：隐藏聊天tab，只显示记录和玩家tab
         ui->tabWidget->setTabEnabled(0, false); // 隐藏聊天tab
-        ui->tabWidget->setCurrentIndex(1); // 默认显示记录tab
-        ui->restartButton->show(); // 显示重新开始按钮
-    } else {
+        ui->tabWidget->setCurrentIndex(1);      // 默认显示记录tab
+        ui->restartButton->show();              // 显示重新开始按钮
+    }
+    else
+    {
         // 在线游戏：显示所有tab
         ui->tabWidget->setTabEnabled(0, true); // 显示聊天tab
-        ui->tabWidget->setCurrentIndex(0); // 默认显示聊天tab
-        ui->restartButton->hide(); // 隐藏重新开始按钮（在线游戏不支持）
+        ui->tabWidget->setCurrentIndex(0);     // 默认显示聊天tab
+        ui->restartButton->hide();             // 隐藏重新开始按钮（在线游戏不支持）
     }
 
     // 添加欢迎消息
@@ -511,4 +519,10 @@ void GameWidget::onRestartButtonClicked()
 {
     LOG_DEBUG("Restart button clicked");
     emit restartGame();
+}
+
+void GameWidget::onStartGameButtonClicked()
+{
+    LOG_DEBUG("Start game button clicked");
+    emit startGame();
 }

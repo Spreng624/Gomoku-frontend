@@ -204,7 +204,7 @@ void Manager::freshLobbyPlayerList()
     if (!connected)
         return;
 
-    Packet packet(sessionId, MsgType::SubscribeUserList);
+    Packet packet(sessionId, MsgType::GetUserList);
     sendPacket(packet);
 }
 
@@ -213,7 +213,7 @@ void Manager::freshLobbyRoomList()
     if (!connected)
         return;
 
-    Packet packet(sessionId, MsgType::SubscribeRoomList);
+    Packet packet(sessionId, MsgType::GetRoomList);
     sendPacket(packet);
 }
 
@@ -305,8 +305,19 @@ void Manager::chatMessageSent(const QString &message)
 
 void Manager::makeMove(int x, int y)
 {
-    if (!connected || !inGame)
+    if (!connected)
+    {
+        LOG_WARN("Cannot make move: client not connected to server");
+        logToUser("未连接到服务器");
         return;
+    }
+
+    if (!inGame)
+    {
+        LOG_WARN("Cannot make move: not currently in a game");
+        logToUser("当前不在游戏中，无法落子");
+        return;
+    }
 
     Packet packet(sessionId, MsgType::MakeMove);
     packet.AddParam("room_id", currentRoomId);
@@ -684,15 +695,15 @@ void Manager::handlePacket(const Packet &packet)
         // 处理用户信息查询结果
         break;
     }
-    case MsgType::SubscribeUserList:
+    case MsgType::GetUserList:
     {
         // 解析用户列表
-        std::string userListStr = packet.GetParam<std::string>("user_list", "");
+        std::string userListStr = packet.GetParam<std::string>("player_list", "");
         QStringList users = QString::fromStdString(userListStr).split(',', Qt::SkipEmptyParts);
         emit updateLobbyPlayerList(users);
         break;
     }
-    case MsgType::SubscribeRoomList:
+    case MsgType::GetRoomList:
     {
         // 解析房间列表
         std::string roomListStr = packet.GetParam<std::string>("room_list", "");
