@@ -188,16 +188,28 @@ file:///E:/Dev/Gomoku-frontend/src/style.qss</string>
         </spacer>
        </item>
        <item>
-        <widget class="QLabel" name="networkStatusLabel">
+        <widget class="QPushButton" name="networkStatusButton">
          <property name="text">
           <string>● 离线</string>
+         </property>
+         <property name="flat">
+          <bool>true</bool>
+         </property>
+         <property name="cursor">
+          <cursorShape>PointingHandCursor</cursorShape>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QLabel" name="userInfoLabel">
+        <widget class="QPushButton" name="userInfoButton">
          <property name="text">
           <string>游客 | 等级分: 1500</string>
+         </property>
+         <property name="flat">
+          <bool>true</bool>
+         </property>
+         <property name="cursor">
+          <cursorShape>PointingHandCursor</cursorShape>
          </property>
         </widget>
        </item>

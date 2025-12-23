@@ -43,16 +43,6 @@ bool Client::SetNonBlocking(SOCKET_TYPE s)
 }
 #endif
 
-int printHex(const std::vector<uint8_t> &data)
-{
-    for (auto byte : data)
-    {
-        printf("%02X ", byte);
-    }
-    printf("\n");
-    return 0;
-}
-
 // --- Client 实现 ---
 
 Client::Client(const std::string &ip, int port)
@@ -61,6 +51,8 @@ Client::Client(const std::string &ip, int port)
     // 初始 Context 为空，连接建立后再初始化
     context = nullptr;
     packetCallback = nullptr;
+    sessionActivatedCallback = nullptr;
+    disconnectedCallback = nullptr;
 
     LOG_DEBUG("Client constructor called for " + ip + ":" + std::to_string(port));
 
@@ -97,8 +89,6 @@ Client::~Client()
 
 bool Client::Connect()
 {
-    LOG_INFO("Attempting to connect to server " + server_ip + ":" + std::to_string(server_port));
-
     sockaddr_in server_addr;
     server_addr.sin_family = AF_INET;
     server_addr.sin_port = htons(server_port);
@@ -120,6 +110,20 @@ bool Client::Connect()
     else
     {
         LOG_DEBUG("Socket set to non-blocking mode");
+    }
+
+    LOG_DEBUG("Disconnect called, setting is_running to false");
+    is_running = false;
+
+    if (worker_thread.joinable())
+    {
+        LOG_DEBUG("Waiting for worker thread to finish...");
+        worker_thread.join();
+        LOG_DEBUG("Worker thread joined successfully.");
+    }
+    else
+    {
+        LOG_DEBUG("Worker thread is not joinable or already finished");
     }
 
     is_running = true;
@@ -159,6 +163,13 @@ int Client::Disconnect()
     {
         LOG_DEBUG("Resetting session context");
         context.reset();
+    }
+
+    // 触发断开连接回调
+    if (disconnectedCallback)
+    {
+        LOG_DEBUG("Calling disconnectedCallback from Disconnect()");
+        disconnectedCallback();
     }
 
     LOG_INFO("Client disconnected successfully.");
@@ -213,6 +224,13 @@ void Client::MainLoop()
             {
                 LOG_WARN("Server disconnected.");
                 is_running = false;
+
+                // 触发断开连接回调
+                if (disconnectedCallback)
+                {
+                    LOG_DEBUG("Calling disconnectedCallback");
+                    disconnectedCallback();
+                }
             }
         }
 
@@ -222,7 +240,7 @@ void Client::MainLoop()
         {
             SendPacket(Packet());
             lastHeartbeatTime = currentTime;
-            LOG_DEBUG("Heartbeat sent.");
+            LOG_TRACE("Heartbeat sent.");
         }
     }
 }
@@ -235,8 +253,7 @@ int Client::SendFrame(Frame frame)
         return -1;
     }
     std::vector<uint8_t> data = frame.ToBytes();
-    printHex(data);
-    LOG_DEBUG("Sending frame: " + std::to_string((int)frame.head.status));
+    LOG_TRACE("Sending frame: " + std::to_string((int)frame.head.status));
     int sent = send(sock, reinterpret_cast<const char *>(data.data()), (int)data.size(), 0);
     return sent;
 }
@@ -248,8 +265,7 @@ int Client::OnFrame(Frame frame)
     {
     case Frame::Status::NewSession:
         // Step 1: 服务器分配了 SessionID
-        LOG_INFO("[Handshake] Received NewSession. ID: " + std::to_string(frame.head.sessionId));
-        printHex(frame.ToBytes());
+        LOG_DEBUG("[Handshake] Received NewSession. ID: " + std::to_string(frame.head.sessionId));
         context = std::make_unique<SessionContext>((int)sock, (uint64_t)frame.head.sessionId);
 
         // 保存服务器公钥 (假设 frame.data 包含 pk + sig)
@@ -283,6 +299,13 @@ int Client::OnFrame(Frame frame)
             LOG_INFO("[Handshake] Session Activated!");
             context->CalculateSharedKey();
             context->isActive = true;
+
+            // 触发Session激活回调
+            if (sessionActivatedCallback)
+            {
+                LOG_DEBUG("Calling sessionActivatedCallback with sessionId: " + std::to_string(context->sessionId));
+                sessionActivatedCallback(context->sessionId);
+            }
         }
         break;
 
@@ -292,7 +315,7 @@ int Client::OnFrame(Frame frame)
         break;
 
     case Frame::Status::Active:
-        LOG_DEBUG("Received Active frame.");
+        LOG_TRACE("Received Active frame.");
         // 收到业务数据
         if (context && context->isActive)
         {
@@ -303,7 +326,7 @@ int Client::OnFrame(Frame frame)
                 Packet packet;
                 if (packet.FromData(context->sessionId, frame.data))
                 {
-                    LOG_DEBUG("[Packet] Received Packet Type: " + std::to_string((int)packet.msgType));
+                    LOG_TRACE("Received Packet");
                     // 调用回调函数将Packet传递给上层
                     if (packetCallback)
                     {
@@ -373,7 +396,19 @@ void Client::SetPacketCallback(std::function<void(const Packet &)> callback)
     packetCallback = callback;
 }
 
+void Client::SetSessionActivatedCallback(std::function<void(uint64_t sessionId)> callback)
+{
+    sessionActivatedCallback = callback;
+}
+
+void Client::SetDisconnectedCallback(std::function<void()> callback)
+{
+    disconnectedCallback = callback;
+}
+
 uint64_t Client::GetSessionId() const
 {
-    return context->sessionId;
+    if (context)
+        return context->sessionId;
+    return 0;
 }

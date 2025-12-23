@@ -22,8 +22,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
                                           closeButton(nullptr),
                                           statusBarWidget(nullptr),
                                           statusMessageLabel(nullptr),
-                                          networkStatusLabel(nullptr),
-                                          userInfoLabel(nullptr),
+                                          networkStatusButton(nullptr),
+                                          userInfoButton(nullptr),
                                           stackedWidget(nullptr),
                                           lobby(nullptr),
                                           game(nullptr),
@@ -33,15 +33,14 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
                                           maximized(false),
                                           toastWidget(nullptr)
 {
-    LOG_INFO("MainWindow constructor called");
+    LOG_INFO("Initializing...");
+
     Logger::init("logs/gomoku.log", LogLevel::DEBUG, true);
     LOG_DEBUG("Logger initialized with DEBUG level");
 
-    // 设置UI
     LOG_DEBUG("Setting up UI...");
     ui->setupUi(this);
 
-    // 初始化 Manager 与 Widget
     LOG_DEBUG("Creating Manager instance...");
     manager = std::make_unique<Manager>();
 
@@ -104,6 +103,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     // 显示欢迎消息
     QTimer::singleShot(1000, this, [this]()
                        { showToastMessage("欢迎来到五子棋游戏！"); });
+
+    // 【修复验证】：验证窗口背景设置
+    validateWindowBackground();
 
     LOG_INFO("MainWindow initialization completed successfully");
 }
@@ -283,21 +285,51 @@ void MainWindow::onSwitchWidget(int index)
 
 void MainWindow::initStyle()
 {
-    setWindowFlags(Qt::FramelessWindowHint | Qt::WindowSystemMenuHint | Qt::WindowMinimizeButtonHint);
+    LOG_DEBUG("Initializing window style...");
 
+    // 【修复1】：对于无边框窗口，必须设置明确的背景色
+    // 先设置背景色，再设置窗口标志
+    setAttribute(Qt::WA_StyledBackground, true);
+
+    // 设置窗口背景色为白色 - 这是解决黑色背景的关键
+    QString mainWindowStyle = "QMainWindow {"
+                              "    background-color: white;"
+                              "    border: none;"
+                              "}";
+    setStyleSheet(mainWindowStyle);
+    LOG_DEBUG("Set main window background to white");
+
+    // 记录当前窗口标志
+    Qt::WindowFlags flags = Qt::FramelessWindowHint | Qt::WindowSystemMenuHint | Qt::WindowMinimizeButtonHint;
+    LOG_DEBUG_FMT("Setting window flags: FramelessWindowHint | WindowSystemMenuHint | WindowMinimizeButtonHint");
+    setWindowFlags(flags);
+
+    // 【修复2】：对于无边框窗口，需要设置不透明背景
     // 注释掉透明背景，因为透明背景会导致样式表背景色不显示
     // setAttribute(Qt::WA_TranslucentBackground);
+    LOG_DEBUG("WA_TranslucentBackground is commented out (not set)");
 
     // 设置不透明背景
     setAttribute(Qt::WA_OpaquePaintEvent);
+    LOG_DEBUG("WA_OpaquePaintEvent attribute set");
 
     // 允许任务栏点击最小化
     setWindowFlags(windowFlags() | Qt::Window);
+    LOG_DEBUG("Added Qt::Window flag for taskbar interaction");
 
     this->resize(1000, 700);
+    LOG_DEBUG_FMT("Window size set to: %dx%d", 1000, 700);
 
-    // 设置窗口背景色为白色，确保有背景
-    setStyleSheet("QMainWindow { background-color: white; }");
+    // 【修复3】：确保窗口有正确的背景角色
+    QPalette pal = palette();
+    pal.setColor(QPalette::Window, QColor(255, 255, 255)); // 白色
+    setPalette(pal);
+    LOG_DEBUG("Set window palette to white background");
+
+    // 检查样式表是否应用成功
+    LOG_DEBUG_FMT("Current stylesheet: %s", this->styleSheet().toStdString().c_str());
+    LOG_DEBUG_FMT("Window background role color: %s",
+                  this->palette().color(QPalette::Window).name().toStdString().c_str());
 }
 
 void MainWindow::setStatusMessage(const QString &message)
@@ -310,17 +342,17 @@ void MainWindow::setStatusMessage(const QString &message)
 
 void MainWindow::setNetworkStatus(bool connected)
 {
-    if (networkStatusLabel)
+    if (networkStatusButton)
     {
         if (connected)
         {
-            networkStatusLabel->setText("● 在线");
-            networkStatusLabel->setStyleSheet("color: #1a7f37;"); // 绿色
+            networkStatusButton->setText("● 在线");
+            networkStatusButton->setStyleSheet("color: #1a7f37;"); // 绿色
         }
         else
         {
-            networkStatusLabel->setText("● 离线");
-            networkStatusLabel->setStyleSheet("color: #cf222e;"); // 红色
+            networkStatusButton->setText("● 离线");
+            networkStatusButton->setStyleSheet("color: #cf222e;"); // 红色
         }
     }
     networkConnected = connected;
@@ -330,15 +362,15 @@ void MainWindow::setUserInfo(const QString &username, int rating)
 {
     currentUsername = username;
     currentRating = rating;
-    if (userInfoLabel)
+    if (userInfoButton)
     {
         if (username.isEmpty())
         {
-            userInfoLabel->setText(QString("游客 | 等级分: %1").arg(rating));
+            userInfoButton->setText(QString("游客 | 等级分: %1").arg(rating));
         }
         else
         {
-            userInfoLabel->setText(QString("%1 | 等级分: %2").arg(username).arg(rating));
+            userInfoButton->setText(QString("%1 | 等级分: %2").arg(username).arg(rating));
         }
     }
 }
@@ -362,6 +394,8 @@ void MainWindow::initLayout()
     {
         LOG_DEBUG("centralwidget found at address: " + std::to_string((long long)centralWidget));
         LOG_DEBUG("centralwidget object name: " + centralWidget->objectName().toStdString());
+        LOG_DEBUG("centralwidget geometry: " + std::to_string(centralWidget->geometry().width()) +
+                  "x" + std::to_string(centralWidget->geometry().height()));
     }
 
     // 2. 设置centralwidget的对象名，以便QSS选择器可以匹配
@@ -371,6 +405,17 @@ void MainWindow::initLayout()
     // 【核心修复 1】：必须设置此属性，否则在透明窗口下 QSS 背景色不显示
     centralWidget->setAttribute(Qt::WA_StyledBackground, true);
     LOG_DEBUG("centralwidget WA_StyledBackground attribute set");
+
+    // 检查centralwidget的背景角色
+    QPalette pal = centralWidget->palette();
+    LOG_DEBUG_FMT("centralwidget palette background color: %s",
+                  pal.color(QPalette::Window).name().toStdString().c_str());
+
+    // 设置明确的背景色
+    centralWidget->setAutoFillBackground(true);
+    pal.setColor(QPalette::Window, QColor(255, 255, 255)); // 白色
+    centralWidget->setPalette(pal);
+    LOG_DEBUG("Set centralwidget palette to white background");
 
     // 注意：不要再次调用setCentralWidget，因为ui->setupUi已经设置了
     // setCentralWidget(centralWidget);
@@ -479,29 +524,38 @@ void MainWindow::initStatusBar()
         statusMessageLabel->setText("准备就绪");
     }
 
-    networkStatusLabel = ui->networkStatusLabel;
-    if (!networkStatusLabel)
+    networkStatusButton = ui->networkStatusButton;
+    if (!networkStatusButton)
     {
-        LOG_WARN("networkStatusLabel not found!");
+        LOG_WARN("networkStatusButton not found!");
     }
     else
     {
-        LOG_DEBUG("networkStatusLabel found");
+        LOG_DEBUG("networkStatusButton found");
         // 设置初始网络状态为离线
-        networkStatusLabel->setText("● 离线");
-        networkStatusLabel->setStyleSheet("color: #cf222e;"); // 红色
+        networkStatusButton->setText("● 离线");
+        networkStatusButton->setStyleSheet("color: #cf222e;"); // 红色
+        // 连接点击信号
+        connect(networkStatusButton, &QPushButton::clicked, this, [this]()
+                {
+            LOG_DEBUG("Network status button clicked, calling manager->reConnect()");
+            if (manager) {
+                manager->reConnect();
+            } });
     }
 
-    userInfoLabel = ui->userInfoLabel;
-    if (!userInfoLabel)
+    userInfoButton = ui->userInfoButton;
+    if (!userInfoButton)
     {
-        LOG_WARN("userInfoLabel not found!");
+        LOG_WARN("userInfoButton not found!");
     }
     else
     {
-        LOG_DEBUG("userInfoLabel found");
+        LOG_DEBUG("userInfoButton found");
         // 设置初始用户信息
-        userInfoLabel->setText("游客 | 等级分: 1500");
+        userInfoButton->setText("游客 | 等级分: 1500");
+        // 连接点击信号
+        connect(userInfoButton, &QPushButton::clicked, this, &MainWindow::onUserInfoButtonClicked);
     }
 
     LOG_DEBUG("Status bar initialization completed");
@@ -578,4 +632,128 @@ void MainWindow::mouseDoubleClickEvent(QMouseEvent *event)
         return;
     }
     QMainWindow::mouseDoubleClickEvent(event);
+}
+
+// 验证窗口背景设置
+void MainWindow::validateWindowBackground()
+{
+    LOG_DEBUG("=== Validating Window Background ===");
+
+    // 检查主窗口背景
+    QPalette windowPalette = palette();
+    QColor windowBgColor = windowPalette.color(QPalette::Window);
+    LOG_DEBUG_FMT("MainWindow palette background color: %s (RGB: %d,%d,%d)",
+                  windowBgColor.name().toStdString().c_str(),
+                  windowBgColor.red(), windowBgColor.green(), windowBgColor.blue());
+
+    // 检查centralwidget背景
+    if (ui && ui->centralwidget)
+    {
+        QPalette centralPalette = ui->centralwidget->palette();
+        QColor centralBgColor = centralPalette.color(QPalette::Window);
+        LOG_DEBUG_FMT("CentralWidget palette background color: %s",
+                      centralBgColor.name().toStdString().c_str());
+
+        // 检查是否设置了正确的背景
+        if (centralBgColor == QColor(255, 255, 255))
+        {
+            LOG_INFO("CentralWidget background is correctly set to white");
+        }
+        else
+        {
+            LOG_WARN("CentralWidget background is not white: " + centralBgColor.name().toStdString());
+        }
+    }
+
+    // 检查样式表
+    QString currentStyle = styleSheet();
+    LOG_DEBUG_FMT("Current window stylesheet length: %d characters", currentStyle.length());
+    if (currentStyle.contains("background-color", Qt::CaseInsensitive))
+    {
+        LOG_DEBUG("Stylesheet contains background-color definition");
+    }
+    else
+    {
+        LOG_WARN("Stylesheet does not contain background-color definition");
+    }
+
+    // 检查窗口属性
+    LOG_DEBUG_FMT("Window has WA_StyledBackground: %d", testAttribute(Qt::WA_StyledBackground));
+    LOG_DEBUG_FMT("Window has WA_OpaquePaintEvent: %d", testAttribute(Qt::WA_OpaquePaintEvent));
+    LOG_DEBUG_FMT("Window has WA_TranslucentBackground: %d", testAttribute(Qt::WA_TranslucentBackground));
+
+    LOG_DEBUG("=== Background Validation Complete ===");
+}
+
+void MainWindow::onUserInfoButtonClicked()
+{
+    LOG_DEBUG("User info button clicked, showing login dialog");
+
+    // 如果用户已经登录，显示登出选项
+    if (!currentUsername.isEmpty() && currentUsername != "游客")
+    {
+        QMessageBox msgBox;
+        msgBox.setWindowTitle("用户操作");
+        msgBox.setText(QString("当前用户: %1\n等级分: %2").arg(currentUsername).arg(currentRating));
+        msgBox.setInformativeText("请选择操作:");
+
+        QPushButton *logoutButton = msgBox.addButton("登出", QMessageBox::ActionRole);
+        QPushButton *cancelButton = msgBox.addButton("取消", QMessageBox::RejectRole);
+
+        msgBox.exec();
+
+        if (msgBox.clickedButton() == logoutButton)
+        {
+            LOG_DEBUG("User chose to logout");
+            emit logout();
+        }
+    }
+    else
+    {
+        // 用户未登录，显示登录选项对话框
+        QMessageBox msgBox;
+        msgBox.setWindowTitle("用户登录");
+        msgBox.setText("请选择登录方式:");
+
+        QPushButton *loginButton = msgBox.addButton("账号登录", QMessageBox::ActionRole);
+        QPushButton *guestButton = msgBox.addButton("游客登录", QMessageBox::ActionRole);
+        QPushButton *signinButton = msgBox.addButton("注册账号", QMessageBox::ActionRole);
+        QPushButton *cancelButton = msgBox.addButton("取消", QMessageBox::RejectRole);
+
+        msgBox.exec();
+
+        if (msgBox.clickedButton() == loginButton)
+        {
+            LOG_DEBUG("User chose to login with account");
+            bool ok;
+            QString username = QInputDialog::getText(this, "账号登录", "用户名:", QLineEdit::Normal, "", &ok);
+            if (ok && !username.isEmpty())
+            {
+                QString password = QInputDialog::getText(this, "账号登录", "密码:", QLineEdit::Password, "", &ok);
+                if (ok && !password.isEmpty())
+                {
+                    emit login(username.toStdString(), password.toStdString());
+                }
+            }
+        }
+        else if (msgBox.clickedButton() == guestButton)
+        {
+            LOG_DEBUG("User chose to login as guest");
+            emit loginAsGuest();
+        }
+        else if (msgBox.clickedButton() == signinButton)
+        {
+            LOG_DEBUG("User chose to sign up");
+            bool ok;
+            QString username = QInputDialog::getText(this, "注册账号", "用户名:", QLineEdit::Normal, "", &ok);
+            if (ok && !username.isEmpty())
+            {
+                QString password = QInputDialog::getText(this, "注册账号", "密码:", QLineEdit::Password, "", &ok);
+                if (ok && !password.isEmpty())
+                {
+                    emit signin(username.toStdString(), password.toStdString());
+                }
+            }
+        }
+    }
 }

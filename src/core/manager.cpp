@@ -31,20 +31,27 @@ Manager::Manager(QObject *parent)
       inGame(false),
       currentRating(1500)
 {
-    LOG_INFO("Manager initialized for server " + serverIp + ":" + std::to_string(serverPort));
+    LOG_INFO("Manager initialized for server");
     client = std::make_unique<Client>(serverIp, serverPort);
-    LOG_DEBUG("Client instance created");
-
     client->SetPacketCallback([this](const Packet &packet)
                               { handlePacket(packet); });
-    LOG_DEBUG("Packet callback set");
+    client->SetSessionActivatedCallback([this](uint64_t sessionId)
+                                        {
+        LOG_INFO("Session activated callback received, sessionId: " + std::to_string(sessionId));
+        this->sessionId = sessionId;
+        connected = true;
+        emit connectionStatusChanged(true);
+        emit logToUser("已连接到服务器"); });
+    client->SetDisconnectedCallback([this]()
+                                    {
+        LOG_INFO("Disconnected from server callback triggered");
+        connected = false;
+        emit connectionStatusChanged(false);
+        emit logToUser("与服务器的断连"); });
+    LOG_DEBUG("Session activated callback set");
 
     setupSignalConnections();
-    LOG_DEBUG("Signal connections setup completed");
-
-    LOG_INFO("Attempting to connect to server...");
     connectToServer();
-    // sendPacket(Packet(0, MsgType::LoginByGuest));
 }
 
 Manager::~Manager()
@@ -64,70 +71,21 @@ Manager::~Manager()
 
 void Manager::connectToServer()
 {
-    LOG_DEBUG("connectToServer called");
-    if (client->IsConnected())
+    if (connected)
     {
         LOG_INFO("Already connected to server, skipping connection attempt");
-        connected = true;
         return;
     }
 
-    LOG_INFO("Initiating connection to server...");
-    if (!client->Connect())
-    {
-        LOG_ERROR("Failed to connect to server");
-        connected = false;
-        return;
-    }
-    connected = true;
-
-    LOG_INFO("Successfully connected to server");
-    emit connectionStatusChanged(true);
-}
-
-void Manager::disconnectFromServer()
-{
-    LOG_DEBUG("disconnectFromServer called");
-    if (!connected)
-    {
-        LOG_DEBUG("Not connected to server, skipping disconnect");
-        return;
-    }
-
-    LOG_INFO("Disconnecting from server...");
-
-    client->Disconnect();
-    sessionId = 0;
-    currentRoomId = 0;
-    inGame = false;
-    connected = false;
-
-    LOG_INFO("Successfully disconnected from server");
-    emit connectionStatusChanged(false);
+    LOG_INFO("Attempting to connect to server...");
+    client->Connect();
 }
 
 // Status Bar
 
-void Manager::isOnline()
-{
-    LOG_DEBUG("Checking network connectivity");
-    bool online = client->IsConnected();
-    emit connectionStatusChanged(online);
-    if (online)
-    {
-        emit connectionStatusChanged(false);
-        // emit logToUser("已连接到服务器");
-    }
-    else
-    {
-        emit connectionStatusChanged(false);
-    }
-}
-
 void Manager::reConnect()
 {
     LOG_INFO("Reconnecting to server...");
-    disconnectFromServer();
     connectToServer();
 }
 
@@ -135,7 +93,7 @@ void Manager::login(const std::string &username, const std::string &password)
 {
     LOG_INFO("Login attempt for user: " + username);
 
-    if (!client->IsConnected())
+    if (!connected)
     {
         LOG_ERROR("Cannot login: client not connected to server");
         // emit loginFailed("未连接到服务器");
@@ -144,7 +102,7 @@ void Manager::login(const std::string &username, const std::string &password)
 
     Packet packet(sessionId, MsgType::Login);
     packet.AddParam("username", username);
-    packet.AddParam("password", "***"); // 不记录实际密码
+    packet.AddParam("password", password);
 
     LOG_DEBUG("Login packet created with session ID: " + std::to_string(sessionId));
 
@@ -157,7 +115,7 @@ void Manager::signin(const std::string &username, const std::string &password)
 {
     LOG_INFO("Signin attempt for user: " + username);
 
-    if (!client->IsConnected())
+    if (!connected)
     {
         LOG_ERROR("Cannot signin: client not connected to server");
         emit logToUser("未连接到服务器");
@@ -166,14 +124,14 @@ void Manager::signin(const std::string &username, const std::string &password)
 
     Packet packet(sessionId, MsgType::SignIn);
     packet.AddParam("username", username);
-    packet.AddParam("password", "***"); // 不记录实际密码
+    packet.AddParam("password", password); // 不记录实际密码
 
     sendPacket(packet);
 }
 
 void Manager::logout()
 {
-    if (!client->IsConnected())
+    if (!connected)
         return;
 
     Packet packet(sessionId, MsgType::LogOut);
@@ -189,7 +147,7 @@ void Manager::loginAsGuest()
 {
     LOG_INFO("Logging in as guest");
 
-    if (!client->IsConnected())
+    if (!connected)
     {
         LOG_ERROR("Cannot login as guest: client not connected to server");
         return;
@@ -210,7 +168,7 @@ void Manager::localGame()
 void Manager::createRoom()
 {
     LOG_DEBUG("Creating room");
-    if (!client->IsConnected())
+    if (!connected)
         return;
 
     Packet packet(sessionId, MsgType::CreateRoom);
@@ -220,7 +178,7 @@ void Manager::createRoom()
 void Manager::joinRoom(int roomId)
 {
     LOG_DEBUG("Joining room: " + std::to_string(roomId));
-    if (!client->IsConnected())
+    if (!connected)
         return;
 
     Packet packet(sessionId, MsgType::JoinRoom);
@@ -231,7 +189,7 @@ void Manager::joinRoom(int roomId)
 
 void Manager::quickMatch()
 {
-    if (!client->IsConnected())
+    if (!connected)
         return;
 
     Packet packet(sessionId, MsgType::QuickMatch);
@@ -240,7 +198,7 @@ void Manager::quickMatch()
 
 void Manager::freshLobbyPlayerList()
 {
-    if (!client->IsConnected())
+    if (!connected)
         return;
 
     Packet packet(sessionId, MsgType::SubscribeUserList);
@@ -249,7 +207,7 @@ void Manager::freshLobbyPlayerList()
 
 void Manager::freshLobbyRoomList()
 {
-    if (!client->IsConnected())
+    if (!connected)
         return;
 
     Packet packet(sessionId, MsgType::SubscribeRoomList);
@@ -260,7 +218,7 @@ void Manager::freshLobbyRoomList()
 
 void Manager::exitRoom()
 {
-    if (!client->IsConnected() || currentRoomId == 0)
+    if (!connected || currentRoomId == 0)
         return;
 
     Packet packet(sessionId, MsgType::ExitRoom);
@@ -274,7 +232,7 @@ void Manager::exitRoom()
 void Manager::takeBlack()
 {
     LOG_INFO("Taking black pieces");
-    if (!client->IsConnected() || currentRoomId == 0)
+    if (!connected || currentRoomId == 0)
         return;
 
     Packet packet(sessionId, MsgType::TakeBlack);
@@ -285,7 +243,7 @@ void Manager::takeBlack()
 void Manager::takeWhite()
 {
     LOG_INFO("Taking white pieces");
-    if (!client->IsConnected() || currentRoomId == 0)
+    if (!connected || currentRoomId == 0)
         return;
 
     Packet packet(sessionId, MsgType::TakeWhite);
@@ -296,7 +254,7 @@ void Manager::takeWhite()
 void Manager::cancelTake()
 {
     LOG_INFO("Canceling piece selection");
-    if (!client->IsConnected() || currentRoomId == 0)
+    if (!connected || currentRoomId == 0)
         return;
 
     Packet packet(sessionId, MsgType::CancelTake);
@@ -307,7 +265,7 @@ void Manager::cancelTake()
 void Manager::startGame()
 {
     LOG_INFO("Starting game");
-    if (!client->IsConnected() || currentRoomId == 0)
+    if (!connected || currentRoomId == 0)
         return;
 
     Packet packet(sessionId, MsgType::StartGame);
@@ -328,18 +286,20 @@ void Manager::chatMessageSent(const QString &message)
 {
     LOG_INFO("Chat message sent: " + message.toStdString());
 
-    if (!client->IsConnected() || currentRoomId == 0)
+    if (!connected || currentRoomId == 0)
         return;
 
     // 这里需要发送聊天消息包到服务器
     // 由于 Packet.h 中没有 ChatMessage 类型，暂时只记录日志
     // 可以添加一个临时的消息类型或者使用其他方式
+    Packet packet(sessionId, MsgType::ChatMessage);
+    packet.AddParam("msg", message.toStdString());
     LOG_DEBUG("Chat message would be sent to room " + std::to_string(currentRoomId) + ": " + message.toStdString());
 }
 
 void Manager::makeMove(int x, int y)
 {
-    if (!client->IsConnected() || !inGame)
+    if (!connected || !inGame)
         return;
 
     Packet packet(sessionId, MsgType::MakeMove);
@@ -353,7 +313,7 @@ void Manager::makeMove(int x, int y)
 void Manager::undoMoveRequest()
 {
     LOG_INFO("Requesting undo move");
-    if (!client->IsConnected() || !inGame)
+    if (!connected || !inGame)
         return;
 
     Packet packet(sessionId, MsgType::UndoMoveRequest);
@@ -364,7 +324,7 @@ void Manager::undoMoveRequest()
 void Manager::undoMoveResponse(bool accepted)
 {
     LOG_INFO("Responding to undo move request: " + std::string(accepted ? "accepted" : "rejected"));
-    if (!client->IsConnected() || !inGame)
+    if (!connected || !inGame)
         return;
 
     Packet packet(sessionId, MsgType::UndoMoveResponse);
@@ -376,7 +336,7 @@ void Manager::undoMoveResponse(bool accepted)
 void Manager::drawRequest()
 {
     LOG_INFO("Requesting draw");
-    if (!client->IsConnected() || !inGame)
+    if (!connected || !inGame)
         return;
 
     Packet packet(sessionId, MsgType::DrawRequest);
@@ -387,7 +347,7 @@ void Manager::drawRequest()
 void Manager::drawResponse(bool accept)
 {
     LOG_INFO("Responding to draw request: " + std::string(accept ? "accept" : "reject"));
-    if (!client->IsConnected() || !inGame)
+    if (!connected || !inGame)
         return;
 
     Packet packet(sessionId, MsgType::DrawResponse);
@@ -398,7 +358,7 @@ void Manager::drawResponse(bool accept)
 
 void Manager::giveUp()
 {
-    if (!client->IsConnected() || !inGame)
+    if (!connected || !inGame)
         return;
 
     Packet packet(sessionId, MsgType::GiveUp);

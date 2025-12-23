@@ -6,6 +6,7 @@
 #include <QApplication>
 #include <QScreen>
 #include <QDebug>
+#include "Logger.h"
 
 ToastWidget::ToastWidget(QWidget *parent)
     : QWidget(parent), messageLabel(nullptr), showAnimation(nullptr), hideAnimation(nullptr), hideTimer(nullptr), opacityEffect(nullptr), m_opacity(1.0f)
@@ -15,6 +16,9 @@ ToastWidget::ToastWidget(QWidget *parent)
     setAttribute(Qt::WA_ShowWithoutActivating);
 
     setupUI();
+
+    // 设置最小尺寸以匹配系统要求（从错误信息中看到最小跟踪尺寸为200x88）
+    setMinimumSize(200, 88);
 
     // 创建动画
     showAnimation = new QPropertyAnimation(this, "geometry", this);
@@ -103,9 +107,9 @@ void ToastWidget::setMessage(const QString &message)
         int textWidth = fm.horizontalAdvance(message) + 32; // 加上内边距
         int textHeight = fm.height() * (message.count('\n') + 1) + 24;
 
-        // 限制最小和最大大小
-        textWidth = qMax(200, qMin(400, textWidth));
-        textHeight = qMax(50, qMin(100, textHeight));
+        // 限制最小和最大大小，确保不小于最小尺寸
+        textWidth = qMax(minimumWidth(), qMin(400, textWidth));
+        textHeight = qMax(minimumHeight(), qMin(100, textHeight));
 
         resize(textWidth, textHeight);
     }

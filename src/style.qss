@@ -52,6 +52,31 @@ QMainWindow {
     border-bottom-right-radius: 12px;
 }
 
+/* 状态栏按钮样式 */
+#statusBarWidget QPushButton {
+    border: none;
+    background: transparent;
+    color: #57606a;
+    padding: 2px 8px;
+    margin: 0;
+    font-size: 12px;
+}
+
+#statusBarWidget QPushButton:hover {
+    background-color: #eaeef2;
+    border-radius: 4px;
+}
+
+/* 网络状态按钮特殊样式 */
+#networkStatusButton {
+    font-weight: bold;
+}
+
+/* 用户信息按钮特殊样式 */
+#userInfoButton {
+    font-weight: normal;
+}
+
 /* 中间内容区：确保它也有背景，或者让它继承主容器背景 */
 QStackedWidget {
     background-color: white;
