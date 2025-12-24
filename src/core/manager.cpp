@@ -22,7 +22,7 @@ Manager::Manager(QObject *parent)
       client(nullptr),
       clientThread(nullptr),
       returnToLobbyTimer(nullptr),
-      serverIp("127.0.0.1"),
+      serverIp("169.254.56.77"),
       serverPort(8080),
       connected(false),
       sessionId(0),
