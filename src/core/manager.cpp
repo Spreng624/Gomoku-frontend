@@ -700,7 +700,7 @@ void Manager::handlePacket(const Packet &packet)
     case MsgType::GetUserList:
     {
         // 解析用户列表
-        std::string userListStr = packet.GetParam<std::string>("player_list", "");
+        std::string userListStr = packet.GetParam<std::string>("userList", "");
         QStringList users = QString::fromStdString(userListStr).split(',', Qt::SkipEmptyParts);
         emit updateLobbyPlayerList(users);
         break;
@@ -708,7 +708,7 @@ void Manager::handlePacket(const Packet &packet)
     case MsgType::GetRoomList:
     {
         // 解析房间列表
-        std::string roomListStr = packet.GetParam<std::string>("room_list", "");
+        std::string roomListStr = packet.GetParam<std::string>("roomList", "");
         QStringList rooms = QString::fromStdString(roomListStr).split(',', Qt::SkipEmptyParts);
         emit updateLobbyRoomList(rooms);
         break;

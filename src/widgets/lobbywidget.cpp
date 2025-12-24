@@ -85,7 +85,7 @@ void LobbyWidget::updatePlayerList(const QStringList &players)
 
 void LobbyWidget::updateRoomList(const QStringList &rooms)
 {
-
+    ui->roomTableWidget->clear();
     for (int i = 0; i < rooms.size() / 3; i++)
     {
 
