@@ -261,7 +261,7 @@ void ChessBoardWidget::mousePressEvent(QMouseEvent *event)
         boardPos.y() >= 0 && boardPos.y() < boardSize)
     {
         qDebug() << "Emitting moveMade signal for position (" << boardPos.x() << "," << boardPos.y() << ")";
-        emit moveMade(boardPos.x(), boardPos.y());
+        emit makeMove(boardPos.x(), boardPos.y());
     }
     else
     {

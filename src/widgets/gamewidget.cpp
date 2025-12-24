@@ -1,6 +1,5 @@
 #include "GameWidget.h"
 #include "ui_gamewidget.h"
-#include "Manager.h"
 #include <QMessageBox>
 #include <QTime>
 #include <QFont>
@@ -11,41 +10,188 @@
 #include <QDateTime>
 
 GameWidget::GameWidget(QWidget *parent)
-    : QWidget(parent), ui(new Ui::GameWidget), chessBoard(nullptr),
-      m_blackTaken(false), m_whiteTaken(false)
+    : QWidget(parent),
+      ui(new Ui::GameWidget),
+      game(nullptr),
+      chessBoard(nullptr),
+      gameStatus(NotStarted),
+      isLocal(true),
+      blackPlayer(nullptr),
+      whitePlayer(nullptr)
 {
     ui->setupUi(this);
+    game = std::make_unique<Game>();
+    chessBoard = std::make_unique<ChessBoardWidget>(this);
 
-    // 初始化UI
-    initUI();
-
-    // 设置信号槽连接
-    setupConnections();
-
-    LOG_DEBUG("GameWidget constructed successfully");
-}
-
-GameWidget::~GameWidget()
-{
-    delete ui;
-    LOG_DEBUG("GameWidget destroyed");
-}
-
-void GameWidget::initUI()
-{
-    // 创建棋盘部件
-    chessBoard = new ChessBoardWidget(this);
     QLayout *layout = ui->chessBoardPlaceholder->layout();
     if (!layout)
     {
         layout = new QVBoxLayout(ui->chessBoardPlaceholder);
         layout->setContentsMargins(0, 0, 0, 0);
     }
-    layout->addWidget(chessBoard);
+    layout->addWidget(chessBoard.get());
 
-    // 隐藏窗口控制按钮（最小化和关闭）
-    ui->minimizeBtn->hide();
-    ui->closeBtn->hide();
+    SetUpSignals();
+
+    emit init(false);
+    LOG_DEBUG("GameWidget constructed successfully");
+}
+
+GameWidget::~GameWidget() {}
+
+void GameWidget::SetUpSignals()
+{
+    // 棋盘信号
+    connect(chessBoard.get(), &ChessBoardWidget::makeMove, this, [this](int x, int y)
+            {
+        if(!isPlaying())
+            return;
+        // TODO: 先校验，本地交给Game处理，在线游戏交给服务器处理
+        // 现在还有问题
+        if(!game->isValidMove(x, y)){
+            logToUser("无效的走子位置！");
+            return;
+        }
+        if(isLocal)
+        {
+            game->makeMove(x, y);
+            emit onMakeMove(x, y);
+        }
+        else
+        {
+            game->makeMove(x, y);
+            emit makeMove(x, y);
+        }
+        LOG_DEBUG_FMT("Player made move at (%d, %d)", x, y); });
+
+    // Part1: 执黑、执白、取消就坐
+    connect(ui->player1Avatar, &QPushButton::clicked, this, [this]()
+            {
+        if (blackPlayer == nullptr) {
+            emit takeBlack();
+        } else {
+            emit cancelTake();
+        } });
+
+    connect(ui->player2Avatar, &QPushButton::clicked, this, [this]()
+            {
+        if (whitePlayer == nullptr) {
+            emit takeWhite();
+        } else {
+            emit cancelTake();
+        } });
+
+    // 添加人机按钮
+    connect(ui->addAIBlackButton, &QPushButton::clicked, this, [this]()
+            {
+        if (blackPlayer == nullptr && isLocal) {
+            // 添加AI玩家执黑棋
+            onBlackTaken("AI玩家(黑)");
+            ui->chatHistory->append("<font color='purple'>已添加AI玩家执黑棋</font>");
+        } });
+
+    connect(ui->addAIWhiteButton, &QPushButton::clicked, this, [this]()
+            {
+        if (whitePlayer == nullptr && isLocal) {
+            // 添加AI玩家执白棋
+            onWhiteTaken("AI玩家(白)");
+            ui->chatHistory->append("<font color='purple'>已添加AI玩家执白棋</font>");
+        } });
+
+    // Part2: 开始/重新开始、认输、请求和棋、请求悔棋
+    connect(ui->startGameButton, &QPushButton::clicked, this, [this]()
+            {
+        if (gameStatus == NotStarted) {
+            emit startGame();
+        } else if (gameStatus == End) {
+            emit restartGame();
+        } });
+
+    connect(ui->surrenderButton, &QPushButton::clicked, this, [this]()
+            {
+        QMessageBox::StandardButton reply;
+        reply = QMessageBox::question(this, "认输确认", "您确定要认输吗？", QMessageBox::Yes | QMessageBox::No);
+        if (reply == QMessageBox::No)
+            return;
+        if (isLocal){
+            // 本地模式：直接判定对手胜利
+            QString winner;
+            if (game->currentPlayer == Piece::BLACK) {
+                winner = whitePlayer ? whitePlayer->username : "白棋玩家";
+            } else {
+                winner = blackPlayer ? blackPlayer->username : "黑棋玩家";
+            }
+            ui->chatHistory->append(QString("<font color='red'>玩家认输，%1 获胜！</font>").arg(winner));
+            onGameEnded("玩家认输结束");
+        }else{
+            emit giveup();
+        } });
+
+    connect(ui->drawButton, &QPushButton::clicked, this, [this]()
+            {
+        QMessageBox::StandardButton reply;
+        reply = QMessageBox::question(this, "请求和棋", "您确定要请求和棋吗？", QMessageBox::Yes | QMessageBox::No);
+        if (reply == QMessageBox::No)
+            return;
+        if (isLocal){
+            // 本地模式：直接和局
+            ui->chatHistory->append("<font color='orange'>双方同意和棋，游戏结束！</font>");
+            onGameEnded("和棋结束");
+        }else{
+            emit drawRequest();
+        } });
+
+    connect(ui->undoButton, &QPushButton::clicked, this, [this]
+            {
+        if (isLocal) {
+            game->undoMove();
+        }else{
+            emit undoMoveRequest();
+        } });
+
+    // Part3: 聊天、记录、玩家列表、设置
+    connect(ui->sendButton, &QPushButton::clicked, this, [this]()
+            {
+        QString message = ui->messageInput->text().trimmed();
+        if (!message.isEmpty()) {
+            // 乐观响应：立即在聊天记录中显示自己发送的消息
+            QString formattedMsg = QString("<b>我:</b> %1").arg(message);
+            ui->chatHistory->append(formattedMsg);
+            // 自动滚动到底部
+            QTextCursor cursor = ui->chatHistory->textCursor();
+            cursor.movePosition(QTextCursor::End);
+            ui->chatHistory->setTextCursor(cursor);
+            
+            emit chatMessageSent(message);
+            ui->messageInput->clear();
+        } });
+
+    connect(ui->messageInput, &QLineEdit::returnPressed, ui->sendButton, &QPushButton::click);
+
+    // connect(ui->enableAICheckBox, &QCheckBox::toggled, this, &GameWidget::aiToggled);
+
+    // Part4: 返回大厅
+    connect(ui->backToLobbyButton, &QPushButton::clicked, this, &GameWidget::backToLobby);
+
+    // 弹窗响应（这些信号由外部连接，这里不需要额外连接）
+}
+
+// ==================== 公共槽函数实现 ====================
+
+// 游戏初始化和状态变化信号
+
+void GameWidget::init(bool islocal)
+{
+    gameStatus = NotStarted;
+    isLocal = islocal;
+    blackPlayer = nullptr;
+    whitePlayer = nullptr;
+
+    game->reset();
+    game->strictMode = isLocal;
+    gameStatus = NotStarted;
+
+    // UI初始化
 
     // 设置初始文本
     ui->gameIdLabel->setText("#0 桌");
@@ -63,212 +209,165 @@ void GameWidget::initUI()
     // 设置按钮状态
     ui->surrenderButton->setEnabled(false);
     ui->undoButton->setEnabled(false);
-    ui->startGameButton->setEnabled(true); // 开始游戏按钮初始可用
+    ui->startGameButton->setEnabled(true);    // 开始游戏按钮初始可用
+    ui->startGameButton->setText("开始游戏"); // 设置初始文本
     ui->sendButton->setEnabled(true);
     ui->backToLobbyButton->setEnabled(true);
-    ui->restartButton->setEnabled(false);
 
     // 设置AI复选框初始状态（未选中）
     ui->enableAICheckBox->setChecked(false);
     ui->enableAICheckBox->setEnabled(true); // 在游戏开始前可以切换
 
-    LOG_DEBUG("GameWidget UI initialized");
-}
+    // 初始化添加人机按钮状态（默认隐藏，等待initGameWidget设置）
+    ui->addAIBlackButton->hide();
+    ui->addAIWhiteButton->hide();
 
-void GameWidget::setupConnections()
-{
-    // 连接按钮点击信号
-    connect(ui->backToLobbyButton, &QPushButton::clicked, this, &GameWidget::onBackToLobbyButtonClicked);
-    connect(ui->surrenderButton, &QPushButton::clicked, this, &GameWidget::onSurrenderButtonClicked);
-    connect(ui->undoButton, &QPushButton::clicked, this, &GameWidget::onUndoButtonClicked);
-    connect(ui->startGameButton, &QPushButton::clicked, this, &GameWidget::onStartGameButtonClicked);
-    connect(ui->sendButton, &QPushButton::clicked, this, &GameWidget::onSendButtonClicked);
-    connect(ui->minimizeBtn, &QPushButton::clicked, this, &GameWidget::onMinimizeBtnClicked);
-    connect(ui->closeBtn, &QPushButton::clicked, this, &GameWidget::onCloseBtnClicked);
-
-    // 连接AI复选框信号
-    connect(ui->enableAICheckBox, &QCheckBox::toggled, this, &GameWidget::onAIToggled);
-
-    // 连接重新开始按钮信号
-    connect(ui->restartButton, &QPushButton::clicked, this, &GameWidget::onRestartButtonClicked);
-
-    // 连接玩家头像点击信号
-    connect(ui->player1Avatar, &QPushButton::clicked, this, &GameWidget::onPlayer1AvatarClicked);
-    connect(ui->player2Avatar, &QPushButton::clicked, this, &GameWidget::onPlayer2AvatarClicked);
-
-    // 连接消息输入框回车键
-    connect(ui->messageInput, &QLineEdit::returnPressed, this, &GameWidget::onSendButtonClicked);
-
-    // 连接棋盘点击信号（乐观UI：立即发送信号，不检查状态）
-    if (chessBoard)
-    {
-        connect(chessBoard, &ChessBoardWidget::moveMade, this, [this](int x, int y)
-                {
-            qDebug() << "ChessBoardWidget::moveMade signal received, x:" << x << "y:" << y;
-            qDebug() << "Emitting makeMove signal (optimistic UI)";
-            emit makeMove(x, y); });
-    }
-
-    LOG_DEBUG("GameWidget signal connections established");
-}
-
-void GameWidget::updatePlayerInfo(int player1Time, int player2Time, bool currentPlayer)
-{
-    // 更新玩家1时间显示
-    int minutes1 = player1Time / 60;
-    int seconds1 = player1Time % 60;
-    ui->player1TimeLabel->setText(QString("%1:%2").arg(minutes1, 2, 10, QChar('0')).arg(seconds1, 2, 10, QChar('0')));
-
-    // 更新玩家2时间显示
-    int minutes2 = player2Time / 60;
-    int seconds2 = player2Time % 60;
-    ui->player2TimeLabel->setText(QString("%1:%2").arg(minutes2, 2, 10, QChar('0')).arg(seconds2, 2, 10, QChar('0')));
-
-    // 高亮当前玩家
-    if (currentPlayer)
-    {
-        ui->player1Widget->setStyleSheet("background-color: #e8f4fd; border: 1px solid #1a7f37;");
-        ui->player2Widget->setStyleSheet("");
-    }
-    else
-    {
-        ui->player2Widget->setStyleSheet("background-color: #e8f4fd; border: 1px solid #1a7f37;");
-        ui->player1Widget->setStyleSheet("");
-    }
-}
-
-void GameWidget::updateGameStatus(bool isGameStarted, bool isGameOver)
-{
-    // 更新游戏状态显示
-    if (isGameOver)
-    {
-        ui->gameIdLabel->setText("游戏结束");
-        ui->surrenderButton->setEnabled(false);
-        ui->undoButton->setEnabled(false);
-        ui->startGameButton->setEnabled(false); // 游戏结束，不能开始游戏
-    }
-    else if (isGameStarted)
-    {
-        ui->gameIdLabel->setText("游戏中");
-        ui->surrenderButton->setEnabled(true);
-        ui->undoButton->setEnabled(true);
-        ui->startGameButton->setEnabled(false); // 游戏已开始，不能再次开始
-        ui->restartButton->setEnabled(false);
-    }
-    else
-    {
-        ui->gameIdLabel->setText("等待开始");
-        ui->surrenderButton->setEnabled(false);
-        ui->undoButton->setEnabled(false);
-        ui->startGameButton->setEnabled(true); // 游戏未开始，可以开始游戏
-        ui->restartButton->setEnabled(true);
-    }
-}
-
-// ==================== 从Manager接收的槽函数 ====================
-
-void GameWidget::initGameWidget(bool islocal)
-{
-    qDebug() << "GameWidget::initGameWidget called, islocal:" << islocal;
-    LOG_DEBUG("Initializing GameWidget, islocal: " + std::to_string(islocal));
-
-    // 清空聊天记录
-    ui->chatHistory->clear();
-
-    // 清空走子记录
-    ui->moveList->clear();
-
-    // 清空在线玩家列表
-    ui->onlinePlayers->clear();
-
-    // 重置UI显示
-    ui->player1NameLabel->setText("等待玩家...");
-    ui->player1ScoreLabel->setText("等级分: 0");
-    ui->player1TimeLabel->setText("20:00");
-
-    ui->player2NameLabel->setText("等待玩家...");
-    ui->player2ScoreLabel->setText("等级分: 0");
-    ui->player2TimeLabel->setText("20:00");
-
-    // 重置就坐状态
-    m_blackTaken = false;
-    m_whiteTaken = false;
-    updatePlayerSeatStatus(false, false);
-
-    // 更新UI状态
-    updatePlayerInfo(1200, 1200, true); // 默认20分钟，黑棋先行
-    updateGameStatus(false, false);     // 游戏未开始，未结束
+    // 更新玩家座位UI
+    updatePlayerSeatUI(true);  // 更新黑棋座位
+    updatePlayerSeatUI(false); // 更新白棋座位
 
     // 根据游戏模式设置UI
-    if (islocal)
+    if (isLocal)
     {
         // 本地游戏：隐藏聊天tab，只显示记录和玩家tab
         ui->tabWidget->setTabEnabled(0, false); // 隐藏聊天tab
         ui->tabWidget->setCurrentIndex(1);      // 默认显示记录tab
-        ui->restartButton->show();              // 显示重新开始按钮
+
+        // 显示添加人机按钮
+        ui->addAIBlackButton->show();
+        ui->addAIWhiteButton->show();
     }
     else
     {
         // 在线游戏：显示所有tab
         ui->tabWidget->setTabEnabled(0, true); // 显示聊天tab
         ui->tabWidget->setCurrentIndex(0);     // 默认显示聊天tab
-        ui->restartButton->hide();             // 隐藏重新开始按钮（在线游戏不支持）
+
+        // 隐藏添加人机按钮
+        ui->addAIBlackButton->hide();
+        ui->addAIWhiteButton->hide();
     }
+
+    LOG_DEBUG("GameWidget UI initialized");
 
     // 添加欢迎消息
     QString welcomeMsg = islocal ? "本地游戏已就绪" : "在线游戏已就绪";
     ui->chatHistory->append(QString("<font color='gray'>%1</font>").arg(welcomeMsg));
-
-    LOG_INFO("GameWidget initialized successfully");
 }
 
-void GameWidget::updateRoomPlayerList(const QStringList &players)
-{
-    LOG_DEBUG("Updating room player list, count: " + std::to_string(players.size()));
-    ui->onlinePlayers->clear();
-    for (const QString &player : players)
-    {
-        ui->onlinePlayers->addItem(player);
-    }
-}
-
-void GameWidget::playerListUpdated(const QStringList &players)
-{
-    LOG_DEBUG("Player list updated, count: " + std::to_string(players.size()));
-    // 这里可以更新玩家显示，但UI中可能没有专门的控件
-    // 暂时只记录日志
-}
-
-void GameWidget::chatMessageReceived(const QString &username, const QString &message)
-{
-    LOG_DEBUG("Chat message from " + username.toStdString() + ": " + message.toStdString());
-    QString formattedMsg = QString("<b>%1:</b> %2").arg(username).arg(message);
-    ui->chatHistory->append(formattedMsg);
-    // 自动滚动到底部
-    QTextCursor cursor = ui->chatHistory->textCursor();
-    cursor.movePosition(QTextCursor::End);
-    ui->chatHistory->setTextCursor(cursor);
-}
-
-void GameWidget::gameStarted()
+void GameWidget::onGameStarted()
 {
     LOG_INFO("Game started");
+    gameStatus = Playing;
+
     // 更新UI状态
-    updateGameStatus(true, false); // 游戏开始，未结束
+    ui->gameIdLabel->setText("游戏中");
+    ui->surrenderButton->setEnabled(true);
+    ui->undoButton->setEnabled(true);
+    ui->startGameButton->setEnabled(false);
+
     // 添加游戏开始消息
     ui->chatHistory->append("<font color='green'>游戏开始！</font>");
 }
 
-void GameWidget::gameEnded()
+void GameWidget::onGameEnded(QString message)
 {
-    LOG_INFO("Game ended");
+    LOG_INFO("Game ended: " + message.toStdString());
+    gameStatus = End;
+
     // 更新UI状态
-    updateGameStatus(false, true); // 游戏未开始，已结束
+    ui->gameIdLabel->setText("游戏结束");
+    ui->surrenderButton->setEnabled(false);
+    ui->undoButton->setEnabled(false);
+    ui->startGameButton->setEnabled(true);
+    ui->startGameButton->setText("重新开始");
+
     // 添加游戏结束消息
-    ui->chatHistory->append("<font color='red'>游戏结束！</font>");
+    QString endMsg = message.isEmpty() ? "游戏结束！" : message;
+    ui->chatHistory->append(QString("<font color='red'>%1</font>").arg(endMsg));
 }
 
-// ==================== 从GameManager接收的槽函数 ====================
+// 棋盘信息（同时更新历史记录）
+
+void GameWidget::onMakeMove(int x, int y)
+{
+    LOG_DEBUG(QString("Move made at x:%1 y:%2").arg(x).arg(y).toStdString());
+    // 这里可以更新走子记录
+    QString moveText = QString("走子: (%1, %2)").arg(x).arg(y);
+    ui->moveList->addItem(moveText);
+}
+
+void GameWidget::onBoardUpdated(const std::vector<std::vector<Piece>> &board)
+{
+    LOG_DEBUG("Board updated");
+    // 棋盘更新由ChessBoardWidget处理，这里可以添加额外逻辑
+}
+
+// Part1: 就坐、计时信息
+
+void GameWidget::onBlackTaken(const QString &username)
+{
+    LOG_DEBUG("Black taken by: " + username.toStdString());
+
+    if (!blackPlayer)
+    {
+        blackPlayer = std::make_unique<PlayerInfo>();
+    }
+    blackPlayer->username = username;
+
+    ui->player1NameLabel->setText(username);
+    updatePlayerSeatUI(true); // 更新黑棋座位UI
+
+    // 添加聊天消息
+    ui->chatHistory->append(QString("<font color='blue'>%1 执黑</font>").arg(username));
+}
+
+void GameWidget::onWhiteTaken(const QString &username)
+{
+    LOG_DEBUG("White taken by: " + username.toStdString());
+
+    if (!whitePlayer)
+    {
+        whitePlayer = std::make_unique<PlayerInfo>();
+    }
+    whitePlayer->username = username;
+
+    ui->player2NameLabel->setText(username);
+    updatePlayerSeatUI(false); // 更新白棋座位UI
+
+    // 添加聊天消息
+    ui->chatHistory->append(QString("<font color='blue'>%1 执白</font>").arg(username));
+}
+
+void GameWidget::onBlackTimeUpdate(int playerTime)
+{
+    // 更新黑棋时间显示
+    int minutes = playerTime / 60;
+    int seconds = playerTime % 60;
+    ui->player1TimeLabel->setText(QString("%1:%2").arg(minutes, 2, 10, QChar('0')).arg(seconds, 2, 10, QChar('0')));
+
+    // 更新PlayerInfo中的时间
+    if (blackPlayer)
+    {
+        blackPlayer->TimeLeft = QString("%1:%2").arg(minutes, 2, 10, QChar('0')).arg(seconds, 2, 10, QChar('0'));
+    }
+}
+
+void GameWidget::onWhiteTimeUpdate(int playerTime)
+{
+    // 更新白棋时间显示
+    int minutes = playerTime / 60;
+    int seconds = playerTime % 60;
+    ui->player2TimeLabel->setText(QString("%1:%2").arg(minutes, 2, 10, QChar('0')).arg(seconds, 2, 10, QChar('0')));
+
+    // 更新PlayerInfo中的时间
+    if (whitePlayer)
+    {
+        whitePlayer->TimeLeft = QString("%1:%2").arg(minutes, 2, 10, QChar('0')).arg(seconds, 2, 10, QChar('0'));
+    }
+}
+
+// Part3: 聊天、玩家列表、设置
 
 void GameWidget::onChatMessageReceived(const QString &username, const QString &message)
 {
@@ -282,247 +381,154 @@ void GameWidget::onChatMessageReceived(const QString &username, const QString &m
     ui->chatHistory->setTextCursor(cursor);
 }
 
-void GameWidget::onGameStarted(const QString &username, int rating)
+void GameWidget::onUpdateRoomPlayerList(const QStringList &players)
 {
-    qDebug() << "GameWidget::onGameStarted called, username:" << username << "rating:" << rating;
-    LOG_INFO("Game started for player: " + username.toStdString() + ", rating: " + std::to_string(rating));
-
-    // 设置玩家信息（假设黑棋先行）
-    ui->player1NameLabel->setText(username);
-    ui->player1ScoreLabel->setText(QString("等级分: %1").arg(rating));
-
-    // 更新UI状态
-    updateGameStatus(true, false); // 游戏开始，未结束
-
-    // 添加游戏开始消息
-    QString startMsg = QString("游戏开始！%1 执黑先行").arg(username);
-    ui->chatHistory->append(QString("<font color='green'>%1</font>").arg(startMsg));
-}
-
-void GameWidget::onGameEnded(const QString &username, int rating, bool won)
-{
-    LOG_INFO("Game ended for player: " + username.toStdString() + ", won: " + std::to_string(won));
-
-    // 更新UI状态
-    updateGameStatus(false, true); // 游戏未开始，已结束
-
-    // 显示获胜对话框
-    QString title = won ? "恭喜获胜！" : "游戏结束";
-    QString message = won ? QString("%1 获胜！").arg(username) : QString("游戏结束，%1 失败").arg(username);
-    QMessageBox::information(this, title, message);
-
-    // 添加游戏结果消息到聊天
-    QString resultMsg = won ? QString("%1 获胜！").arg(username) : QString("%1 失败").arg(username);
-    ui->chatHistory->append(QString("<font color='%1'>%2</font>").arg(won ? "green" : "red").arg(resultMsg));
-}
-
-void GameWidget::onPlayerListUpdated(const QStringList &players)
-{
-    LOG_DEBUG("Player list updated, count: " + std::to_string(players.size()));
+    LOG_DEBUG("Updating room player list, count: " + std::to_string(players.size()));
     ui->onlinePlayers->clear();
     for (const QString &player : players)
     {
         ui->onlinePlayers->addItem(player);
     }
+}
 
-    // 更新玩家就坐状态
-    // 假设players列表包含两个玩家：黑棋玩家和白棋玩家
-    if (players.size() >= 2)
+void GameWidget::onUpdateRoomSetting(const QStringList &settings)
+{
+    LOG_DEBUG("Room settings updated");
+    // 这里可以解析设置并更新UI
+    // 例如：时间规则、棋盘大小等
+    if (settings.size() >= 1)
     {
-        QString blackPlayer = players[0];
-        QString whitePlayer = players[1];
-
-        // 判断座位是否被占用
-        bool blackTaken = (blackPlayer != "等待玩家..." && !blackPlayer.isEmpty());
-        bool whiteTaken = (whitePlayer != "等待玩家..." && !whitePlayer.isEmpty());
-
-        updatePlayerSeatStatus(blackTaken, whiteTaken);
-
-        // 更新玩家名称显示
-        ui->player1NameLabel->setText(blackPlayer);
-        ui->player2NameLabel->setText(whitePlayer);
+        ui->timeRuleLabel->setText(settings[0]);
     }
 }
 
-// ==================== 内部槽函数 ====================
+// 弹窗提示: 和棋、悔棋请求与响应
 
-void GameWidget::onBackToLobbyButtonClicked()
+void GameWidget::onDrawRequestReceived()
 {
-    LOG_DEBUG("Back to lobby button clicked");
-    emit backToLobby();
-}
+    LOG_DEBUG("Draw request received");
 
-void GameWidget::onSurrenderButtonClicked()
-{
-    LOG_DEBUG("Surrender button clicked");
     QMessageBox::StandardButton reply;
-    reply = QMessageBox::question(this, "确认认输", "确定要认输吗？",
+    reply = QMessageBox::question(this, "和棋请求", "对手请求和棋，是否同意？",
                                   QMessageBox::Yes | QMessageBox::No);
-    if (reply == QMessageBox::Yes)
+
+    bool accept = (reply == QMessageBox::Yes);
+    emit drawResponse(accept);
+
+    // 添加聊天消息
+    QString responseMsg = accept ? "同意了和棋请求" : "拒绝了和棋请求";
+    ui->chatHistory->append(QString("<font color='%1'>%2</font>").arg(accept ? "green" : "red").arg(responseMsg));
+}
+
+void GameWidget::onDrawResponseReceived(bool accept)
+{
+    LOG_DEBUG("Draw response received: " + std::to_string(accept));
+
+    QString message = accept ? "对手同意了和棋请求，游戏结束！" : "对手拒绝了和棋请求";
+    QMessageBox::information(this, "和棋响应", message);
+
+    // 添加聊天消息
+    ui->chatHistory->append(QString("<font color='%1'>%2</font>").arg(accept ? "green" : "orange").arg(message));
+}
+
+void GameWidget::onUndoMoveRequestReceived()
+{
+    LOG_DEBUG("Undo move request received");
+
+    QMessageBox::StandardButton reply;
+    reply = QMessageBox::question(this, "悔棋请求", "对手请求悔棋，是否同意？",
+                                  QMessageBox::Yes | QMessageBox::No);
+
+    bool accept = (reply == QMessageBox::Yes);
+    emit undoMoveResponse(accept);
+
+    // 添加聊天消息
+    QString responseMsg = accept ? "同意了悔棋请求" : "拒绝了悔棋请求";
+    ui->chatHistory->append(QString("<font color='%1'>%2</font>").arg(accept ? "green" : "red").arg(responseMsg));
+}
+
+void GameWidget::onUndoMoveResponseReceived(bool accepted)
+{
+    LOG_DEBUG("Undo move response received: " + std::to_string(accepted));
+
+    QString message = accepted ? "对手同意了悔棋请求" : "对手拒绝了悔棋请求";
+    QMessageBox::information(this, "悔棋响应", message);
+
+    // 添加聊天消息
+    ui->chatHistory->append(QString("<font color='%1'>%2</font>").arg(accepted ? "green" : "orange").arg(message));
+}
+
+// 更新玩家座位UI显示
+void GameWidget::updatePlayerSeatUI(bool isBlack)
+{
+    QPushButton *avatarBtn = isBlack ? ui->player1Avatar : ui->player2Avatar;
+    QPushButton *aiBtn = isBlack ? ui->addAIBlackButton : ui->addAIWhiteButton;
+    PlayerInfo *player = isBlack ? blackPlayer.get() : whitePlayer.get();
+
+    if (player == nullptr)
     {
-        emit giveup();
-    }
-}
+        // 座位无人
+        if (isBlack)
+        {
+            avatarBtn->setText("黑棋");
+        }
+        else
+        {
+            avatarBtn->setText("白棋");
+        }
+        avatarBtn->setToolTip("就坐");
 
-void GameWidget::onUndoButtonClicked()
-{
-    LOG_DEBUG("Undo button clicked");
-    emit undoMoveRequested();
-}
-
-void GameWidget::onSendButtonClicked()
-{
-    QString message = ui->messageInput->text().trimmed();
-    if (!message.isEmpty())
-    {
-        LOG_DEBUG("Sending chat message: " + message.toStdString());
-        emit chatMessageSent(message);
-        ui->messageInput->clear();
-    }
-}
-
-void GameWidget::onMinimizeBtnClicked()
-{
-    LOG_DEBUG("Minimize button clicked");
-    // 最小化窗口（由父窗口处理）
-    if (parentWidget())
-    {
-        parentWidget()->showMinimized();
-    }
-}
-
-void GameWidget::onCloseBtnClicked()
-{
-    LOG_DEBUG("Close button clicked");
-    // 关闭游戏窗口（由父窗口处理）
-    if (parentWidget())
-    {
-        parentWidget()->close();
-    }
-}
-
-// ==================== 全量游戏状态更新 ====================
-
-void GameWidget::updateGameState(bool isGameStarted, bool isGameOver, bool currentPlayer,
-                                 int player1Time, int player2Time,
-                                 const QString &player1Name, const QString &player2Name,
-                                 int player1Rating, int player2Rating)
-{
-    LOG_DEBUG("Updating game state with full data");
-
-    // 更新玩家信息
-    ui->player1NameLabel->setText(player1Name);
-    ui->player1ScoreLabel->setText(QString("等级分: %1").arg(player1Rating));
-
-    ui->player2NameLabel->setText(player2Name);
-    ui->player2ScoreLabel->setText(QString("等级分: %1").arg(player2Rating));
-
-    // 更新时间和当前玩家显示
-    updatePlayerInfo(player1Time, player2Time, currentPlayer);
-
-    // 更新游戏状态
-    updateGameStatus(isGameStarted, isGameOver);
-
-    // 记录状态更新
-    qDebug() << "GameWidget: Game state updated - isGameStarted:" << isGameStarted
-             << "isGameOver:" << isGameOver << "currentPlayer:" << currentPlayer;
-}
-
-// ==================== 玩家就坐相关函数 ====================
-
-void GameWidget::onPlayer1AvatarClicked()
-{
-    LOG_DEBUG("Player 1 avatar clicked (black seat)");
-    if (!m_blackTaken)
-    {
-        // 黑棋位置未被占用，触发takeBlack信号
-        emit takeBlack();
-        // 更新本地状态（实际状态应由GameManager更新后通知回来）
-        // 这里先乐观更新
-        m_blackTaken = true;
-        updatePlayerSeatStatus(m_blackTaken, m_whiteTaken);
+        // 右按钮：无人且本地游戏时显示"添加人机"，否则隐藏
+        if (isLocal)
+        {
+            aiBtn->setText("添加人机");
+            aiBtn->setToolTip(isBlack ? "添加AI玩家执黑棋" : "添加AI玩家执白棋");
+            aiBtn->show();
+        }
+        else
+        {
+            aiBtn->hide();
+        }
     }
     else
     {
-        LOG_DEBUG("Black seat already taken");
-        // 可以显示提示信息
-        ui->chatHistory->append("<font color='orange'>黑棋位置已被占用</font>");
+        // 座位有人
+        // 左按钮：显示玩家名字
+        avatarBtn->setText(player->username);
+        avatarBtn->setToolTip(player->username);
+
+        // 右按钮：判断是否是自己或人机
+        // 这里简化处理：如果用户名包含"AI"或者是本地玩家，显示"X"
+        bool isAI = player->username.contains("AI");
+        bool isLocalPlayer = true; // 这里需要实际判断是否本地玩家，暂时简化
+
+        if (isAI || isLocalPlayer)
+        {
+            aiBtn->setText("X");
+            aiBtn->setToolTip("取消就坐");
+            aiBtn->show();
+        }
+        else
+        {
+            // 别人，隐藏按钮
+            aiBtn->hide();
+        }
     }
 }
 
-void GameWidget::onPlayer2AvatarClicked()
+// 私有辅助函数
+
+bool GameWidget::isPlaying()
 {
-    LOG_DEBUG("Player 2 avatar clicked (white seat)");
-    if (!m_whiteTaken)
+    switch (gameStatus)
     {
-        // 白棋位置未被占用，触发takeWhite信号
-        emit takeWhite();
-        // 更新本地状态
-        m_whiteTaken = true;
-        updatePlayerSeatStatus(m_blackTaken, m_whiteTaken);
+    case Playing:
+        return true;
+    case NotStarted:
+        emit logToUser("游戏尚未开始");
+        return false;
+    case End:
+        emit logToUser("游戏已结束");
+        return false;
     }
-    else
-    {
-        LOG_DEBUG("White seat already taken");
-        ui->chatHistory->append("<font color='orange'>白棋位置已被占用</font>");
-    }
-}
-
-void GameWidget::updatePlayerSeatStatus(bool blackTaken, bool whiteTaken)
-{
-    LOG_DEBUG_FMT("Updating player seat status: blackTaken=%d, whiteTaken=%d",
-                  blackTaken ? 1 : 0, whiteTaken ? 1 : 0);
-
-    m_blackTaken = blackTaken;
-    m_whiteTaken = whiteTaken;
-
-    // 更新黑棋位置显示
-    if (blackTaken)
-    {
-        ui->player1Avatar->setText("黑棋");
-        ui->player1Avatar->setToolTip("黑棋位置已被占用");
-        ui->player1Avatar->setEnabled(false);
-        ui->player1NameLabel->setText("玩家1");
-    }
-    else
-    {
-        ui->player1Avatar->setText("点击就坐");
-        ui->player1Avatar->setToolTip("点击就坐（黑棋）");
-        ui->player1Avatar->setEnabled(true);
-        ui->player1NameLabel->setText("等待玩家...");
-    }
-
-    // 更新白棋位置显示
-    if (whiteTaken)
-    {
-        ui->player2Avatar->setText("白棋");
-        ui->player2Avatar->setToolTip("白棋位置已被占用");
-        ui->player2Avatar->setEnabled(false);
-        ui->player2NameLabel->setText("玩家2");
-    }
-    else
-    {
-        ui->player2Avatar->setText("点击就坐");
-        ui->player2Avatar->setToolTip("点击就坐（白棋）");
-        ui->player2Avatar->setEnabled(true);
-        ui->player2NameLabel->setText("等待玩家...");
-    }
-}
-
-void GameWidget::onAIToggled(bool checked)
-{
-    LOG_DEBUG(QString("AI toggled: %1").arg(checked ? "enabled" : "disabled").toStdString());
-    emit aiToggled(checked);
-}
-
-void GameWidget::onRestartButtonClicked()
-{
-    LOG_DEBUG("Restart button clicked");
-    emit restartGame();
-}
-
-void GameWidget::onStartGameButtonClicked()
-{
-    LOG_DEBUG("Start game button clicked");
-    emit startGame();
 }

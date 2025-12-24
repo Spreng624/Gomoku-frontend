@@ -10,6 +10,8 @@
 #include <string>
 #include <map>
 #include <functional>
+#include <vector>
+#include "Game.h"
 
 // 前向声明
 class LobbyWidget;
@@ -21,46 +23,46 @@ class QStatusBar;
 class QTimer;
 class Server;
 
-class Manager : public QObject
+class Controller : public QObject
 {
     Q_OBJECT
 
 public:
-    explicit Manager(QObject *parent = nullptr);
-    ~Manager();
+    explicit Controller(QObject *parent = nullptr);
+    ~Controller();
 
     void connectToServer();
 
 public slots:
     // StatusBar
-    void login(const std::string &username, const std::string &password);
-    void signin(const std::string &username, const std::string &password);
-    void loginAsGuest();
-    void logout();
-    void reConnect();
+    void onLogin(const std::string &username, const std::string &password);
+    void onSignin(const std::string &username, const std::string &password);
+    void onLoginAsGuest();
+    void onLogout();
+    void onReconnect();
 
     // Lobby
-    void localGame();
-    void createRoom();
-    void joinRoom(int roomId);
-    void quickMatch();
-    void freshLobbyPlayerList();
-    void freshLobbyRoomList();
+    void onLocalGame();
+    void onCreateRoom();
+    void onJoinRoom(int roomId);
+    void onQuickMatch();
+    void onGetLobbyPlayerList();
+    void onGetLobbyRoomList();
 
     // GameManager
-    void exitRoom();
-    void takeBlack();
+    void onExitRoom();
+    void onTakeBlack();
     void takeWhite();
     void cancelTake();
     void startGame();
-    void editRoomSetting();
-    void chatMessageSent(const QString &message);
-    void makeMove(int x, int y);
-    void undoMoveRequest();
-    void undoMoveResponse(bool accepted);
-    void drawRequest();
+    void onEditRoomSetting();
+    void onChatMessageSent(const QString &message);
+    void onMakeMove(int x, int y);
+    void onUndoMoveRequest();
+    void onUndoMoveResponse(bool accepted);
+    void onDrawRequest();
     void drawResponse(bool accept);
-    void giveUp();
+    void onGiveUp();
 
 signals:
     // 给 MainWindow 发送界面切换信号
@@ -81,7 +83,17 @@ signals:
     void chatMessageReceived(const QString &username, const QString &message);
     void gameStarted(const QString &username, int rating);
     void gameEnded(const QString &username, int rating, bool won);
-    void moveMade(int x, int y);
+    void makeMove(int x, int y);
+    void boardUpdated(const std::vector<std::vector<Piece>> &board);
+    void blackTaken(const QString &username);
+    void whiteTaken(const QString &username);
+    void blackTimeUpdate(int playerTime);
+    void whiteTimeUpdate(int playerTime);
+    void updateRoomSetting(const QStringList &settings);
+    void drawRequestReceived();
+    void drawResponseReceived(bool accept);
+    void undoMoveRequestReceived();
+    void undoMoveResponseReceived(bool accepted);
 
 private slots:
 

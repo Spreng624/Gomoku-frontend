@@ -116,7 +116,12 @@ void LobbyWidget::updateRoomList(const QStringList &rooms)
 
                     // 2. 转换房间ID为整数（如果joinRoom需要int参数，按需调整）
                     bool ok;
-                    int roomId = roomIdItem->text().toInt(&ok);
+                    QString roomIdStr = roomIdItem->text();
+                    if (roomIdStr.startsWith("#"))
+                    {
+                        roomIdStr = roomIdStr.mid(1);
+                    }
+                    int roomId = roomIdStr.toInt(&ok);
                     if (!ok)
                     {
                         return; // 若房间ID是字符串，直接传QString：QString roomId = roomIdItem->text();

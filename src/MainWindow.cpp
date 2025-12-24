@@ -42,7 +42,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     ui->setupUi(this);
 
     LOG_DEBUG("Creating Manager instance...");
-    manager = std::make_unique<Manager>();
+    ctrl = std::make_unique<Controller>();
 
     LOG_DEBUG("Creating LobbyWidget...");
     lobby = new LobbyWidget(this);
@@ -50,9 +50,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     LOG_DEBUG("Creating GameWidget...");
     game = new GameWidget(this);
 
-    // 创建 GameManager
-    LOG_DEBUG("Creating GameManager instance...");
-    gameManager = std::make_unique<GameManager>();
+    // 不再创建 GameManager，功能已移植到 GameWidget
+    LOG_DEBUG("GameManager functionality has been transplanted to GameWidget");
 
     // 连接信号与槽
     LOG_DEBUG("Setting up signal connections...");
@@ -118,7 +117,7 @@ MainWindow::~MainWindow()
     delete ui;
 
     LOG_DEBUG("Cleaning up Manager...");
-    manager = nullptr;
+    ctrl = nullptr;
 
     LOG_DEBUG("Cleaning up ToastWidget...");
     if (toastWidget)
@@ -135,148 +134,66 @@ MainWindow::~MainWindow()
 
 void MainWindow::SetUpSignals()
 {
-    // Lobby -> Manager
-    LOG_DEBUG("Connecting LobbyWidget::localGame to GameManager::setLocalGame...");
-    bool localGameConnected = connect(lobby, &LobbyWidget::localGame, this, [this]()
-                                      {
-        LOG_DEBUG("localGame signal received, initializing local game");
-        if (gameManager && game) {
-            // 设置用户名
-            gameManager->setCurrentUsername(currentUsername);
-            // 设置本地游戏标志（默认不启用AI）
-            gameManager->setLocalGame(true, false);
-            // 初始化游戏部件为本地模式
-            game->initGameWidget(true);
-            // 切换到游戏界面
-            onSwitchWidget(1);
-            // 设置棋盘部件的Game实例
-            if (gameManager->getLocalGame() && game->getChessBoard()) {
-                game->getChessBoard()->setGame(gameManager->getLocalGame());
-            }
-        } else {
-            LOG_WARN("gameManager or game is null when trying to set local game");
-        } });
-    LOG_DEBUG_FMT("localGame connection result: %d", localGameConnected ? 1 : 0);
-    connect(lobby, &LobbyWidget::createRoom, manager.get(), &Manager::createRoom);
-    connect(lobby, &LobbyWidget::joinRoom, manager.get(), &Manager::joinRoom);
-    connect(lobby, &LobbyWidget::quickMatch, manager.get(), &Manager::quickMatch);
-    connect(lobby, &LobbyWidget::freshPlayerList, manager.get(), &Manager::freshLobbyPlayerList);
-    connect(lobby, &LobbyWidget::freshRoomList, manager.get(), &Manager::freshLobbyRoomList);
+    // LobbyWidget <--> Controller
+    connect(lobby, &LobbyWidget::freshPlayerList, ctrl.get(), &Controller::onGetLobbyPlayerList);
+    connect(lobby, &LobbyWidget::freshRoomList, ctrl.get(), &Controller::onGetLobbyRoomList);
+    connect(lobby, &LobbyWidget::quickMatch, ctrl.get(), &Controller::onQuickMatch);
+    connect(lobby, &LobbyWidget::createRoom, ctrl.get(), &Controller::onCreateRoom);
+    connect(lobby, &LobbyWidget::joinRoom, ctrl.get(), &Controller::onJoinRoom);
+    connect(ctrl.get(), &Controller::updateLobbyPlayerList, lobby, &LobbyWidget::updatePlayerList);
+    connect(ctrl.get(), &Controller::updateLobbyRoomList, lobby, &LobbyWidget::updateRoomList);
 
-    // GameWidget -> GameManager
-    connect(game, &GameWidget::backToLobby, gameManager.get(), &GameManager::onBackToLobby);
-    connect(game, &GameWidget::takeBlack, gameManager.get(), &GameManager::onTakeBlack);
-    connect(game, &GameWidget::takeWhite, gameManager.get(), &GameManager::onTakeWhite);
-    connect(game, &GameWidget::cancelTake, gameManager.get(), &GameManager::onCancelTake);
-    connect(game, &GameWidget::startGame, gameManager.get(), &GameManager::onStartGame);
-    connect(game, &GameWidget::editRoomSetting, gameManager.get(), &GameManager::onEditRoomSetting);
-    connect(game, &GameWidget::chatMessageSent, gameManager.get(), &GameManager::onChatMessageSent);
-    connect(game, &GameWidget::makeMove, gameManager.get(), &GameManager::onMakeMove);
-    connect(game, &GameWidget::undoMoveRequested, gameManager.get(), &GameManager::onUndoMoveRequested);
-    connect(game, &GameWidget::undoMoveResponse, gameManager.get(), &GameManager::onUndoMoveResponse);
-    connect(game, &GameWidget::drawRequested, gameManager.get(), &GameManager::onDrawRequested);
-    connect(game, &GameWidget::drawResponse, gameManager.get(), &GameManager::onDrawResponse);
-    connect(game, &GameWidget::giveup, gameManager.get(), &GameManager::onGiveup);
+    // GameWidget <--> Controller
+    connect(game, &GameWidget::makeMove, ctrl.get(), &Controller::onMakeMove);
+    connect(game, &GameWidget::takeBlack, ctrl.get(), &Controller::onTakeBlack);
+    connect(game, &GameWidget::takeWhite, ctrl.get(), &Controller::takeWhite);
+    connect(game, &GameWidget::cancelTake, ctrl.get(), &Controller::cancelTake);
+    connect(game, &GameWidget::startGame, ctrl.get(), &Controller::startGame);
+    // connect(game, &GameWidget::restartGame, ctrl.get(), &Controller::restartGame);
+    connect(game, &GameWidget::giveup, ctrl.get(), &Controller::onGiveUp);
+    connect(game, &GameWidget::drawRequest, ctrl.get(), &Controller::onDrawRequest);
+    connect(game, &GameWidget::undoMoveRequest, ctrl.get(), &Controller::onUndoMoveRequest);
+    connect(game, &GameWidget::chatMessageSent, ctrl.get(), &Controller::onChatMessageSent);
+    connect(game, &GameWidget::editRoomSetting, ctrl.get(), &Controller::onEditRoomSetting);
+    connect(game, &GameWidget::backToLobby, ctrl.get(), &Controller::onExitRoom);
+    connect(game, &GameWidget::drawResponse, ctrl.get(), &Controller::drawResponse);
+    connect(game, &GameWidget::undoMoveResponse, ctrl.get(), &Controller::onUndoMoveResponse);
+    connect(ctrl.get(), &Controller::initGameWidget, game, &GameWidget::init);
+    connect(ctrl.get(), &Controller::gameStarted, game, &GameWidget::onGameStarted);
+    connect(ctrl.get(), &Controller::gameEnded, game, &GameWidget::onGameEnded);
+    connect(ctrl.get(), &Controller::makeMove, game, &GameWidget::onMakeMove);
+    connect(ctrl.get(), &Controller::boardUpdated, game, &GameWidget::onBoardUpdated);
+    connect(ctrl.get(), &Controller::blackTaken, game, &GameWidget::onBlackTaken);
+    connect(ctrl.get(), &Controller::whiteTaken, game, &GameWidget::onWhiteTaken);
+    connect(ctrl.get(), &Controller::blackTimeUpdate, game, &GameWidget::onBlackTimeUpdate);
+    connect(ctrl.get(), &Controller::whiteTimeUpdate, game, &GameWidget::onWhiteTimeUpdate);
+    connect(ctrl.get(), &Controller::chatMessageReceived, game, &GameWidget::onChatMessageReceived);
+    connect(ctrl.get(), &Controller::updateRoomPlayerList, game, &GameWidget::onUpdateRoomPlayerList);
+    connect(ctrl.get(), &Controller::updateRoomSetting, game, &GameWidget::onUpdateRoomSetting);
+    connect(ctrl.get(), &Controller::drawRequestReceived, game, &GameWidget::onDrawRequestReceived);
+    connect(ctrl.get(), &Controller::drawResponseReceived, game, &GameWidget::onDrawResponseReceived);
+    connect(ctrl.get(), &Controller::undoMoveRequestReceived, game, &GameWidget::onUndoMoveRequestReceived);
+    connect(ctrl.get(), &Controller::undoMoveResponseReceived, game, &GameWidget::onUndoMoveResponseReceived);
 
-    // GameWidget -> GameManager (AI toggle)
-    connect(game, &GameWidget::aiToggled, gameManager.get(), &GameManager::onAIToggled);
-
-    // GameWidget -> GameManager (restart game)
-    connect(game, &GameWidget::restartGame, gameManager.get(), &GameManager::onRestartGame);
-
-    // GameManager -> Manager
-    connect(gameManager.get(), &GameManager::backToLobby, manager.get(), &Manager::exitRoom);
-    connect(gameManager.get(), &GameManager::takeBlack, manager.get(), &Manager::takeBlack);
-    connect(gameManager.get(), &GameManager::takeWhite, manager.get(), &Manager::takeWhite);
-    connect(gameManager.get(), &GameManager::cancelTake, manager.get(), &Manager::cancelTake);
-    connect(gameManager.get(), &GameManager::startGame, manager.get(), &Manager::startGame);
-    connect(gameManager.get(), &GameManager::editRoomSetting, manager.get(), &Manager::editRoomSetting);
-    connect(gameManager.get(), &GameManager::chatMessageSent, manager.get(), &Manager::chatMessageSent);
-    connect(gameManager.get(), &GameManager::makeMove, manager.get(), &Manager::makeMove);
-    connect(gameManager.get(), &GameManager::undoMoveRequest, manager.get(), &Manager::undoMoveRequest);
-    connect(gameManager.get(), &GameManager::undoMoveResponse, manager.get(), &Manager::undoMoveResponse);
-    connect(gameManager.get(), &GameManager::drawRequest, manager.get(), &Manager::drawRequest);
-    connect(gameManager.get(), &GameManager::drawResponse, manager.get(), &Manager::drawResponse);
-    connect(gameManager.get(), &GameManager::giveUp, manager.get(), &Manager::giveUp);
-
-    // MainWindow -> Manager
-    connect(this, &MainWindow::login, manager.get(), &Manager::login);
-    connect(this, &MainWindow::signin, manager.get(), &Manager::signin);
-    connect(this, &MainWindow::loginAsGuest, manager.get(), &Manager::loginAsGuest);
-    connect(this, &MainWindow::logout, manager.get(), &Manager::logout);
-
-    // Manager -> MainWindow
-    connect(manager.get(), &Manager::switchWidget, this, &MainWindow::onSwitchWidget);
-    connect(manager.get(), &Manager::connectionStatusChanged, this, &MainWindow::setNetworkStatus);
-    connect(manager.get(), &Manager::userIdentityChanged, this, &MainWindow::setUserInfo);
-    connect(manager.get(), &Manager::statusBarMessageChanged, this, &MainWindow::setStatusMessage);
-    connect(manager.get(), &Manager::logToUser, this, [this](const QString &message)
+    // MainWindow <--> Controller
+    connect(this, &MainWindow::login, ctrl.get(), &Controller::onLogin);
+    connect(this, &MainWindow::signin, ctrl.get(), &Controller::onSignin);
+    connect(this, &MainWindow::loginAsGuest, ctrl.get(), &Controller::onLoginAsGuest);
+    connect(this, &MainWindow::logout, ctrl.get(), &Controller::onLogout);
+    connect(ctrl.get(), &Controller::switchWidget, this, &MainWindow::onSwitchWidget);
+    connect(ctrl.get(), &Controller::connectionStatusChanged, this, &MainWindow::setNetworkStatus);
+    connect(ctrl.get(), &Controller::userIdentityChanged, this, &MainWindow::setUserInfo);
+    connect(ctrl.get(), &Controller::statusBarMessageChanged, this, &MainWindow::setStatusMessage);
+    connect(ctrl.get(), &Controller::logToUser, this, [this](const QString &message)
             { showToastMessage(message, 3000); });
 
-    // Manager -> Lobby
-    connect(manager.get(), &Manager::updateLobbyPlayerList, lobby, &LobbyWidget::updatePlayerList);
-    connect(manager.get(), &Manager::updateLobbyRoomList, lobby, &LobbyWidget::updateRoomList);
-
-    // Manager -> GameManager (新增的连接)
-    connect(manager.get(), &Manager::chatMessageReceived,
-            gameManager.get(), &GameManager::onChatMessageReceived);
-    connect(manager.get(), &Manager::gameStarted,
-            gameManager.get(), &GameManager::onGameStarted);
-    connect(manager.get(), &Manager::gameEnded,
-            gameManager.get(), &GameManager::onGameEnded);
-    connect(manager.get(), &Manager::playerListUpdated,
-            gameManager.get(), &GameManager::onPlayerListUpdated);
-    connect(manager.get(), &Manager::updateRoomPlayerList,
-            gameManager.get(), &GameManager::onUpdateRoomPlayerList);
-    connect(manager.get(), &Manager::moveMade,
-            gameManager.get(), &GameManager::onMoveMade);
-
-    // Manager -> GameWidget (保留必要的直接连接)
-    connect(manager.get(), &Manager::initGameWidget, this, [this](bool isLocal)
-            {
-        game->initGameWidget(isLocal);
-        if (gameManager) {
-            gameManager->setLocalGame(isLocal);
-            // 无论是本地游戏还是在线游戏，都需要设置棋盘部件的Game实例
-            // 在线游戏也需要一个Game实例来跟踪棋盘状态
-            Game* gameInstance = gameManager->getLocalGame();
-            if (gameInstance && game && game->getChessBoard()) {
-                game->getChessBoard()->setGame(gameInstance);
-                qDebug() << "ChessBoardWidget Game instance set for" << (isLocal ? "local" : "online") << "game";
-            } else {
-                qDebug() << "Warning: Could not set Game instance for ChessBoardWidget";
-                qDebug() << "gameInstance:" << gameInstance << "game:" << game << "chessBoard:" << (game ? game->getChessBoard() : nullptr);
-            }
-        } });
-
-    // GameManager -> GameWidget
-    connect(gameManager.get(), &GameManager::chatMessageReceived, game, &GameWidget::onChatMessageReceived);
-    connect(gameManager.get(), &GameManager::gameStarted, game, &GameWidget::onGameStarted);
-    connect(gameManager.get(), &GameManager::gameEnded, game, &GameWidget::onGameEnded);
-    connect(gameManager.get(), &GameManager::playerListUpdated, game, &GameWidget::onPlayerListUpdated);
-    connect(gameManager.get(), &GameManager::updateRoomPlayerList, game, &GameWidget::updateRoomPlayerList);
-
-    // GameManager -> ChessBoardWidget (触发棋盘重绘)
-    connect(gameManager.get(), &GameManager::boardUpdated, this, [this]()
-            {
-        qDebug() << "Board updated signal received, refreshing chess board";
-        if (game && game->getChessBoard()) {
-            game->getChessBoard()->refreshBoard();
-        } });
-
-    // GameManager 本地游戏返回大厅
-    connect(gameManager.get(), &GameManager::localGameBackToLobby, this, [this]()
-            {
-        qDebug() << "Local game back to lobby signal received";
-        onSwitchWidget(0); // 切换回大厅
-        // 重置游戏状态
-        if (game) {
-            game->initGameWidget(false);
-        }
-        // 重置GameManager的本地游戏状态
-        if (gameManager) {
-            gameManager->setLocalGame(false);
-        } });
+    // Else
+    connect(game, &GameWidget::backToLobby, this, [this]()
+            { emit onSwitchWidget(0); });
+    connect(lobby, &LobbyWidget::localGame, this, [this]()
+            { game->init(true); emit onSwitchWidget(1); });
+    connect(game, &GameWidget::logToUser, this, [this](const QString &message)
+            { showToastMessage(message, 3000); });
 }
 
 void MainWindow::onSwitchWidget(int index)
@@ -560,8 +477,8 @@ void MainWindow::initStatusBar()
         connect(networkStatusButton, &QPushButton::clicked, this, [this]()
                 {
             LOG_DEBUG("Network status button clicked, calling manager->reConnect()");
-            if (manager) {
-                manager->reConnect();
+            if (ctrl) {
+                ctrl->onReconnect();
             } });
     }
 

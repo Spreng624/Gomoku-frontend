@@ -35,8 +35,7 @@ VPATH += . \
 
 SOURCES += src/core/Game.cpp \
            src/core/AiPlayer.cpp \
-           src/core/manager.cpp \
-           src/core/GameManager.cpp \
+           src/core/Controller.cpp \
            src/network/Client.cpp \
            src/network/Frame.cpp \
            src/network/Packet.cpp \
@@ -50,8 +49,7 @@ SOURCES += src/core/Game.cpp \
            src/MainWindow.cpp
 
 HEADERS += src/core/Game.h \
-           src/core/Manager.h \
-           src/core/GameManager.h \
+           src/core/Controller.h \
            src/network/Client.h \
            src/network/Frame.h \
            src/network/Packet.h \

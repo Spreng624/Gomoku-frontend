@@ -6,15 +6,30 @@
 #include <QList>
 #include <QPair>
 #include <QString>
+#include <memory>
 #include "Game.h"
+#include "AiPlayer.h"
 #include "ChessBoardWidget.h" // 包含新的棋盘部件
 
-class Manager; // 前向声明
+class Controller; // 前向声明
 
 namespace Ui
 {
     class GameWidget;
 }
+
+enum GameStatus
+{
+    NotStarted,
+    Playing,
+    End
+};
+
+struct PlayerInfo
+{
+    QString username;
+    QString TimeLeft;
+};
 
 class GameWidget : public QWidget
 {
@@ -25,79 +40,75 @@ public:
     ~GameWidget();
 
 signals:
-    // 用户操作信号（发送给GameManager）
-    void backToLobby();
+    // 棋盘信号
+    void makeMove(int x, int y); // 点击棋盘
+
+    // Part1: 执黑、执白、取消就坐（乐观响应）
     void takeBlack();
     void takeWhite();
     void cancelTake();
+
+    // Part2: 开始/重新开始、认输、请求和棋、请求悔棋（等待响应）
     void startGame();
-    void editRoomSetting();
-    void chatMessageSent(const QString &message);
-    void makeMove(int x, int y);
-    void undoMoveRequested();
-    void undoMoveResponse(bool accepted);
-    void drawRequested();
-    void drawResponse(bool accept);
-    void giveup();
-    void aiToggled(bool enabled);
     void restartGame();
+    void giveup();
+    void drawRequest();
+    void undoMoveRequest();
+
+    // Part3: 聊天、记录、玩家列表、设置（乐观响应）
+    void chatMessageSent(const QString &message);
+    void editRoomSetting(const QStringList &settings);
+
+    // Part4: 返回大厅（乐观响应）--> MainWindow
+    void backToLobby();
+
+    // 弹窗响应（等待响应）
+    void drawResponse(bool accept);
+    void undoMoveResponse(bool accepted);
+
+    // --> MainWindow
+    void logToUser(const QString &message);
 
 public slots:
-    // 从Manager接收的槽
-    void initGameWidget(bool islocal);
-    void updateRoomPlayerList(const QStringList &players);
-    void playerListUpdated(const QStringList &players);
-    void chatMessageReceived(const QString &username, const QString &message);
-    void gameStarted();
-    void gameEnded();
+    // 游戏初始化和状态变化信号
+    void init(bool islocal);
+    void onGameStarted();
+    void onGameEnded(QString message);
 
-    // 从GameManager接收的槽
+    // 棋盘信息（同时更新历史记录）
+    void onMakeMove(int x, int y);
+    void onBoardUpdated(const std::vector<std::vector<Piece>> &board);
+
+    // Part1: 就坐、计时信息
+    void onBlackTaken(const QString &username);
+    void onWhiteTaken(const QString &username);
+    void onBlackTimeUpdate(int playerTime);
+    void onWhiteTimeUpdate(int playerTime);
+
+    // Part3: 聊天、玩家列表、设置
     void onChatMessageReceived(const QString &username, const QString &message);
-    void onGameStarted(const QString &username, int rating);
-    void onGameEnded(const QString &username, int rating, bool won);
-    void onPlayerListUpdated(const QStringList &players);
+    void onUpdateRoomPlayerList(const QStringList &players);
+    void onUpdateRoomSetting(const QStringList &settings);
 
-private slots:
-    // 内部槽函数，用于处理UI事件
-    void onBackToLobbyButtonClicked();
-    void onSurrenderButtonClicked();
-    void onUndoButtonClicked();
-    void onSendButtonClicked();
-    void onMinimizeBtnClicked();
-    void onCloseBtnClicked();
-    void onPlayer1AvatarClicked();
-    void onPlayer2AvatarClicked();
-    void onAIToggled(bool checked);
-    void onRestartButtonClicked();
-    void onStartGameButtonClicked();
+    // 弹窗提示: 和棋、悔棋请求与响应
+    void onDrawRequestReceived();
+    void onDrawResponseReceived(bool accept);
+    void onUndoMoveRequestReceived();
+    void onUndoMoveResponseReceived(bool accepted);
 
 private:
-    // 初始化函数
-    void initUI();
-    void setupConnections();
-    // 更新UI的辅助方法（现在接收参数）
-    void updatePlayerInfo(int player1Time, int player2Time, bool currentPlayer);
-    void updateGameStatus(bool isGameStarted, bool isGameOver);
-    // 更新玩家就坐状态
-    void updatePlayerSeatStatus(bool blackTaken, bool whiteTaken);
+    void SetUpSignals();
+    bool isPlaying();
+    void updatePlayerSeatUI(bool isBlack); // 更新玩家座位UI显示
 
-    // 成员变量
+private:
     Ui::GameWidget *ui;
-    ChessBoardWidget *chessBoard;
-    // 玩家就坐状态
-    bool m_blackTaken;
-    bool m_whiteTaken;
-
-public:
-    // 获取棋盘部件
-    ChessBoardWidget *getChessBoard() const { return chessBoard; }
-
-    // 接收全量游戏状态的槽函数
-public slots:
-    void updateGameState(bool isGameStarted, bool isGameOver, bool currentPlayer,
-                         int player1Time, int player2Time,
-                         const QString &player1Name, const QString &player2Name,
-                         int player1Rating, int player2Rating);
+    std::unique_ptr<Game> game;
+    std::unique_ptr<ChessBoardWidget> chessBoard;
+    bool isLocal;
+    GameStatus gameStatus;
+    std::unique_ptr<PlayerInfo> blackPlayer;
+    std::unique_ptr<PlayerInfo> whitePlayer;
 };
 
 #endif // GAMEWIDGET_H

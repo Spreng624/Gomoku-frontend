@@ -10,9 +10,8 @@
 #include <memory>
 #include "LobbyWidget.h"
 #include "GameWidget.h"
-#include "Manager.h"
+#include "Controller.h"
 #include "ToastWidget.h"
-#include "GameManager.h"
 
 namespace Ui
 {
@@ -75,8 +74,7 @@ private:
     QStackedWidget *stackedWidget;
     LobbyWidget *lobby;
     GameWidget *game;
-    std::unique_ptr<Manager> manager;
-    std::unique_ptr<GameManager> gameManager;
+    std::unique_ptr<Controller> ctrl;
     bool networkConnected;
     QString currentUsername;
     int currentRating;

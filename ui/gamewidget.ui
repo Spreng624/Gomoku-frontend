@@ -53,9 +53,6 @@
        <height>0</height>
       </size>
      </property>
-     <property name="styleSheet">
-      <string notr="true">file:///E:/Dev/Gomoku-frontend/src/style.qss</string>
-     </property>
      <layout class="QVBoxLayout" name="verticalLayout">
       <property name="spacing">
        <number>10</number>
@@ -117,32 +114,6 @@
            </property>
           </widget>
          </item>
-         <item>
-          <widget class="QPushButton" name="minimizeBtn">
-           <property name="text">
-            <string>─</string>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>25</width>
-             <height>25</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="closeBtn">
-           <property name="text">
-            <string>×</string>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>25</width>
-             <height>25</height>
-            </size>
-           </property>
-          </widget>
-         </item>
         </layout>
        </widget>
       </item>
@@ -177,6 +148,28 @@
               </property>
               <property name="toolTip">
                <string>就坐</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="addAIBlackButton">
+              <property name="text">
+               <string>添加人机</string>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>60</width>
+                <height>30</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>80</width>
+                <height>30</height>
+               </size>
+              </property>
+              <property name="toolTip">
+               <string>添加AI玩家执黑棋</string>
               </property>
              </widget>
             </item>
@@ -240,6 +233,28 @@
              </widget>
             </item>
             <item>
+             <widget class="QPushButton" name="addAIWhiteButton">
+              <property name="text">
+               <string>添加人机</string>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>60</width>
+                <height>30</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>80</width>
+                <height>30</height>
+               </size>
+              </property>
+              <property name="toolTip">
+               <string>添加AI玩家执白棋</string>
+              </property>
+             </widget>
+            </item>
+            <item>
              <layout class="QVBoxLayout" name="verticalLayout_4">
               <property name="spacing">
                <number>2</number>
@@ -295,6 +310,19 @@
           <widget class="QPushButton" name="startGameButton">
            <property name="text">
             <string>开始游戏</string>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>40</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="drawButton">
+           <property name="text">
+            <string>求和</string>
            </property>
            <property name="minimumSize">
             <size>
@@ -484,13 +512,6 @@
           <widget class="QPushButton" name="backToLobbyButton">
            <property name="text">
             <string>返回大廳</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="restartButton">
-           <property name="text">
-            <string>重新開始</string>
            </property>
           </widget>
          </item>

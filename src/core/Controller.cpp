@@ -1,4 +1,4 @@
-#include "Manager.h"
+#include "Controller.h"
 #include "LobbyWidget.h"
 #include "GameWidget.h"
 #include "Client.h"
@@ -12,7 +12,7 @@
 #include <chrono>
 #include <random>
 
-Manager::Manager(QObject *parent)
+Controller::Controller(QObject *parent)
     : QObject(parent),
       mainWindow(nullptr),
       stackedWidget(nullptr),
@@ -41,8 +41,8 @@ Manager::Manager(QObject *parent)
         this->sessionId = sessionId;
         connected = true;
         emit connectionStatusChanged(true);
-        freshLobbyPlayerList();
-        freshLobbyRoomList();
+        onGetLobbyPlayerList();
+        onGetLobbyRoomList();
         emit logToUser("已连接到服务器"); });
     client->SetDisconnectedCallback([this]()
                                     {
@@ -56,7 +56,7 @@ Manager::Manager(QObject *parent)
     connectToServer();
 }
 
-Manager::~Manager()
+Controller::~Controller()
 {
     LOG_INFO("Manager destructor called");
     if (client)
@@ -71,7 +71,7 @@ Manager::~Manager()
 
 // 连接管理
 
-void Manager::connectToServer()
+void Controller::connectToServer()
 {
     if (connected)
     {
@@ -85,13 +85,13 @@ void Manager::connectToServer()
 
 // Status Bar
 
-void Manager::reConnect()
+void Controller::onReconnect()
 {
     LOG_INFO("Reconnecting to server...");
     connectToServer();
 }
 
-void Manager::login(const std::string &username, const std::string &password)
+void Controller::onLogin(const std::string &username, const std::string &password)
 {
     LOG_INFO("Login attempt for user: " + username);
 
@@ -113,7 +113,7 @@ void Manager::login(const std::string &username, const std::string &password)
     LOG_INFO("Login request sent for user: " + username);
 }
 
-void Manager::signin(const std::string &username, const std::string &password)
+void Controller::onSignin(const std::string &username, const std::string &password)
 {
     LOG_INFO("Signin attempt for user: " + username);
 
@@ -131,7 +131,7 @@ void Manager::signin(const std::string &username, const std::string &password)
     sendPacket(packet);
 }
 
-void Manager::logout()
+void Controller::onLogout()
 {
     if (!connected)
         return;
@@ -145,7 +145,7 @@ void Manager::logout()
     inGame = false;
 }
 
-void Manager::loginAsGuest()
+void Controller::onLoginAsGuest()
 {
     LOG_INFO("Logging in as guest");
 
@@ -160,14 +160,14 @@ void Manager::loginAsGuest()
 }
 
 // Lobby
-void Manager::localGame()
+void Controller::onLocalGame()
 {
     LOG_DEBUG("Starting local game");
     emit switchWidget(1);
     emit initGameWidget(true);
 }
 
-void Manager::createRoom()
+void Controller::onCreateRoom()
 {
     LOG_DEBUG("Creating room");
     if (!connected)
@@ -180,19 +180,19 @@ void Manager::createRoom()
     sendPacket(packet);
 }
 
-void Manager::joinRoom(int roomId)
+void Controller::onJoinRoom(int roomId)
 {
     LOG_DEBUG("Joining room: " + std::to_string(roomId));
     if (!connected)
         return;
 
     Packet packet(sessionId, MsgType::JoinRoom);
-    packet.AddParam("room_id", roomId);
+    packet.AddParam("roomId", roomId);
 
     sendPacket(packet);
 }
 
-void Manager::quickMatch()
+void Controller::onQuickMatch()
 {
     if (!connected)
         return;
@@ -201,7 +201,7 @@ void Manager::quickMatch()
     sendPacket(packet);
 }
 
-void Manager::freshLobbyPlayerList()
+void Controller::onGetLobbyPlayerList()
 {
     if (!connected)
         return;
@@ -210,7 +210,7 @@ void Manager::freshLobbyPlayerList()
     sendPacket(packet);
 }
 
-void Manager::freshLobbyRoomList()
+void Controller::onGetLobbyRoomList()
 {
     if (!connected)
         return;
@@ -221,13 +221,13 @@ void Manager::freshLobbyRoomList()
 
 // GameManager
 
-void Manager::exitRoom()
+void Controller::onExitRoom()
 {
     if (!connected || currentRoomId == 0)
         return;
 
     Packet packet(sessionId, MsgType::ExitRoom);
-    packet.AddParam("room_id", currentRoomId);
+    packet.AddParam("roomId", currentRoomId);
     sendPacket(packet);
 
     // 不立即切换，等待服务器确认
@@ -237,60 +237,60 @@ void Manager::exitRoom()
     // inGame = false;
 }
 
-void Manager::takeBlack()
+void Controller::onTakeBlack()
 {
     LOG_INFO("Taking black pieces");
     if (!connected || currentRoomId == 0)
         return;
 
     Packet packet(sessionId, MsgType::TakeBlack);
-    packet.AddParam("room_id", currentRoomId);
+    packet.AddParam("roomId", currentRoomId);
     sendPacket(packet);
 }
 
-void Manager::takeWhite()
+void Controller::takeWhite()
 {
     LOG_INFO("Taking white pieces");
     if (!connected || currentRoomId == 0)
         return;
 
     Packet packet(sessionId, MsgType::TakeWhite);
-    packet.AddParam("room_id", currentRoomId);
+    packet.AddParam("roomId", currentRoomId);
     sendPacket(packet);
 }
 
-void Manager::cancelTake()
+void Controller::cancelTake()
 {
     LOG_INFO("Canceling piece selection");
     if (!connected || currentRoomId == 0)
         return;
 
     Packet packet(sessionId, MsgType::CancelTake);
-    packet.AddParam("room_id", currentRoomId);
+    packet.AddParam("roomId", currentRoomId);
     sendPacket(packet);
 }
 
-void Manager::startGame()
+void Controller::startGame()
 {
     LOG_INFO("Starting game");
     if (!connected || currentRoomId == 0)
         return;
 
     Packet packet(sessionId, MsgType::StartGame);
-    packet.AddParam("room_id", currentRoomId);
+    packet.AddParam("roomId", currentRoomId);
     sendPacket(packet);
 
     inGame = true;
     emit gameStarted(QString::fromStdString(username), rating);
 }
 
-void Manager::editRoomSetting()
+void Controller::onEditRoomSetting()
 {
     LOG_INFO("Editing room settings");
     logToUser("房间设置功能暂未实现");
 }
 
-void Manager::chatMessageSent(const QString &message)
+void Controller::onChatMessageSent(const QString &message)
 {
     LOG_INFO("Chat message sent: " + message.toStdString());
 
@@ -305,7 +305,7 @@ void Manager::chatMessageSent(const QString &message)
     LOG_DEBUG("Chat message would be sent to room " + std::to_string(currentRoomId) + ": " + message.toStdString());
 }
 
-void Manager::makeMove(int x, int y)
+void Controller::onMakeMove(int x, int y)
 {
     if (!connected)
     {
@@ -322,72 +322,72 @@ void Manager::makeMove(int x, int y)
     }
 
     Packet packet(sessionId, MsgType::MakeMove);
-    packet.AddParam("room_id", currentRoomId);
+    packet.AddParam("roomId", currentRoomId);
     packet.AddParam("x", (uint32_t)x);
     packet.AddParam("y", (uint32_t)y);
 
     sendPacket(packet);
 }
 
-void Manager::undoMoveRequest()
+void Controller::onUndoMoveRequest()
 {
     LOG_INFO("Requesting undo move");
     if (!connected || !inGame)
         return;
 
     Packet packet(sessionId, MsgType::UndoMoveRequest);
-    packet.AddParam("room_id", currentRoomId);
+    packet.AddParam("roomId", currentRoomId);
     sendPacket(packet);
 }
 
-void Manager::undoMoveResponse(bool accepted)
+void Controller::onUndoMoveResponse(bool accepted)
 {
     LOG_INFO("Responding to undo move request: " + std::string(accepted ? "accepted" : "rejected"));
     if (!connected || !inGame)
         return;
 
     Packet packet(sessionId, MsgType::UndoMoveResponse);
-    packet.AddParam("room_id", currentRoomId);
+    packet.AddParam("roomId", currentRoomId);
     packet.AddParam("accepted", accepted);
     sendPacket(packet);
 }
 
-void Manager::drawRequest()
+void Controller::onDrawRequest()
 {
     LOG_INFO("Requesting draw");
     if (!connected || !inGame)
         return;
 
     Packet packet(sessionId, MsgType::DrawRequest);
-    packet.AddParam("room_id", currentRoomId);
+    packet.AddParam("roomId", currentRoomId);
     sendPacket(packet);
 }
 
-void Manager::drawResponse(bool accept)
+void Controller::drawResponse(bool accept)
 {
     LOG_INFO("Responding to draw request: " + std::string(accept ? "accept" : "reject"));
     if (!connected || !inGame)
         return;
 
     Packet packet(sessionId, MsgType::DrawResponse);
-    packet.AddParam("room_id", currentRoomId);
+    packet.AddParam("roomId", currentRoomId);
     packet.AddParam("accept", accept);
     sendPacket(packet);
 }
 
-void Manager::giveUp()
+void Controller::onGiveUp()
 {
     if (!connected || !inGame)
         return;
 
     Packet packet(sessionId, MsgType::GiveUp);
-    packet.AddParam("room_id", currentRoomId);
+    packet.AddParam("roomId", currentRoomId);
     sendPacket(packet);
 }
 
 // Private
 
-void Manager::setupSignalConnections()
+void Controller::setupSignalConnections()
 {
     // connect(this, &Manager::localGameRequested, this, [this]()
     //         {
@@ -405,7 +405,7 @@ void Manager::setupSignalConnections()
 
 // Private
 
-void Manager::handlePacket(const Packet &packet)
+void Controller::handlePacket(const Packet &packet)
 {
     LOG_DEBUG("Received packet (type: " + std::to_string(static_cast<int>(packet.msgType)) + ")");
     switch (packet.msgType)
@@ -520,7 +520,7 @@ void Manager::handlePacket(const Packet &packet)
         bool success = packet.GetParam<bool>("success", true); // 默认为true以保持向后兼容
         if (success)
         {
-            currentRoomId = packet.GetParam<int>("room_id");
+            currentRoomId = packet.GetParam<int>("roomId");
             LOG_INFO("Room created successfully, room ID: " + std::to_string(currentRoomId));
             emit logToUser(QString("房间创建成功，房间号: %1").arg(currentRoomId));
 
@@ -548,7 +548,7 @@ void Manager::handlePacket(const Packet &packet)
         bool success = packet.GetParam<bool>("success", true);
         if (success)
         {
-            currentRoomId = packet.GetParam<int>("room_id");
+            currentRoomId = packet.GetParam<int>("roomId");
             LOG_INFO("Single player room created successfully, room ID: " + std::to_string(currentRoomId));
             emit logToUser(QString("单人房间创建成功，房间号: %1").arg(currentRoomId));
 
@@ -573,7 +573,7 @@ void Manager::handlePacket(const Packet &packet)
         bool success = packet.GetParam<bool>("success", true);
         if (success)
         {
-            currentRoomId = packet.GetParam<int>("room_id");
+            currentRoomId = packet.GetParam<int>("roomId");
             LOG_INFO("Joined room successfully, room ID: " + std::to_string(currentRoomId));
             emit logToUser(QString("加入房间成功，房间号: %1").arg(currentRoomId));
 
@@ -609,7 +609,7 @@ void Manager::handlePacket(const Packet &packet)
         bool success = packet.GetParam<bool>("success", true);
         if (success)
         {
-            currentRoomId = packet.GetParam<int>("room_id");
+            currentRoomId = packet.GetParam<int>("roomId");
             LOG_INFO("Quick match successful, room ID: " + std::to_string(currentRoomId));
             emit logToUser(QString("快速匹配成功，房间号: %1").arg(currentRoomId));
 
@@ -657,7 +657,7 @@ void Manager::handlePacket(const Packet &packet)
     {
         int x = packet.GetParam<int>("x");
         int y = packet.GetParam<int>("y");
-        emit moveMade(x, y);
+        emit makeMove(x, y);
         break;
     }
     case MsgType::UndoMoveRequest:
@@ -738,19 +738,52 @@ void Manager::handlePacket(const Packet &packet)
     {
         std::string player = packet.GetParam<std::string>("player");
         emit logToUser(QString("玩家 %1 加入房间").arg(QString::fromStdString(player)));
-        // 假设服务器会发送更新后的玩家列表，这里暂时不更新
-        // 可以发送信号让 UI 重新获取列表
+        // 请求更新房间玩家列表
+        if (currentRoomId != 0)
+        {
+            // 可以发送请求获取更新后的房间玩家列表
+            // 暂时发送一个空的玩家列表更新信号，让UI知道需要刷新
+            emit updateRoomPlayerList(QStringList());
+        }
         break;
     }
     case MsgType::PlayerLeft:
     {
         std::string player = packet.GetParam<std::string>("player");
         emit logToUser(QString("玩家 %1 离开房间").arg(QString::fromStdString(player)));
+        // 请求更新房间玩家列表
+        if (currentRoomId != 0)
+        {
+            emit updateRoomPlayerList(QStringList());
+        }
         break;
     }
     case MsgType::RoomStatusChanged:
     {
         // 房间状态变化
+        break;
+    }
+    case MsgType::RoomInfoUpdated:
+    {
+        // 房间信息更新推送
+        std::string playerListStr = packet.GetParam<std::string>("players", "");
+        std::string blackPlayer = packet.GetParam<std::string>("blackPlayer", "等待玩家...");
+        std::string whitePlayer = packet.GetParam<std::string>("whitePlayer", "等待玩家...");
+        std::string roomSettings = packet.GetParam<std::string>("settings", "");
+
+        // 解析玩家列表
+        QStringList players = QString::fromStdString(playerListStr).split(',', Qt::SkipEmptyParts);
+
+        // 发送更新信号给GameWidget
+        emit updateRoomPlayerList(players);
+
+        // 可以在这里处理其他房间信息，如座位状态
+        // 创建包含座位信息的玩家列表
+        QStringList seatPlayers;
+        seatPlayers << QString::fromStdString(blackPlayer) << QString::fromStdString(whitePlayer);
+        emit playerListUpdated(seatPlayers);
+
+        LOG_DEBUG("Room info updated: " + std::to_string(players.size()) + " players, black: " + blackPlayer + ", white: " + whitePlayer);
         break;
     }
     case MsgType::DrawRequested:
@@ -795,7 +828,7 @@ void Manager::handlePacket(const Packet &packet)
     }
 }
 
-void Manager::sendPacket(const Packet &packet)
+void Controller::sendPacket(const Packet &packet)
 {
     LOG_DEBUG("Sent packet (type: " + std::to_string(static_cast<int>(packet.msgType)) + ")");
     client->SendPacket(packet);

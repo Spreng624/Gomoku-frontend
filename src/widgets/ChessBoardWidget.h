@@ -24,7 +24,7 @@ protected:
     void mousePressEvent(QMouseEvent *event) override;
 
 signals:
-    void moveMade(int x, int y);
+    void makeMove(int x, int y);
 
 private:
     void drawChessBoard(QPainter &painter);

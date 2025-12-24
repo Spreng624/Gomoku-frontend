@@ -55,6 +55,7 @@ enum MsgType : uint32_t
     GetUser = 0x500,
     GetUserList,
     GetRoomList,
+    GetRoomInfo = 0x510, // 获取房间信息（包括玩家列表、设置等）
 
     // 0x1000-0x1FFF 服务器推送（无需 requestId）
     OpponentMoved = 0x1000,     // 对手落子推送
@@ -65,6 +66,7 @@ enum MsgType : uint32_t
     DrawRequested = 0x1005,     // 请求平局推送
     DrawAccepted = 0x1006,      // 平局被接受推送
     GiveUpRequested = 0x1007,   // 认输推送
+    RoomInfoUpdated = 0x1008,   // 房间信息更新推送（包括玩家列表、座位状态等）
 
     // 0xFF00-0xFFFF 错误消息
     Success = 0xFF00,
