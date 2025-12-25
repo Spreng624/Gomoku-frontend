@@ -12,10 +12,11 @@
 #include <functional>
 #include <vector>
 #include "Game.h"
+#include "Packet.h"
 
 // 前向声明
 class LobbyWidget;
-class GameWidget;
+class RoomWidget;
 class GameManager;
 class Client;
 class Packet;
@@ -31,77 +32,72 @@ public:
     explicit Controller(QObject *parent = nullptr);
     ~Controller();
 
-    void connectToServer();
-
 public slots:
+    // NetWork
+    void onConnectToServer();
+
     // StatusBar
     void onLogin(const std::string &username, const std::string &password);
     void onSignin(const std::string &username, const std::string &password);
     void onLoginAsGuest();
     void onLogout();
-    void onReconnect();
 
     // Lobby
-    void onLocalGame();
     void onCreateRoom();
     void onJoinRoom(int roomId);
     void onQuickMatch();
-    void onGetLobbyPlayerList();
-    void onGetLobbyRoomList();
+    void onUpdateLobbyPlayerList();
+    void onUpdateLobbyRoomList();
 
-    // GameManager
+    // Room
+    void onSyncSeat(const QString &player1, const QString &player2);
+    void onSyncRoomSetting(const QString &configStr);
+    void onChatMessage(const QString &message);
+    void onSyncUsersToRoom();
     void onExitRoom();
-    void onTakeBlack();
-    void takeWhite();
-    void cancelTake();
-    void startGame();
-    void onEditRoomSetting();
-    void onChatMessageSent(const QString &message);
+
+    // Game
+    void onGameStarted();
     void onMakeMove(int x, int y);
-    void onUndoMoveRequest();
-    void onUndoMoveResponse(bool accepted);
-    void onDrawRequest();
-    void drawResponse(bool accept);
     void onGiveUp();
+    void onDraw(NegStatus status);
+    void onUndoMove(NegStatus status);
+    void onSyncGame();
 
 signals:
-    // 给 MainWindow 发送界面切换信号
-    void switchWidget(int index);                                  // 切换界面
-    void logToUser(QString message);                               // 提示框
-    void connectionStatusChanged(bool connected);                  // 状态栏                // 连接状态的信息
-    void userIdentityChanged(const QString &username, int rating); // 用户身份信息
+    // 给 MainWindow 发送界面切换信号                         // 提示框
+    void connectionStatusChanged(bool connected);                  // 连接状态的信息
     void statusBarMessageChanged(const QString &message);          // 实时信息
+    void userIdentityChanged(const QString &username, int rating); // 用户身份信息
 
     // Lobby
     void updateLobbyPlayerList(const QStringList &players);
     void updateLobbyRoomList(const QStringList &rooms);
 
-    // GameWidget
-    void initGameWidget(bool islocal);
-    void updateRoomPlayerList(const QStringList &players);
-    void playerListUpdated(const QStringList &players);
-    void chatMessageReceived(const QString &username, const QString &message);
-    void gameStarted(const QString &username, int rating);
-    void gameEnded(const QString &username, int rating, bool won);
+    // Room
+    void syncSeat(const QString &player1, const QString &player2);
+    void syncRoomSetting(const QString &config);
+    void chatMessage(const QString &username, const QString &message);
+    void SyncUsersToRoom(const QStringList &players);
+
+    // Game
+    void initRomeWidget(bool islocal);
+    void gameStarted();
+    void gameEnded(const QString &msg);
     void makeMove(int x, int y);
-    void boardUpdated(const std::vector<std::vector<Piece>> &board);
-    void blackTaken(const QString &username);
-    void whiteTaken(const QString &username);
-    void blackTimeUpdate(int playerTime);
-    void whiteTimeUpdate(int playerTime);
-    void updateRoomSetting(const QStringList &settings);
-    void drawRequestReceived();
-    void drawResponseReceived(bool accept);
-    void undoMoveRequestReceived();
-    void undoMoveResponseReceived(bool accepted);
+    void draw(NegStatus status);
+    void undoMove(NegStatus status);
+    void syncGame(const QString &statusStr);
+
+    // Else
+    void switchWidget(int index); // 切换界面
+    void logToUser(QString message);
 
 private slots:
 
 private:
     void handlePacket(const Packet &packet);
     void sendPacket(const Packet &packet);
-
-    // 初始化
     void setupSignalConnections();
 
     // 成员变量
@@ -109,7 +105,7 @@ private:
     QStackedWidget *stackedWidget;
     QStatusBar *statusBar;
     LobbyWidget *lobbyWidget;
-    GameWidget *gameWidget;
+    RoomWidget *gameWidget;
     std::unique_ptr<Client> client;
     QThread *clientThread;
     QTimer *returnToLobbyTimer;

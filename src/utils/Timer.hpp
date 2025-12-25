@@ -1,6 +1,7 @@
 #ifndef TIMER_HPP
 #define TIMER_HPP
 
+#pragma once
 #include <vector>
 #include <chrono>
 #include <thread>
@@ -377,9 +378,5 @@ public:
         }
     }
 };
-
-// 静态成员初始化
-TimerManager *TimerManager::instance_ = nullptr;
-std::mutex TimerManager::instance_mutex_;
 
 #endif // TIMER_HPP

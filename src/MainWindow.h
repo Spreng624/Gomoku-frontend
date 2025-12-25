@@ -9,7 +9,7 @@
 #include <QHBoxLayout>
 #include <memory>
 #include "LobbyWidget.h"
-#include "GameWidget.h"
+#include "RoomWidget.h"
 #include "Controller.h"
 #include "ToastWidget.h"
 
@@ -73,7 +73,7 @@ private:
     // 原有成员变量
     QStackedWidget *stackedWidget;
     LobbyWidget *lobby;
-    GameWidget *game;
+    RoomWidget *room;
     std::unique_ptr<Controller> ctrl;
     bool networkConnected;
     QString currentUsername;

@@ -12,13 +12,8 @@
 
 LobbyWidget::LobbyWidget(QWidget *parent) : QWidget(parent), ui(new Ui::LobbyWidget)
 {
-    LOG_DEBUG("LobbyWidget Initializing...");
     ui->setupUi(this);
-
     initStyle();
-
-    // 设置表格属性
-    LOG_DEBUG("Configuring room table properties...");
     ui->roomTableWidget->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
     ui->roomTableWidget->verticalHeader()->setDefaultSectionSize(40);
     ui->roomTableWidget->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
@@ -26,19 +21,9 @@ LobbyWidget::LobbyWidget(QWidget *parent) : QWidget(parent), ui(new Ui::LobbyWid
     ui->roomTableWidget->horizontalHeader()->setSectionResizeMode(2, QHeaderView::Stretch);
     ui->roomTableWidget->horizontalHeader()->setSectionResizeMode(3, QHeaderView::Fixed);
     ui->roomTableWidget->setColumnWidth(3, 80);
-    LOG_DEBUG("Room table properties configured");
-
-    // 初始化表格设置
-    LOG_DEBUG("Initializing room table...");
     initRoomTable();
-
-    LOG_DEBUG("Initializing player list...");
     initPlayerList();
-
-    LOG_DEBUG("Setting up signals...");
     setUpSignals();
-
-    LOG_INFO("LobbyWidget initialized successfully");
 }
 
 LobbyWidget::~LobbyWidget()

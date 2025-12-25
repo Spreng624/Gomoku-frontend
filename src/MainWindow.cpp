@@ -26,87 +26,57 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
                                           userInfoButton(nullptr),
                                           stackedWidget(nullptr),
                                           lobby(nullptr),
-                                          game(nullptr),
-                                          networkConnected(false),
+                                          room(nullptr),
                                           currentUsername(""),
                                           currentRating(1500),
                                           maximized(false),
                                           toastWidget(nullptr)
 {
-    LOG_INFO("Initializing...");
+    Logger::init("gomoku.log", LogLevel::DEBUG, true);
 
-    Logger::init("logs/gomoku.log", LogLevel::DEBUG, true);
-    LOG_DEBUG("Logger initialized with DEBUG level");
-
+    LOG_DEBUG("================ Initializing MainWindow ================");
+    LOG_DEBUG("Initializing Controller...");
+    ctrl = std::make_unique<Controller>();
+    LOG_DEBUG("Initializing LobbyWidget...");
+    lobby = new LobbyWidget(this);
+    LOG_DEBUG("Initializing RoomWidget...");
+    room = new RoomWidget(this);
     LOG_DEBUG("Setting up UI...");
     ui->setupUi(this);
-
-    LOG_DEBUG("Creating Manager instance...");
-    ctrl = std::make_unique<Controller>();
-
-    LOG_DEBUG("Creating LobbyWidget...");
-    lobby = new LobbyWidget(this);
-
-    LOG_DEBUG("Creating GameWidget...");
-    game = new GameWidget(this);
-
-    // 不再创建 GameManager，功能已移植到 GameWidget
-    LOG_DEBUG("GameManager functionality has been transplanted to GameWidget");
-
-    // 连接信号与槽
-    LOG_DEBUG("Setting up signal connections...");
-    SetUpSignals();
-
-    // 初始化样式
-    LOG_DEBUG("Initializing window components...");
+    LOG_DEBUG("Initializing Window Components...");
     initStyle();
     initLayout();
-
-    // 初始化标题栏和状态栏组件
-    LOG_DEBUG("Initializing title bar and status bar...");
+    LOG_DEBUG("Initializing Title Bar & Status Bar...");
     initTitleBar();
     initStatusBar();
+    LOG_DEBUG("Setting up signal connections...");
+    SetUpSignals();
+    LOG_DEBUG("Initializing ToastWidget...");
+    toastWidget = new ToastWidget();
 
-    // 从UI中获取stackedWidget并添加widgets
-    LOG_DEBUG("Getting stackedWidget from UI...");
     stackedWidget = ui->stackedWidget;
     if (!stackedWidget)
     {
-        LOG_WARN("stackedWidget not found in UI! Creating new one...");
+        LOG_ERROR("stackedWidget not found in UI! Creating new one...");
         stackedWidget = new QStackedWidget(this);
     }
     else
     {
-        LOG_DEBUG("stackedWidget found in UI");
-        // 移除UI中默认的页面，添加我们的widgets
         while (stackedWidget->count() > 0)
         {
             QWidget *widget = stackedWidget->widget(0);
             stackedWidget->removeWidget(widget);
         }
     }
-
-    // 添加 Widget 到 StackedWidget中
     stackedWidget->addWidget(lobby); // Index 0: Lobby
-    stackedWidget->addWidget(game);  // Index 1: Game
+    stackedWidget->addWidget(room);  // Index 1: Game
     stackedWidget->setCurrentIndex(0);
-    LOG_DEBUG("StackedWidget initialized with Lobby as default");
 
-    // 设置初始状态消息（必须在initStatusBar之后调用）
+    ctrl->onConnectToServer();
     setStatusMessage("准备就绪");
-
-    // 创建提示消息组件
-    LOG_DEBUG("Creating ToastWidget...");
-    toastWidget = new ToastWidget();
-
-    // 显示欢迎消息
     QTimer::singleShot(1000, this, [this]()
                        { showToastMessage("欢迎来到五子棋游戏！"); });
-
-    // 【修复验证】：验证窗口背景设置
-    validateWindowBackground();
-
-    LOG_INFO("MainWindow initialization completed successfully");
+    LOG_DEBUG("=========================================================");
 }
 
 MainWindow::~MainWindow()
@@ -134,65 +104,62 @@ MainWindow::~MainWindow()
 
 void MainWindow::SetUpSignals()
 {
-    // LobbyWidget <--> Controller
-    connect(lobby, &LobbyWidget::freshPlayerList, ctrl.get(), &Controller::onGetLobbyPlayerList);
-    connect(lobby, &LobbyWidget::freshRoomList, ctrl.get(), &Controller::onGetLobbyRoomList);
-    connect(lobby, &LobbyWidget::quickMatch, ctrl.get(), &Controller::onQuickMatch);
-    connect(lobby, &LobbyWidget::createRoom, ctrl.get(), &Controller::onCreateRoom);
-    connect(lobby, &LobbyWidget::joinRoom, ctrl.get(), &Controller::onJoinRoom);
-    connect(ctrl.get(), &Controller::updateLobbyPlayerList, lobby, &LobbyWidget::updatePlayerList);
-    connect(ctrl.get(), &Controller::updateLobbyRoomList, lobby, &LobbyWidget::updateRoomList);
-
-    // GameWidget <--> Controller
-    connect(game, &GameWidget::makeMove, ctrl.get(), &Controller::onMakeMove);
-    connect(game, &GameWidget::takeBlack, ctrl.get(), &Controller::onTakeBlack);
-    connect(game, &GameWidget::takeWhite, ctrl.get(), &Controller::takeWhite);
-    connect(game, &GameWidget::cancelTake, ctrl.get(), &Controller::cancelTake);
-    connect(game, &GameWidget::startGame, ctrl.get(), &Controller::startGame);
-    // connect(game, &GameWidget::restartGame, ctrl.get(), &Controller::restartGame);
-    connect(game, &GameWidget::giveup, ctrl.get(), &Controller::onGiveUp);
-    connect(game, &GameWidget::drawRequest, ctrl.get(), &Controller::onDrawRequest);
-    connect(game, &GameWidget::undoMoveRequest, ctrl.get(), &Controller::onUndoMoveRequest);
-    connect(game, &GameWidget::chatMessageSent, ctrl.get(), &Controller::onChatMessageSent);
-    connect(game, &GameWidget::editRoomSetting, ctrl.get(), &Controller::onEditRoomSetting);
-    connect(game, &GameWidget::backToLobby, ctrl.get(), &Controller::onExitRoom);
-    connect(game, &GameWidget::drawResponse, ctrl.get(), &Controller::drawResponse);
-    connect(game, &GameWidget::undoMoveResponse, ctrl.get(), &Controller::onUndoMoveResponse);
-    connect(ctrl.get(), &Controller::initGameWidget, game, &GameWidget::init);
-    connect(ctrl.get(), &Controller::gameStarted, game, &GameWidget::onGameStarted);
-    connect(ctrl.get(), &Controller::gameEnded, game, &GameWidget::onGameEnded);
-    connect(ctrl.get(), &Controller::makeMove, game, &GameWidget::onMakeMove);
-    connect(ctrl.get(), &Controller::boardUpdated, game, &GameWidget::onBoardUpdated);
-    connect(ctrl.get(), &Controller::blackTaken, game, &GameWidget::onBlackTaken);
-    connect(ctrl.get(), &Controller::whiteTaken, game, &GameWidget::onWhiteTaken);
-    connect(ctrl.get(), &Controller::blackTimeUpdate, game, &GameWidget::onBlackTimeUpdate);
-    connect(ctrl.get(), &Controller::whiteTimeUpdate, game, &GameWidget::onWhiteTimeUpdate);
-    connect(ctrl.get(), &Controller::chatMessageReceived, game, &GameWidget::onChatMessageReceived);
-    connect(ctrl.get(), &Controller::updateRoomPlayerList, game, &GameWidget::onUpdateRoomPlayerList);
-    connect(ctrl.get(), &Controller::updateRoomSetting, game, &GameWidget::onUpdateRoomSetting);
-    connect(ctrl.get(), &Controller::drawRequestReceived, game, &GameWidget::onDrawRequestReceived);
-    connect(ctrl.get(), &Controller::drawResponseReceived, game, &GameWidget::onDrawResponseReceived);
-    connect(ctrl.get(), &Controller::undoMoveRequestReceived, game, &GameWidget::onUndoMoveRequestReceived);
-    connect(ctrl.get(), &Controller::undoMoveResponseReceived, game, &GameWidget::onUndoMoveResponseReceived);
-
     // MainWindow <--> Controller
     connect(this, &MainWindow::login, ctrl.get(), &Controller::onLogin);
     connect(this, &MainWindow::signin, ctrl.get(), &Controller::onSignin);
     connect(this, &MainWindow::loginAsGuest, ctrl.get(), &Controller::onLoginAsGuest);
     connect(this, &MainWindow::logout, ctrl.get(), &Controller::onLogout);
-    connect(ctrl.get(), &Controller::switchWidget, this, &MainWindow::onSwitchWidget);
+    connect(networkStatusButton, &QPushButton::clicked, ctrl.get(), &Controller::onConnectToServer);
     connect(ctrl.get(), &Controller::connectionStatusChanged, this, &MainWindow::setNetworkStatus);
-    connect(ctrl.get(), &Controller::userIdentityChanged, this, &MainWindow::setUserInfo);
     connect(ctrl.get(), &Controller::statusBarMessageChanged, this, &MainWindow::setStatusMessage);
-    connect(ctrl.get(), &Controller::logToUser, this, [this](const QString &message)
-            { showToastMessage(message, 3000); });
+    connect(ctrl.get(), &Controller::userIdentityChanged, this, &MainWindow::setUserInfo);
 
-    // Else
-    connect(game, &GameWidget::backToLobby, this, [this]()
+    // LobbyWidget <--> Controller
+    connect(lobby, &LobbyWidget::createRoom, ctrl.get(), &Controller::onCreateRoom);
+    connect(lobby, &LobbyWidget::joinRoom, ctrl.get(), &Controller::onJoinRoom);
+    connect(lobby, &LobbyWidget::quickMatch, ctrl.get(), &Controller::onQuickMatch);
+    connect(lobby, &LobbyWidget::freshPlayerList, ctrl.get(), &Controller::onUpdateLobbyPlayerList);
+    connect(lobby, &LobbyWidget::freshRoomList, ctrl.get(), &Controller::onUpdateLobbyRoomList);
+    connect(ctrl.get(), &Controller::updateLobbyPlayerList, lobby, &LobbyWidget::updatePlayerList);
+    connect(ctrl.get(), &Controller::updateLobbyRoomList, lobby, &LobbyWidget::updateRoomList);
+
+    // GameWidget <--> Controller
+    connect(room, &RoomWidget::SyncSeat, ctrl.get(), &Controller::onSyncSeat);
+    connect(room, &RoomWidget::syncRoomSetting, ctrl.get(), &Controller::onSyncRoomSetting);
+    connect(room, &RoomWidget::chatMessageSent, ctrl.get(), &Controller::onChatMessage);
+    connect(room, &RoomWidget::syncUsersToRoom, ctrl.get(), &Controller::onSyncUsersToRoom);
+    connect(room, &RoomWidget::backToLobby, ctrl.get(), &Controller::onExitRoom);
+
+    connect(room, &RoomWidget::startGame, ctrl.get(), &Controller::onGameStarted);
+    connect(room, &RoomWidget::makeMove, ctrl.get(), &Controller::onMakeMove);
+    connect(room, &RoomWidget::giveup, ctrl.get(), &Controller::onGiveUp);
+    connect(room, &RoomWidget::draw, ctrl.get(), &Controller::onDraw);
+    connect(room, &RoomWidget::undoMove, ctrl.get(), &Controller::onUndoMove);
+    connect(room, &RoomWidget::syncGame, ctrl.get(), &Controller::onSyncGame);
+
+    connect(ctrl.get(), &Controller::syncSeat, room, &RoomWidget::onSyncSeat);
+    connect(ctrl.get(), &Controller::syncRoomSetting, room, &RoomWidget::onSyncRoomSetting);
+    connect(ctrl.get(), &Controller::chatMessage, room, &RoomWidget::onChatMessageReceived);
+    connect(ctrl.get(), &Controller::SyncUsersToRoom, room, &RoomWidget::onUpdateRoomPlayerList);
+
+    connect(ctrl.get(), &Controller::initRomeWidget, room, &RoomWidget::init);
+    connect(ctrl.get(), &Controller::gameStarted, room, &RoomWidget::onGameStarted);
+    connect(ctrl.get(), &Controller::gameEnded, room, &RoomWidget::onGameEnded);
+    connect(ctrl.get(), &Controller::makeMove, room, &RoomWidget::onMakeMove);
+
+    connect(ctrl.get(), &Controller::syncGame, room, &RoomWidget::onSyncGame);
+    connect(ctrl.get(), &Controller::draw, room, &RoomWidget::onDraw);
+    connect(ctrl.get(), &Controller::undoMove, room, &RoomWidget::onUndoMove);
+
+    // Else signals-slots
+    connect(room, &RoomWidget::backToLobby, this, [this]()
             { emit onSwitchWidget(0); });
     connect(lobby, &LobbyWidget::localGame, this, [this]()
-            { game->init(true); emit onSwitchWidget(1); });
-    connect(game, &GameWidget::logToUser, this, [this](const QString &message)
+            { room->init(true); emit onSwitchWidget(1); });
+    connect(ctrl.get(), &Controller::switchWidget, this, &MainWindow::onSwitchWidget);
+    connect(ctrl.get(), &Controller::logToUser, this, [this](const QString &message)
+            { showToastMessage(message, 3000); });
+    connect(room, &RoomWidget::logToUser, this, [this](const QString &message)
             { showToastMessage(message, 3000); });
 }
 
@@ -223,51 +190,23 @@ void MainWindow::onSwitchWidget(int index)
 
 void MainWindow::initStyle()
 {
-    LOG_DEBUG("Initializing window style...");
-
-    // 【修复1】：对于无边框窗口，必须设置明确的背景色
-    // 先设置背景色，再设置窗口标志
     setAttribute(Qt::WA_StyledBackground, true);
 
-    // 设置窗口背景色为白色 - 这是解决黑色背景的关键
     QString mainWindowStyle = "QMainWindow {"
                               "    background-color: white;"
                               "    border: none;"
                               "}";
     setStyleSheet(mainWindowStyle);
-    LOG_DEBUG("Set main window background to white");
-
-    // 记录当前窗口标志
     Qt::WindowFlags flags = Qt::FramelessWindowHint | Qt::WindowSystemMenuHint | Qt::WindowMinimizeButtonHint;
-    LOG_DEBUG_FMT("Setting window flags: FramelessWindowHint | WindowSystemMenuHint | WindowMinimizeButtonHint");
     setWindowFlags(flags);
-
-    // 【修复2】：对于无边框窗口，需要设置不透明背景
-    // 注释掉透明背景，因为透明背景会导致样式表背景色不显示
-    // setAttribute(Qt::WA_TranslucentBackground);
-    LOG_DEBUG("WA_TranslucentBackground is commented out (not set)");
-
-    // 设置不透明背景
     setAttribute(Qt::WA_OpaquePaintEvent);
-    LOG_DEBUG("WA_OpaquePaintEvent attribute set");
-
-    // 允许任务栏点击最小化
     setWindowFlags(windowFlags() | Qt::Window);
-    LOG_DEBUG("Added Qt::Window flag for taskbar interaction");
 
     this->resize(1000, 700);
-    LOG_DEBUG_FMT("Window size set to: %dx%d", 1000, 700);
 
-    // 【修复3】：确保窗口有正确的背景角色
     QPalette pal = palette();
     pal.setColor(QPalette::Window, QColor(255, 255, 255)); // 白色
     setPalette(pal);
-    LOG_DEBUG("Set window palette to white background");
-
-    // 检查样式表是否应用成功
-    LOG_DEBUG_FMT("Current stylesheet: %s", this->styleSheet().toStdString().c_str());
-    LOG_DEBUG_FMT("Window background role color: %s",
-                  this->palette().color(QPalette::Window).name().toStdString().c_str());
 }
 
 void MainWindow::setStatusMessage(const QString &message)
@@ -280,20 +219,21 @@ void MainWindow::setStatusMessage(const QString &message)
 
 void MainWindow::setNetworkStatus(bool connected)
 {
-    if (networkStatusButton)
+    if (!networkStatusButton)
     {
-        if (connected)
-        {
-            networkStatusButton->setText("● 在线");
-            networkStatusButton->setStyleSheet("color: #1a7f37;"); // 绿色
-        }
-        else
-        {
-            networkStatusButton->setText("● 离线");
-            networkStatusButton->setStyleSheet("color: #cf222e;"); // 红色
-        }
+        LOG_ERROR("Network status button not found!");
+        return;
     }
-    networkConnected = connected;
+    if (connected)
+    {
+        networkStatusButton->setText("● 在线");
+        networkStatusButton->setStyleSheet("color: #1a7f37;"); // 绿色
+    }
+    else
+    {
+        networkStatusButton->setText("● 离线");
+        networkStatusButton->setStyleSheet("color: #cf222e;"); // 红色
+    }
 }
 
 void MainWindow::setUserInfo(const QString &username, int rating)
@@ -315,12 +255,6 @@ void MainWindow::setUserInfo(const QString &username, int rating)
 
 void MainWindow::initLayout()
 {
-    LOG_DEBUG("Initializing layout...");
-
-    // UI已经通过setupUi设置了centralwidget，其中包含titleBarWidget、stackedWidget和statusBarWidget
-    // 我们只需要确保centralwidget有正确的对象名和属性
-
-    // 1. 获取centralwidget
     QWidget *centralWidget = ui->centralwidget;
     if (!centralWidget)
     {
@@ -328,37 +262,12 @@ void MainWindow::initLayout()
         LOG_WARN("This means ui->setupUi(this) may have failed or UI file not compiled properly");
         return;
     }
-    else
-    {
-        LOG_DEBUG("centralwidget found at address: " + std::to_string((long long)centralWidget));
-        LOG_DEBUG("centralwidget object name: " + centralWidget->objectName().toStdString());
-        LOG_DEBUG("centralwidget geometry: " + std::to_string(centralWidget->geometry().width()) +
-                  "x" + std::to_string(centralWidget->geometry().height()));
-    }
-
-    // 2. 设置centralwidget的对象名，以便QSS选择器可以匹配
     centralWidget->setObjectName("centralContainer");
-    LOG_DEBUG("centralwidget object name set to: centralContainer");
-
-    // 【核心修复 1】：必须设置此属性，否则在透明窗口下 QSS 背景色不显示
     centralWidget->setAttribute(Qt::WA_StyledBackground, true);
-    LOG_DEBUG("centralwidget WA_StyledBackground attribute set");
-
-    // 检查centralwidget的背景角色
     QPalette pal = centralWidget->palette();
-    LOG_DEBUG_FMT("centralwidget palette background color: %s",
-                  pal.color(QPalette::Window).name().toStdString().c_str());
-
-    // 设置明确的背景色
     centralWidget->setAutoFillBackground(true);
     pal.setColor(QPalette::Window, QColor(255, 255, 255)); // 白色
     centralWidget->setPalette(pal);
-    LOG_DEBUG("Set centralwidget palette to white background");
-
-    // 注意：不要再次调用setCentralWidget，因为ui->setupUi已经设置了
-    // setCentralWidget(centralWidget);
-
-    LOG_DEBUG("Layout initialized successfully");
 }
 
 void MainWindow::initTitleBar()
@@ -371,32 +280,17 @@ void MainWindow::initTitleBar()
     {
         LOG_WARN("titleBarWidget not found! ui pointer: " + std::to_string((long long)ui));
     }
-    else
-    {
-        LOG_DEBUG("titleBarWidget found at address: " + std::to_string((long long)titleBarWidget));
-        LOG_DEBUG("titleBarWidget object name: " + titleBarWidget->objectName().toStdString());
-    }
 
     titleLabel = ui->titleLabel;
     if (!titleLabel)
     {
         LOG_WARN("titleLabel not found!");
     }
-    else
-    {
-        LOG_DEBUG("titleLabel found at address: " + std::to_string((long long)titleLabel));
-        LOG_DEBUG("titleLabel text: " + titleLabel->text().toStdString());
-    }
 
     minimizeButton = ui->minimizeButton;
     if (!minimizeButton)
     {
         LOG_WARN("minimizeButton not found!");
-    }
-    else
-    {
-        LOG_DEBUG("minimizeButton found at address: " + std::to_string((long long)minimizeButton));
-        // 最小化按钮信号已在UI文件中连接
     }
 
     maximizeButton = ui->maximizeButton;
@@ -406,8 +300,6 @@ void MainWindow::initTitleBar()
     }
     else
     {
-        LOG_DEBUG("maximizeButton found at address: " + std::to_string((long long)maximizeButton));
-        // 连接最大化按钮信号
         connect(maximizeButton, &QPushButton::clicked, this, [this]()
                 {
             if (maximized) {
@@ -426,11 +318,6 @@ void MainWindow::initTitleBar()
     {
         LOG_WARN("closeButton not found!");
     }
-    else
-    {
-        LOG_DEBUG("closeButton found at address: " + std::to_string((long long)closeButton));
-        // 关闭按钮信号已在UI文件中连接
-    }
 
     LOG_DEBUG("Title bar initialization completed");
 }
@@ -445,10 +332,6 @@ void MainWindow::initStatusBar()
     {
         LOG_WARN("statusBarWidget not found!");
     }
-    else
-    {
-        LOG_DEBUG("statusBarWidget found");
-    }
 
     statusMessageLabel = ui->statusMessageLabel;
     if (!statusMessageLabel)
@@ -457,8 +340,6 @@ void MainWindow::initStatusBar()
     }
     else
     {
-        LOG_DEBUG("statusMessageLabel found");
-        // 设置初始状态消息
         statusMessageLabel->setText("准备就绪");
     }
 
@@ -469,17 +350,9 @@ void MainWindow::initStatusBar()
     }
     else
     {
-        LOG_DEBUG("networkStatusButton found");
-        // 设置初始网络状态为离线
         networkStatusButton->setText("● 离线");
         networkStatusButton->setStyleSheet("color: #cf222e;"); // 红色
         // 连接点击信号
-        connect(networkStatusButton, &QPushButton::clicked, this, [this]()
-                {
-            LOG_DEBUG("Network status button clicked, calling manager->reConnect()");
-            if (ctrl) {
-                ctrl->onReconnect();
-            } });
     }
 
     userInfoButton = ui->userInfoButton;
@@ -489,10 +362,8 @@ void MainWindow::initStatusBar()
     }
     else
     {
-        LOG_DEBUG("userInfoButton found");
-        // 设置初始用户信息
+        setUserInfo("", 0);
         userInfoButton->setText("未登录");
-        // 连接点击信号
         connect(userInfoButton, &QPushButton::clicked, this, &MainWindow::onUserInfoButtonClicked);
     }
 
@@ -572,63 +443,12 @@ void MainWindow::mouseDoubleClickEvent(QMouseEvent *event)
     QMainWindow::mouseDoubleClickEvent(event);
 }
 
-// 验证窗口背景设置
-void MainWindow::validateWindowBackground()
-{
-    LOG_DEBUG("====== Validating Window Background ======");
-
-    // 检查主窗口背景
-    QPalette windowPalette = palette();
-    QColor windowBgColor = windowPalette.color(QPalette::Window);
-    // LOG_DEBUG_FMT("MainWindow palette background color: %s (RGB: %d,%d,%d)",
-    //               windowBgColor.name().toStdString().c_str(),
-    //               windowBgColor.red(), windowBgColor.green(), windowBgColor.blue());
-
-    // 检查centralwidget背景
-    if (ui && ui->centralwidget)
-    {
-        QPalette centralPalette = ui->centralwidget->palette();
-        QColor centralBgColor = centralPalette.color(QPalette::Window);
-        LOG_DEBUG_FMT("CentralWidget palette background color: %s",
-                      centralBgColor.name().toStdString().c_str());
-
-        // 检查是否设置了正确的背景
-        if (centralBgColor == QColor(255, 255, 255))
-        {
-            LOG_INFO("CentralWidget background is correctly set to white");
-        }
-        else
-        {
-            LOG_WARN("CentralWidget background is not white: " + centralBgColor.name().toStdString());
-        }
-    }
-
-    // 检查样式表
-    QString currentStyle = styleSheet();
-    LOG_DEBUG_FMT("Current window stylesheet length: %d characters", currentStyle.length());
-    if (currentStyle.contains("background-color", Qt::CaseInsensitive))
-    {
-        LOG_DEBUG("Stylesheet contains background-color definition");
-    }
-    else
-    {
-        LOG_WARN("Stylesheet does not contain background-color definition");
-    }
-
-    // 检查窗口属性
-    LOG_DEBUG_FMT("Window has WA_StyledBackground: %d", testAttribute(Qt::WA_StyledBackground));
-    LOG_DEBUG_FMT("Window has WA_OpaquePaintEvent: %d", testAttribute(Qt::WA_OpaquePaintEvent));
-    LOG_DEBUG_FMT("Window has WA_TranslucentBackground: %d", testAttribute(Qt::WA_TranslucentBackground));
-
-    LOG_DEBUG("====== Background Validation Complete ======");
-}
-
 void MainWindow::onUserInfoButtonClicked()
 {
     LOG_DEBUG("User info button clicked, showing login dialog");
 
     // 如果用户已经登录，显示登出选项
-    if (!currentUsername.isEmpty() && currentUsername != "游客")
+    if (!currentUsername.isEmpty())
     {
         QMessageBox msgBox;
         msgBox.setWindowTitle("用户操作");
@@ -645,6 +465,7 @@ void MainWindow::onUserInfoButtonClicked()
             LOG_DEBUG("User chose to logout");
             emit logout();
         }
+        setUserInfo("", 0);
     }
     else
     {

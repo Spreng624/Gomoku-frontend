@@ -1,6 +1,6 @@
 #include "Controller.h"
 #include "LobbyWidget.h"
-#include "GameWidget.h"
+#include "RoomWidget.h"
 #include "Client.h"
 #include "Packet.h"
 #include "Logger.h"
@@ -31,7 +31,6 @@ Controller::Controller(QObject *parent)
       inGame(false),
       currentRating(1500)
 {
-    LOG_INFO("Manager initialized for server");
     client = std::make_unique<Client>(serverIp, serverPort);
     client->SetPacketCallback([this](const Packet &packet)
                               { handlePacket(packet); });
@@ -41,8 +40,8 @@ Controller::Controller(QObject *parent)
         this->sessionId = sessionId;
         connected = true;
         emit connectionStatusChanged(true);
-        onGetLobbyPlayerList();
-        onGetLobbyRoomList();
+        onUpdateLobbyPlayerList();
+        onUpdateLobbyRoomList();
         emit logToUser("已连接到服务器"); });
     client->SetDisconnectedCallback([this]()
                                     {
@@ -50,10 +49,6 @@ Controller::Controller(QObject *parent)
         connected = false;
         emit connectionStatusChanged(false);
         emit logToUser("与服务器的断连"); });
-    LOG_DEBUG("Session activated callback set");
-
-    setupSignalConnections();
-    connectToServer();
 }
 
 Controller::~Controller()
@@ -69,27 +64,20 @@ Controller::~Controller()
     LOG_INFO("Manager cleanup completed");
 }
 
-// 连接管理
+// Network
 
-void Controller::connectToServer()
+void Controller::onConnectToServer()
 {
     if (connected)
     {
-        LOG_INFO("Already connected to server, skipping connection attempt");
+        LOG_DEBUG("Already connected to server, skipping connection attempt");
+        logToUser("已经连接到服务器");
         return;
     }
-
-    LOG_INFO("Attempting to connect to server...");
     client->Connect();
 }
 
 // Status Bar
-
-void Controller::onReconnect()
-{
-    LOG_INFO("Reconnecting to server...");
-    connectToServer();
-}
 
 void Controller::onLogin(const std::string &username, const std::string &password)
 {
@@ -155,17 +143,11 @@ void Controller::onLoginAsGuest()
         return;
     }
 
-    Packet packet(sessionId, MsgType::LoginByGuest);
+    Packet packet(sessionId, MsgType::LoginAsGuest);
     sendPacket(packet);
 }
 
 // Lobby
-void Controller::onLocalGame()
-{
-    LOG_DEBUG("Starting local game");
-    emit switchWidget(1);
-    emit initGameWidget(true);
-}
 
 void Controller::onCreateRoom()
 {
@@ -201,25 +183,74 @@ void Controller::onQuickMatch()
     sendPacket(packet);
 }
 
-void Controller::onGetLobbyPlayerList()
+void Controller::onUpdateLobbyPlayerList()
 {
     if (!connected)
         return;
 
-    Packet packet(sessionId, MsgType::GetUserList);
+    Packet packet(sessionId, MsgType::updateUsersToLobby);
     sendPacket(packet);
 }
 
-void Controller::onGetLobbyRoomList()
+void Controller::onUpdateLobbyRoomList()
 {
     if (!connected)
         return;
 
-    Packet packet(sessionId, MsgType::GetRoomList);
+    Packet packet(sessionId, MsgType::updateRoomsToLobby);
     sendPacket(packet);
 }
 
-// GameManager
+// Room
+
+void Controller::onSyncSeat(const QString &player1, const QString &player2)
+{
+    LOG_INFO("Syncing seat: " + player1.toStdString() + ", " + player2.toStdString());
+    if (!connected || currentRoomId == 0)
+        return;
+
+    Packet packet(sessionId, MsgType::SyncSeat);
+    packet.AddParam("roomId", currentRoomId);
+    packet.AddParam("P1", player1.toStdString());
+    packet.AddParam("P2", player2.toStdString());
+    sendPacket(packet);
+}
+
+void Controller::onSyncRoomSetting(const QString &configStr)
+{
+    LOG_INFO("Syncing room setting: " + configStr.toStdString());
+    if (!connected || currentRoomId == 0)
+        return;
+
+    Packet packet(sessionId, MsgType::SyncRoomSetting);
+    packet.AddParam("roomId", currentRoomId);
+    packet.AddParam("config", configStr.toStdString());
+    sendPacket(packet);
+}
+
+void Controller::onChatMessage(const QString &message)
+{
+    LOG_INFO("Chat message sent: " + message.toStdString());
+
+    if (!connected || currentRoomId == 0)
+        return;
+
+    Packet packet(sessionId, MsgType::ChatMessage);
+    packet.AddParam("msg", message.toStdString());
+    sendPacket(packet);
+    LOG_DEBUG("Chat message sent to room " + std::to_string(currentRoomId) + ": " + message.toStdString());
+}
+
+void Controller::onSyncUsersToRoom()
+{
+    LOG_INFO("Requesting sync users to room");
+    if (!connected || currentRoomId == 0)
+        return;
+
+    Packet packet(sessionId, MsgType::SyncUsersToRoom);
+    packet.AddParam("roomId", currentRoomId);
+    sendPacket(packet);
+}
 
 void Controller::onExitRoom()
 {
@@ -237,72 +268,20 @@ void Controller::onExitRoom()
     // inGame = false;
 }
 
-void Controller::onTakeBlack()
-{
-    LOG_INFO("Taking black pieces");
-    if (!connected || currentRoomId == 0)
-        return;
+// Game
 
-    Packet packet(sessionId, MsgType::TakeBlack);
-    packet.AddParam("roomId", currentRoomId);
-    sendPacket(packet);
-}
-
-void Controller::takeWhite()
-{
-    LOG_INFO("Taking white pieces");
-    if (!connected || currentRoomId == 0)
-        return;
-
-    Packet packet(sessionId, MsgType::TakeWhite);
-    packet.AddParam("roomId", currentRoomId);
-    sendPacket(packet);
-}
-
-void Controller::cancelTake()
-{
-    LOG_INFO("Canceling piece selection");
-    if (!connected || currentRoomId == 0)
-        return;
-
-    Packet packet(sessionId, MsgType::CancelTake);
-    packet.AddParam("roomId", currentRoomId);
-    sendPacket(packet);
-}
-
-void Controller::startGame()
+void Controller::onGameStarted()
 {
     LOG_INFO("Starting game");
     if (!connected || currentRoomId == 0)
         return;
 
-    Packet packet(sessionId, MsgType::StartGame);
+    Packet packet(sessionId, MsgType::GameStarted);
     packet.AddParam("roomId", currentRoomId);
     sendPacket(packet);
 
     inGame = true;
-    emit gameStarted(QString::fromStdString(username), rating);
-}
-
-void Controller::onEditRoomSetting()
-{
-    LOG_INFO("Editing room settings");
-    logToUser("房间设置功能暂未实现");
-}
-
-void Controller::onChatMessageSent(const QString &message)
-{
-    LOG_INFO("Chat message sent: " + message.toStdString());
-
-    if (!connected || currentRoomId == 0)
-        return;
-
-    // 这里需要发送聊天消息包到服务器
-    // 由于 Packet.h 中没有 ChatMessage 类型，暂时只记录日志
-    // 可以添加一个临时的消息类型或者使用其他方式
-    Packet packet(sessionId, MsgType::ChatMessage);
-    packet.AddParam("msg", message.toStdString());
-    LOG_DEBUG("Chat message would be sent to room " + std::to_string(currentRoomId) + ": " + message.toStdString());
+    emit gameStarted();
 }
 
 void Controller::onMakeMove(int x, int y)
@@ -329,49 +308,17 @@ void Controller::onMakeMove(int x, int y)
     sendPacket(packet);
 }
 
-void Controller::onUndoMoveRequest()
+void Controller::onDraw(NegStatus status)
 {
-    LOG_INFO("Requesting undo move");
-    if (!connected || !inGame)
-        return;
-
-    Packet packet(sessionId, MsgType::UndoMoveRequest);
-    packet.AddParam("roomId", currentRoomId);
+    Packet packet(sessionId, MsgType::Draw);
+    packet.AddParam("negStatus", static_cast<uint8_t>(status));
     sendPacket(packet);
 }
 
-void Controller::onUndoMoveResponse(bool accepted)
+void Controller::onUndoMove(NegStatus status)
 {
-    LOG_INFO("Responding to undo move request: " + std::string(accepted ? "accepted" : "rejected"));
-    if (!connected || !inGame)
-        return;
-
-    Packet packet(sessionId, MsgType::UndoMoveResponse);
-    packet.AddParam("roomId", currentRoomId);
-    packet.AddParam("accepted", accepted);
-    sendPacket(packet);
-}
-
-void Controller::onDrawRequest()
-{
-    LOG_INFO("Requesting draw");
-    if (!connected || !inGame)
-        return;
-
-    Packet packet(sessionId, MsgType::DrawRequest);
-    packet.AddParam("roomId", currentRoomId);
-    sendPacket(packet);
-}
-
-void Controller::drawResponse(bool accept)
-{
-    LOG_INFO("Responding to draw request: " + std::string(accept ? "accept" : "reject"));
-    if (!connected || !inGame)
-        return;
-
-    Packet packet(sessionId, MsgType::DrawResponse);
-    packet.AddParam("roomId", currentRoomId);
-    packet.AddParam("accept", accept);
+    Packet packet(sessionId, MsgType::UndoMove);
+    packet.AddParam("negStatus", static_cast<uint8_t>(status));
     sendPacket(packet);
 }
 
@@ -385,22 +332,15 @@ void Controller::onGiveUp()
     sendPacket(packet);
 }
 
-// Private
-
-void Controller::setupSignalConnections()
+void Controller::onSyncGame()
 {
-    // connect(this, &Manager::localGameRequested, this, [this]()
-    //         {
-    //     switchToGame();
-    //     setWindowTitle("五子棋 - 本地对战");
-    //     updateStatusBar("本地对战模式");
-    //     if (gameWidget)
-    //     {
-    //         gameWidget->resetGame();
-    //     } });
+    LOG_INFO("Requesting game sync");
+    if (!connected || currentRoomId == 0)
+        return;
 
-    // connect(this, &Manager::onlineGameRequested, this, [this]()
-    //         { switchToLobby(); });
+    Packet packet(sessionId, MsgType::SyncGame);
+    packet.AddParam("roomId", currentRoomId);
+    sendPacket(packet);
 }
 
 // Private
@@ -408,12 +348,12 @@ void Controller::setupSignalConnections()
 void Controller::handlePacket(const Packet &packet)
 {
     LOG_DEBUG("Received packet (type: " + std::to_string(static_cast<int>(packet.msgType)) + ")");
+    bool success = packet.GetParam<bool>("success");
     switch (packet.msgType)
     {
     // 用户操作响应
     case MsgType::Login:
     {
-        bool success = packet.GetParam<bool>("success");
         if (success)
         {
             username = packet.GetParam<std::string>("username");
@@ -430,7 +370,6 @@ void Controller::handlePacket(const Packet &packet)
     }
     case MsgType::SignIn:
     {
-        bool success = packet.GetParam<bool>("success");
         if (success)
         {
             emit logToUser("注册成功");
@@ -442,9 +381,8 @@ void Controller::handlePacket(const Packet &packet)
         }
         break;
     }
-    case MsgType::LoginByGuest:
+    case MsgType::LoginAsGuest:
     {
-        bool success = packet.GetParam<bool>("success");
         if (success)
         {
             username = packet.GetParam<std::string>("username");
@@ -455,53 +393,6 @@ void Controller::handlePacket(const Packet &packet)
         else
         {
             emit logToUser("游客登录失败");
-        }
-        break;
-    }
-    case MsgType::Guest2User:
-    {
-        bool success = packet.GetParam<bool>("success");
-        if (success)
-        {
-            username = packet.GetParam<std::string>("username");
-            rating = packet.GetParam<int>("rating");
-            emit userIdentityChanged(QString::fromStdString(username), rating);
-            emit logToUser("游客转用户成功");
-        }
-        else
-        {
-            std::string error = packet.GetParam<std::string>("error", "未知错误");
-            emit logToUser(QString::fromStdString("游客转用户失败: " + error));
-        }
-        break;
-    }
-    case MsgType::EditUsername:
-    {
-        bool success = packet.GetParam<bool>("success");
-        if (success)
-        {
-            username = packet.GetParam<std::string>("username");
-            emit userIdentityChanged(QString::fromStdString(username), rating);
-            emit logToUser("用户名修改成功");
-        }
-        else
-        {
-            std::string error = packet.GetParam<std::string>("error", "未知错误");
-            emit logToUser(QString::fromStdString("用户名修改失败: " + error));
-        }
-        break;
-    }
-    case MsgType::EditPassword:
-    {
-        bool success = packet.GetParam<bool>("success");
-        if (success)
-        {
-            emit logToUser("密码修改成功");
-        }
-        else
-        {
-            std::string error = packet.GetParam<std::string>("error", "未知错误");
-            emit logToUser(QString::fromStdString("密码修改失败: " + error));
         }
         break;
     }
@@ -526,7 +417,7 @@ void Controller::handlePacket(const Packet &packet)
 
             // 切换到游戏界面
             emit switchWidget(1);       // 切换到GameWidget
-            emit initGameWidget(false); // 初始化在线游戏模式
+            emit initRomeWidget(false); // 初始化在线游戏模式
 
             // 更新状态
             inGame = false; // 房间创建但游戏尚未开始
@@ -543,31 +434,6 @@ void Controller::handlePacket(const Packet &packet)
         }
         break;
     }
-    case MsgType::CreateSingleRoom:
-    {
-        bool success = packet.GetParam<bool>("success", true);
-        if (success)
-        {
-            currentRoomId = packet.GetParam<int>("roomId");
-            LOG_INFO("Single player room created successfully, room ID: " + std::to_string(currentRoomId));
-            emit logToUser(QString("单人房间创建成功，房间号: %1").arg(currentRoomId));
-
-            // 切换到游戏界面
-            emit switchWidget(1);
-            emit initGameWidget(false); // 单人房间也是在线模式
-
-            // 更新状态
-            inGame = false;
-            emit statusBarMessageChanged("已创建单人房间 " + QString::number(currentRoomId));
-        }
-        else
-        {
-            std::string error = packet.GetParam<std::string>("error", "未知错误");
-            LOG_ERROR("Failed to create single player room: " + error);
-            emit logToUser(QString::fromStdString("单人房间创建失败: " + error));
-        }
-        break;
-    }
     case MsgType::JoinRoom:
     {
         bool success = packet.GetParam<bool>("success", true);
@@ -579,7 +445,7 @@ void Controller::handlePacket(const Packet &packet)
 
             // 切换到游戏界面
             emit switchWidget(1);
-            emit initGameWidget(false);
+            emit initRomeWidget(false);
 
             // 更新状态
             inGame = false;
@@ -615,7 +481,7 @@ void Controller::handlePacket(const Packet &packet)
 
             // 切换到游戏界面
             emit switchWidget(1);
-            emit initGameWidget(false);
+            emit initRomeWidget(false);
 
             // 更新状态
             inGame = false;
@@ -634,22 +500,16 @@ void Controller::handlePacket(const Packet &packet)
     }
 
     // 座位操作响应
-    case MsgType::TakeBlack:
-        emit logToUser("已选择黑棋");
-        break;
-    case MsgType::TakeWhite:
-        emit logToUser("已选择白棋");
-        break;
-    case MsgType::CancelTake:
-        emit logToUser("已取消选择");
-        break;
-    case MsgType::StartGame:
+    // case MsgType::TakeBlack:  // 消息类型在Packet.h中已不存在
+    //     break;
+    // case MsgType::TakeWhite:  // 消息类型在Packet.h中已不存在
+    //     break;
+    // case MsgType::CancelTake:  // 消息类型在Packet.h中已不存在
+    //     break;
+    case MsgType::GameStarted:
         inGame = true;
-        emit gameStarted(QString::fromStdString(username), rating);
+        emit gameStarted();
         emit logToUser("游戏开始");
-        break;
-    case MsgType::EditRoomSetting:
-        emit logToUser("房间设置已更新");
         break;
 
     // 游戏操作响应
@@ -660,44 +520,23 @@ void Controller::handlePacket(const Packet &packet)
         emit makeMove(x, y);
         break;
     }
-    case MsgType::UndoMoveRequest:
-        emit logToUser("对手请求悔棋");
-        break;
-    case MsgType::UndoMoveResponse:
+    case MsgType::UndoMove:
     {
-        bool accepted = packet.GetParam<bool>("accepted");
-        if (accepted)
-            emit logToUser("悔棋请求被接受");
-        else
-            emit logToUser("悔棋请求被拒绝");
+        uint8_t negStatus = packet.GetParam<uint8_t>("negStatus", 0);
         break;
     }
-    case MsgType::DrawRequest:
-        emit logToUser("对手请求平局");
-        break;
-    case MsgType::DrawResponse:
+    case MsgType::Draw:
     {
-        bool accept = packet.GetParam<bool>("accept");
-        if (accept)
-            emit logToUser("平局请求被接受");
-        else
-            emit logToUser("平局请求被拒绝");
+        uint8_t negStatus = packet.GetParam<uint8_t>("negStatus", 0);
         break;
     }
     case MsgType::GiveUp:
         emit logToUser("对手认输");
         inGame = false;
         // 对手认输，当前用户获胜
-        emit gameEnded(QString::fromStdString(username), rating, true);
+        emit gameEnded(QString("对手认输，你获胜"));
         break;
-
-    // 查询和订阅响应
-    case MsgType::GetUser:
-    {
-        // 处理用户信息查询结果
-        break;
-    }
-    case MsgType::GetUserList:
+    case MsgType::updateUsersToLobby:
     {
         // 解析用户列表
         std::string userListStr = packet.GetParam<std::string>("userList", "");
@@ -705,7 +544,7 @@ void Controller::handlePacket(const Packet &packet)
         emit updateLobbyPlayerList(users);
         break;
     }
-    case MsgType::GetRoomList:
+    case MsgType::updateRoomsToLobby:
     {
         // 解析房间列表
         std::string roomListStr = packet.GetParam<std::string>("roomList", "");
@@ -715,14 +554,6 @@ void Controller::handlePacket(const Packet &packet)
     }
 
     // 服务器推送
-    case MsgType::OpponentMoved:
-    {
-        int x = packet.GetParam<int>("x");
-        int y = packet.GetParam<int>("y");
-        // emit opponentMoved(x, y);
-        emit logToUser(QString("对手落子: (%1, %2)").arg(x).arg(y));
-        break;
-    }
     case MsgType::GameEnded:
     {
         std::string winner = packet.GetParam<std::string>("winner");
@@ -731,97 +562,72 @@ void Controller::handlePacket(const Packet &packet)
         inGame = false;
         // 判断当前用户是否获胜
         bool won = (winner == username);
-        emit gameEnded(QString::fromStdString(winner), rating + ratingChange, won);
+        QString msg = won ? QString("你获胜了，积分变化: %1").arg(ratingChange) : QString("你输了，积分变化: %1").arg(ratingChange);
+        emit gameEnded(msg);
         break;
     }
-    case MsgType::PlayerJoined:
+    case MsgType::SyncUsersToRoom:
     {
-        std::string player = packet.GetParam<std::string>("player");
-        emit logToUser(QString("玩家 %1 加入房间").arg(QString::fromStdString(player)));
-        // 请求更新房间玩家列表
-        if (currentRoomId != 0)
-        {
-            // 可以发送请求获取更新后的房间玩家列表
-            // 暂时发送一个空的玩家列表更新信号，让UI知道需要刷新
-            emit updateRoomPlayerList(QStringList());
-        }
-        break;
-    }
-    case MsgType::PlayerLeft:
-    {
-        std::string player = packet.GetParam<std::string>("player");
-        emit logToUser(QString("玩家 %1 离开房间").arg(QString::fromStdString(player)));
-        // 请求更新房间玩家列表
-        if (currentRoomId != 0)
-        {
-            emit updateRoomPlayerList(QStringList());
-        }
-        break;
-    }
-    case MsgType::RoomStatusChanged:
-    {
-        // 房间状态变化
-        break;
-    }
-    case MsgType::RoomInfoUpdated:
-    {
-        // 房间信息更新推送
-        std::string playerListStr = packet.GetParam<std::string>("players", "");
-        std::string blackPlayer = packet.GetParam<std::string>("blackPlayer", "等待玩家...");
-        std::string whitePlayer = packet.GetParam<std::string>("whitePlayer", "等待玩家...");
-        std::string roomSettings = packet.GetParam<std::string>("settings", "");
-
-        // 解析玩家列表
+        std::string playerListStr = packet.GetParam<std::string>("playerListStr", "");
+        // 解析玩家列表字符串，格式可能是逗号分隔
         QStringList players = QString::fromStdString(playerListStr).split(',', Qt::SkipEmptyParts);
-
-        // 发送更新信号给GameWidget
-        emit updateRoomPlayerList(players);
-
-        // 可以在这里处理其他房间信息，如座位状态
-        // 创建包含座位信息的玩家列表
-        QStringList seatPlayers;
-        seatPlayers << QString::fromStdString(blackPlayer) << QString::fromStdString(whitePlayer);
-        emit playerListUpdated(seatPlayers);
-
-        LOG_DEBUG("Room info updated: " + std::to_string(players.size()) + " players, black: " + blackPlayer + ", white: " + whitePlayer);
+        emit SyncUsersToRoom(players);
         break;
     }
-    case MsgType::DrawRequested:
-        emit logToUser("对手请求平局");
-        break;
-    case MsgType::DrawAccepted:
-        emit logToUser("平局请求被接受");
-        inGame = false;
-        // 平局，没有明确的获胜者
-        emit gameEnded(QString::fromStdString(username), rating, false);
-        break;
-    case MsgType::GiveUpRequested:
-        emit logToUser("对手认输");
-        inGame = false;
-        // 对手认输，当前用户获胜
-        emit gameEnded(QString::fromStdString(username), rating, true);
-        break;
+    // case MsgType::PlayerLeft:  // 消息类型在Packet.h中已不存在
+    // {
+    //     std::string player = packet.GetParam<std::string>("player");
+    //     emit logToUser(QString("玩家 %1 离开房间").arg(QString::fromStdString(player)));
+    //     // 请求更新房间玩家列表
+    //     if (currentRoomId != 0)
+    //     {
+    //         emit updateRoomPlayerList(QStringList());
+    //     }
+    //     break;
+    // }
+    // case MsgType::RoomStatusChanged:  // 消息类型在Packet.h中已不存在
+    // {
+    //     // 房间状态变化
+    //     break;
+    // }
 
-    // 错误消息
-    case MsgType::Success:
-        emit logToUser("操作成功");
+    // 新协议消息处理
+    case MsgType::SyncSeat:
+    {
+        std::string player1 = packet.GetParam<std::string>("P1", "");
+        std::string player2 = packet.GetParam<std::string>("P2", "");
+        emit syncSeat(QString::fromStdString(player1), QString::fromStdString(player2));
         break;
+    }
+    case MsgType::SyncRoomSetting:
+    {
+        std::string settings = packet.GetParam<std::string>("config", "");
+        emit syncRoomSetting(QString::fromStdString(settings));
+        break;
+    }
+    case MsgType::ChatMessage:
+    {
+        std::string msg = packet.GetParam<std::string>("msg", "");
+        std::string sender = packet.GetParam<std::string>("sender", username);
+        emit chatMessage(QString::fromStdString(sender), QString::fromStdString(msg));
+        break;
+    }
+    case MsgType::SyncGame:
+    {
+        std::string statusStr = packet.GetParam<std::string>("statusStr", "");
+        // 根据协议，statusStr包含配置和行棋历史
+        // 这里可以解析statusStr并发出相应的信号
+        // 暂时直接转发给UI处理
+        emit syncGame(QString::fromStdString(statusStr));
+        break;
+    }
+
     case MsgType::Error:
     {
         std::string error = packet.GetParam<std::string>("error", "未知错误");
         emit logToUser(QString::fromStdString("错误: " + error));
         break;
     }
-    case MsgType::InvalidMsgType:
-        emit logToUser("无效的消息类型");
-        break;
-    case MsgType::InvalidArg:
-        emit logToUser("无效的参数");
-        break;
-    case MsgType::UnexpectedError:
-        emit logToUser("服务器内部错误");
-        break;
-
     default:
         LOG_DEBUG("Unhandled packet type: " + std::to_string(static_cast<int>(packet.msgType)));
         break;

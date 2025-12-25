@@ -33,34 +33,33 @@ VPATH += . \
         src/widgets \
         src/utils
 
-SOURCES += src/core/Game.cpp \
-           src/core/AiPlayer.cpp \
+SOURCES += src/core/AiPlayer.cpp \
            src/core/Controller.cpp \
+           src/core/Game.cpp \
            src/network/Client.cpp \
            src/network/Frame.cpp \
            src/network/Packet.cpp \
            src/utils/Crypto.cpp \
            src/utils/Logger.cpp \
-           src/widgets/ChessBoardWidget.cpp \
-           src/widgets/gamewidget.cpp \
-           src/widgets/lobbywidget.cpp \
+           src/utils/Timer.cpp \
+           src/widgets/LobbyWidget.cpp \
+           src/widgets/RoomWidget.cpp \
            src/widgets/ToastWidget.cpp \
            src/main.cpp \
            src/MainWindow.cpp
 
-HEADERS += src/core/Game.h \
+HEADERS += src/core/AiPlayer.h \
            src/core/Controller.h \
+           src/core/Game.h \
            src/network/Client.h \
            src/network/Frame.h \
            src/network/Packet.h \
            src/utils/Crypto.h \
            src/utils/Logger.h \
-           src/utils/EventBus.hpp \
            src/utils/Timer.hpp \
-           src/utils/TimeWheel.hpp \
-           src/widgets/ChessBoardWidget.h \
-           src/widgets/GameWidget.h \
+           src/utils/TimeWheel.hpp \\
            src/widgets/LobbyWidget.h \
+           src/widgets/RoomWidget.h \
            src/widgets/ToastWidget.h \
            src/MainWindow.h
 
