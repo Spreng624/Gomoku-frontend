@@ -206,11 +206,10 @@ void Controller::onUpdateLobbyRoomList()
 void Controller::onSyncSeat(const QString &player1, const QString &player2)
 {
     LOG_INFO("Syncing seat: " + player1.toStdString() + ", " + player2.toStdString());
-    if (!connected || currentRoomId == 0)
+    if (!connected)
         return;
 
     Packet packet(sessionId, MsgType::SyncSeat);
-    packet.AddParam("roomId", currentRoomId);
     packet.AddParam("P1", player1.toStdString());
     packet.AddParam("P2", player2.toStdString());
     sendPacket(packet);
@@ -223,7 +222,6 @@ void Controller::onSyncRoomSetting(const QString &configStr)
         return;
 
     Packet packet(sessionId, MsgType::SyncRoomSetting);
-    packet.AddParam("roomId", currentRoomId);
     packet.AddParam("config", configStr.toStdString());
     sendPacket(packet);
 }
@@ -248,24 +246,19 @@ void Controller::onSyncUsersToRoom()
         return;
 
     Packet packet(sessionId, MsgType::SyncUsersToRoom);
-    packet.AddParam("roomId", currentRoomId);
     sendPacket(packet);
 }
 
 void Controller::onExitRoom()
 {
-    if (!connected || currentRoomId == 0)
+    if (!connected)
         return;
 
     Packet packet(sessionId, MsgType::ExitRoom);
-    packet.AddParam("roomId", currentRoomId);
     sendPacket(packet);
 
     // 不立即切换，等待服务器确认
     emit statusBarMessageChanged("正在退出房间...");
-
-    // currentRoomId = 0; // 在服务器确认后设置
-    // inGame = false;
 }
 
 // Game
@@ -273,15 +266,11 @@ void Controller::onExitRoom()
 void Controller::onGameStarted()
 {
     LOG_INFO("Starting game");
-    if (!connected || currentRoomId == 0)
+    if (!connected)
         return;
 
     Packet packet(sessionId, MsgType::GameStarted);
-    packet.AddParam("roomId", currentRoomId);
     sendPacket(packet);
-
-    inGame = true;
-    emit gameStarted();
 }
 
 void Controller::onMakeMove(int x, int y)
@@ -293,15 +282,7 @@ void Controller::onMakeMove(int x, int y)
         return;
     }
 
-    if (!inGame)
-    {
-        LOG_WARN("Cannot make move: not currently in a game");
-        logToUser("当前不在游戏中，无法落子");
-        return;
-    }
-
     Packet packet(sessionId, MsgType::MakeMove);
-    packet.AddParam("roomId", currentRoomId);
     packet.AddParam("x", (uint32_t)x);
     packet.AddParam("y", (uint32_t)y);
 
@@ -328,7 +309,6 @@ void Controller::onGiveUp()
         return;
 
     Packet packet(sessionId, MsgType::GiveUp);
-    packet.AddParam("roomId", currentRoomId);
     sendPacket(packet);
 }
 
@@ -339,7 +319,6 @@ void Controller::onSyncGame()
         return;
 
     Packet packet(sessionId, MsgType::SyncGame);
-    packet.AddParam("roomId", currentRoomId);
     sendPacket(packet);
 }
 
@@ -397,13 +376,14 @@ void Controller::handlePacket(const Packet &packet)
         break;
     }
     case MsgType::LogOut:
+    {
         username.clear();
         rating = 0;
         currentRoomId = 0;
-        inGame = false;
         emit userIdentityChanged("", 0);
         emit logToUser("已登出");
         break;
+    }
 
     // 房间操作响应
     case MsgType::CreateRoom:
@@ -411,20 +391,11 @@ void Controller::handlePacket(const Packet &packet)
         bool success = packet.GetParam<bool>("success", true); // 默认为true以保持向后兼容
         if (success)
         {
-            currentRoomId = packet.GetParam<int>("roomId");
             LOG_INFO("Room created successfully, room ID: " + std::to_string(currentRoomId));
             emit logToUser(QString("房间创建成功，房间号: %1").arg(currentRoomId));
-
-            // 切换到游戏界面
             emit switchWidget(1);       // 切换到GameWidget
             emit initRomeWidget(false); // 初始化在线游戏模式
-
-            // 更新状态
-            inGame = false; // 房间创建但游戏尚未开始
             emit statusBarMessageChanged("已创建房间 " + QString::number(currentRoomId));
-
-            // 可以发射房间创建信号，如果需要的话
-            // emit roomCreated(currentRoomId);
         }
         else
         {
@@ -507,35 +478,41 @@ void Controller::handlePacket(const Packet &packet)
     // case MsgType::CancelTake:  // 消息类型在Packet.h中已不存在
     //     break;
     case MsgType::GameStarted:
-        inGame = true;
+    {
         emit gameStarted();
-        emit logToUser("游戏开始");
         break;
-
+    }
     // 游戏操作响应
     case MsgType::MakeMove:
     {
-        int x = packet.GetParam<int>("x");
-        int y = packet.GetParam<int>("y");
-        emit makeMove(x, y);
+        if (success)
+            ;
+        else
+        {
+            int x = packet.GetParam<uint32_t>("x");
+            int y = packet.GetParam<uint32_t>("y");
+            emit makeMove(x, y);
+        }
         break;
     }
     case MsgType::UndoMove:
     {
         uint8_t negStatus = packet.GetParam<uint8_t>("negStatus", 0);
+        emit undoMove(static_cast<NegStatus>(negStatus));
         break;
     }
     case MsgType::Draw:
     {
         uint8_t negStatus = packet.GetParam<uint8_t>("negStatus", 0);
+        emit draw(static_cast<NegStatus>(negStatus));
         break;
     }
     case MsgType::GiveUp:
-        emit logToUser("对手认输");
-        inGame = false;
-        // 对手认输，当前用户获胜
-        emit gameEnded(QString("对手认输，你获胜"));
+    {
+        std::string msg = packet.GetParam<std::string>("msg", "");
+        emit gameEnded(QString(msg.c_str()));
         break;
+    }
     case MsgType::updateUsersToLobby:
     {
         // 解析用户列表
@@ -556,14 +533,8 @@ void Controller::handlePacket(const Packet &packet)
     // 服务器推送
     case MsgType::GameEnded:
     {
-        std::string winner = packet.GetParam<std::string>("winner");
-        int ratingChange = packet.GetParam<int>("rating_change");
-        emit logToUser(QString("游戏结束，获胜者: %1，积分变化: %2").arg(QString::fromStdString(winner)).arg(ratingChange));
-        inGame = false;
-        // 判断当前用户是否获胜
-        bool won = (winner == username);
-        QString msg = won ? QString("你获胜了，积分变化: %1").arg(ratingChange) : QString("你输了，积分变化: %1").arg(ratingChange);
-        emit gameEnded(msg);
+        std::string msg = packet.GetParam<std::string>("msg");
+        emit gameEnded(QString::fromStdString(msg));
         break;
     }
     case MsgType::SyncUsersToRoom:
@@ -596,7 +567,10 @@ void Controller::handlePacket(const Packet &packet)
     {
         std::string player1 = packet.GetParam<std::string>("P1", "");
         std::string player2 = packet.GetParam<std::string>("P2", "");
-        emit syncSeat(QString::fromStdString(player1), QString::fromStdString(player2));
+        if (success)
+            ;
+        else
+            emit syncSeat(QString::fromStdString(player1), QString::fromStdString(player2));
         break;
     }
     case MsgType::SyncRoomSetting:

@@ -1,8 +1,5 @@
-#ifndef GAME_H
-#define GAME_H
-
+#pragma once
 #include <vector>
-#include <stack>
 #include <string>
 #include <functional>
 
@@ -16,90 +13,87 @@ enum class Piece
 class Game
 {
 public:
-    enum Status
+    enum class Status
     {
         Idle,
         Active,
         Paused,
         Settled
-    } status;
-    Game();
+    };
 
-    // ==================== 配置接口 ====================
+    Game() { reset(); }
 
-    void setConfig(const std::string &config);
-
-    // ==================== 游戏操作接口（输入） ====================
-
-    bool move(int x, int y);
-    bool undo();
-    void start();
-    void pause();
-    void end();
+    // ==================== 配置与控制 ====================
+    void setLocalMode(bool local) { isLocal = local; }
     void reset();
-    void sync(const std::string &stateStr);
+    void start()
+    {
+        status = Status::Active;
+        if (onGameStarted)
+            onGameStarted();
+    }
+    void pause() { status = Status::Paused; }
+    void resume() { status = Status::Active; }
+    void end(std::string msg)
+    {
+        status = Status::Settled;
+        onGameEnded(msg);
+    }
+    void end(Piece winner)
+    {
+        status = Status::Settled;
+        std::string msg = (winner == Piece::BLACK ? "黑方获胜" : "白方获胜");
+        onGameEnded(msg);
+    }
 
-    // ==================== 状态查询接口 ====================
+    // ==================== 核心操作 ====================
+    bool move(int x, int y); // 玩家尝试落子
+    bool undo();
+    bool sync(const std::string &data);
+    bool applyRemoteMove(int x, int y, Piece p); // 响应服务器确认
 
-    const std::vector<std::vector<Piece>> &getBoard() const;
-    Piece getCurrentPlayer() const;
-    bool isGameOver() const;
-    Piece getWinner() const;
-    std::string getMoveHistory() const;
-    std::pair<std::string, std::string> getTimeLeft() const;
-    bool isValidMove(int x, int y) const;
+    std::vector<std::vector<Piece>> getBoard() const { return board; };
 
-    // ==================== 状态序列化接口 ====================
+    // ==================== 导出接口 (回调注入) ====================
+    void setOnBoardChanged(std::function<void(const std::vector<std::vector<Piece>> &)> cb) { onBoardChanged = cb; }
+    void setOnTurnChanged(std::function<void(Piece)> cb) { onTurnChanged = cb; }
+    void setOnGameStarted(std::function<void()> cb) { onGameStarted = cb; }
+    void setOnGameEnded(std::function<void(const std::string &)> cb) { onGameEnded = cb; }
+    void setOnMoveRequest(std::function<void(int, int)> cb) { onMoveRequest = cb; }
+    void setOnGameSyncReq(std::function<void(const std::string &)> cb) { onGameSyncReq = cb; }
 
-    std::string serializeState() const;
-    bool deserializeState(const std::string &stateStr);
-
-    // ==================== 回调设置接口（输出） ====================
-
-    void setOnBoardChanged(std::function<void(const std::vector<std::vector<Piece>> &)> callback);
-    void setOnCurrentPlayerChanged(std::function<void(Piece)> callback);
-    void setOnGameStarted(std::function<void()> callback);
-    void setOnGameEnded(std::function<void(Piece winner, const std::string &reason)> callback);
-    void setOnMoveHistoryUpdated(std::function<void(const std::string &)> callback);
-    void setOnTimeUpdated(std::function<void(const std::string &, const std::string &)> callback);
-    void setOnSyncRequest(std::function<void(const std::string &)> callback);
+    // ==================== 状态序列化 ====================
+    std::string serialize() const;
+    bool deserialize(const std::string &data);
 
 private:
-    bool checkWin(int x, int y, Piece player) const;
-    void emitAllCallbacks();
-    void emitBoardChanged();
-    void emitCurrentPlayerChanged();
-    void emitGameStarted();
-    void emitGameEnded(Piece winner, const std::string &reason);
-    void emitMoveHistoryUpdated();
-    void emitTimeUpdated();
-    void emitSyncRequest(const std::string &stateStr);
+    bool checkWin(int x, int y, Piece p) const;
+    void emitUpdate()
+    {
+        if (onBoardChanged)
+            onBoardChanged(board);
+        if (onTurnChanged)
+            onTurnChanged(currPlayer);
+    }
 
-    // ==================== 回调函数 ====================
-
-    std::function<void(const std::vector<std::vector<Piece>> &)> onBoardChanged;
-    std::function<void(Piece)> onCurrentPlayerChanged;
-    std::function<void()> onGameStarted;
-    std::function<void(Piece, const std::string &)> onGameEnded;
-    std::function<void(const std::string &)> onMoveHistoryUpdated;
-    std::function<void(const std::string &, const std::string &)> onTimeUpdated;
-    std::function<void(const std::string &)> onSyncRequest;
-
-    // ==================== 游戏状态 ====================
-
+    Status status = Status::Idle;
     bool isLocal = true;
-    int boardSize;
-    Piece currentPlayer;
-    Piece winner = Piece::EMPTY;
-    bool gameOver = false;
+    int size = 15;
+    Piece currPlayer = Piece::BLACK;
     std::vector<std::vector<Piece>> board;
 
-    // 时间管理
-    std::string blackTimeLeft; // 黑方剩余时间（格式："mm:ss"）
-    std::string whiteTimeLeft; // 白方剩余时间（格式："mm:ss"）
+    struct Step
+    {
+        int x, y;
+        Piece p;
+    };
+    std::vector<Step> history; // 替代 stack，更易于遍历序列化
 
-    // 历史记录
-    std::stack<std::string> moveHistory;
+    // 回调句柄
+    std::function<void(const std::vector<std::vector<Piece>> &)> onBoardChanged;
+    std::function<void(Piece)> onTurnChanged;
+    std::function<void()> onGameStarted;
+    std::function<void(const std::string &)> onGameEnded;
+    std::function<void(int, int)> onMoveRequest;
+    std::function<void(const std::string &)> onGameSyncReq;
 };
-
-#endif // GAME_H

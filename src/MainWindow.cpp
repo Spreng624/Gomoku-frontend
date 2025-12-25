@@ -126,23 +126,23 @@ void MainWindow::SetUpSignals()
     // GameWidget <--> Controller
     connect(room, &RoomWidget::SyncSeat, ctrl.get(), &Controller::onSyncSeat);
     connect(room, &RoomWidget::syncRoomSetting, ctrl.get(), &Controller::onSyncRoomSetting);
-    connect(room, &RoomWidget::chatMessageSent, ctrl.get(), &Controller::onChatMessage);
+    connect(room, &RoomWidget::chatMessage, ctrl.get(), &Controller::onChatMessage);
     connect(room, &RoomWidget::syncUsersToRoom, ctrl.get(), &Controller::onSyncUsersToRoom);
     connect(room, &RoomWidget::backToLobby, ctrl.get(), &Controller::onExitRoom);
 
-    connect(room, &RoomWidget::startGame, ctrl.get(), &Controller::onGameStarted);
+    connect(room, &RoomWidget::gameStart, ctrl.get(), &Controller::onGameStarted);
     connect(room, &RoomWidget::makeMove, ctrl.get(), &Controller::onMakeMove);
     connect(room, &RoomWidget::giveup, ctrl.get(), &Controller::onGiveUp);
     connect(room, &RoomWidget::draw, ctrl.get(), &Controller::onDraw);
     connect(room, &RoomWidget::undoMove, ctrl.get(), &Controller::onUndoMove);
-    connect(room, &RoomWidget::syncGame, ctrl.get(), &Controller::onSyncGame);
+    connect(room, &RoomWidget::SyncGame, ctrl.get(), &Controller::onSyncGame);
 
     connect(ctrl.get(), &Controller::syncSeat, room, &RoomWidget::onSyncSeat);
     connect(ctrl.get(), &Controller::syncRoomSetting, room, &RoomWidget::onSyncRoomSetting);
-    connect(ctrl.get(), &Controller::chatMessage, room, &RoomWidget::onChatMessageReceived);
-    connect(ctrl.get(), &Controller::SyncUsersToRoom, room, &RoomWidget::onUpdateRoomPlayerList);
+    connect(ctrl.get(), &Controller::chatMessage, room, &RoomWidget::onChatMessage);
+    connect(ctrl.get(), &Controller::SyncUsersToRoom, room, &RoomWidget::onSyncUsersToRoom);
 
-    connect(ctrl.get(), &Controller::initRomeWidget, room, &RoomWidget::init);
+    connect(ctrl.get(), &Controller::initRomeWidget, room, &RoomWidget::reset);
     connect(ctrl.get(), &Controller::gameStarted, room, &RoomWidget::onGameStarted);
     connect(ctrl.get(), &Controller::gameEnded, room, &RoomWidget::onGameEnded);
     connect(ctrl.get(), &Controller::makeMove, room, &RoomWidget::onMakeMove);
@@ -155,7 +155,7 @@ void MainWindow::SetUpSignals()
     connect(room, &RoomWidget::backToLobby, this, [this]()
             { emit onSwitchWidget(0); });
     connect(lobby, &LobbyWidget::localGame, this, [this]()
-            { room->init(true); emit onSwitchWidget(1); });
+            { room->reset(true); emit onSwitchWidget(1); });
     connect(ctrl.get(), &Controller::switchWidget, this, &MainWindow::onSwitchWidget);
     connect(ctrl.get(), &Controller::logToUser, this, [this](const QString &message)
             { showToastMessage(message, 3000); });
@@ -238,6 +238,7 @@ void MainWindow::setNetworkStatus(bool connected)
 
 void MainWindow::setUserInfo(const QString &username, int rating)
 {
+    room->username = username;
     currentUsername = username;
     currentRating = rating;
     if (userInfoButton)

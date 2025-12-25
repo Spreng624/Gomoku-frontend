@@ -1,3 +1,6 @@
+$OutputEncoding = [System.Text.Encoding]::UTF8
+[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+
 # 1. 设置 Qt 环境变量 (根据你的路径)
 $QtPath = "D:/Dev/QT/6.10.1/mingw_64/bin;D:/Dev/QT/Tools/mingw1310_64/bin"
 $env:PATH = "$QtPath;$env:PATH"

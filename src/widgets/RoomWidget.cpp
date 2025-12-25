@@ -15,18 +15,17 @@
 RoomWidget::RoomWidget(QWidget *parent)
     : QWidget(parent),
       ui(new Ui::GameWidget),
-      game(nullptr),
+      game(std::make_unique<Game>()),
       isLocal(true),
       gameStatus(NotStarted),
-      blackPlayer(nullptr),
-      whitePlayer(nullptr),
-      aiPlayer(nullptr),
-      aiMoveTimerId(0)
+      isBlackTaken(false),
+      isWhiteTaken(false),
+      isBlackAI(false),
+      isWhiteAI(false),
+      blackAI(std::make_unique<AiPlayer>(Piece::BLACK)),
+      whiteAI(std::make_unique<AiPlayer>(Piece::WHITE))
 {
     ui->setupUi(this);
-    game = std::make_unique<Game>(); // Game核心
-
-    // 初始化组件
     initComponents();
 }
 
@@ -39,217 +38,170 @@ void RoomWidget::initComponents()
     SetUpGameCtrlPanel();
     SetUpFunctionalPanel();
     connectComponentSignals();
+    reset(false);
+}
+
+void RoomWidget::reset(bool localMode)
+{
+    isLocal = localMode;
+    game->setLocalMode(isLocal);
+    game->reset();
+
+    isBlackTaken = isWhiteTaken = false;
+    isBlackAI = isWhiteAI = false;
+
+    ui->player1NameLabel->setText("等待玩家...");
+    ui->player2NameLabel->setText("等待玩家...");
+
     SwitchPlayerInfoPanal(true, false);
     SwitchPlayerInfoPanal(false, false);
     SwitchGameStatus(GameStatus::NotStarted);
-    // if (isLocal)
-    // {
-    //     onBlackTaken("Player 1", false);
-    //     onWhiteTaken("Player 2", false);
-    // }
+
+    ui->addAIBlackButton->setVisible(isLocal);
+    ui->addAIWhiteButton->setVisible(isLocal);
+    update();
 }
 
 void RoomWidget::connectComponentSignals()
 {
-    // 连接游戏核心回调
-    if (game)
-    {
-        game->setOnBoardChanged([this](const std::vector<std::vector<Piece>> &board)
-                                { onGameBoardChanged(board); });
-        game->setOnCurrentPlayerChanged([this](Piece player)
-                                        { onGameCurrentPlayerChanged(player); });
-        game->setOnGameEnded([this](Piece winner, const std::string &reason)
-                             { onGameEndedFromCore(winner, reason); });
-    }
+    // Game 核心回调
+    game->setOnBoardChanged([this](const auto &)
+                            { update(); });
+    game->setOnTurnChanged([this](Piece p)
+                           { checkAndExecuteAI(p); });
+    game->setOnGameStarted([this]
+                           { SwitchGameStatus(GameStatus::Playing); });
+    game->setOnGameEnded([this](const std::string &msg)
+                         {
+        paintGameOver(QString::fromStdString(msg));
+        SwitchGameStatus(GameStatus::End); });
 
-    // 连接UI信号
-    SetUpConnections();
-}
+    game->setOnMoveRequest([this](int x, int y)
+                           {
+        if (!isLocal) emit makeMove(x, y); });
 
-void RoomWidget::SetUpConnections()
-{
-    // 连接按钮信号
-    connect(ui->startGameButton, &QPushButton::clicked, this, [this]()
-            { emit startGame(); });
-    connect(ui->backToLobbyButton, &QPushButton::clicked, this, [this]()
-            { emit backToLobby(); });
+    // 基础 UI 信号
+    connect(ui->backToLobbyButton, &QPushButton::clicked, this, &RoomWidget::backToLobby);
     connect(ui->sendButton, &QPushButton::clicked, this, [this]()
             {
-        QString message = ui->messageInput->text();
-        if (!message.isEmpty()) {
-            emit chatMessageSent(message);
-            ui->messageInput->clear();
-        } });
+        QString msg = ui->messageInput->text();
+        if (!msg.isEmpty()) { emit chatMessage(msg); ui->messageInput->clear(); } });
 }
 
 void RoomWidget::SetUpPlayerInfoPanel()
 {
-    // 连接玩家就坐按钮（新协议）
-    connect(ui->player1Avatar, &QPushButton::clicked, this, [this]()
-            { if(isLocal) onBlackTaken("Player 1", false);
-                else {
-                    emit SyncSeat("玩家1", "玩家2"); // 0表示黑棋
-                } });
-    connect(ui->player2Avatar, &QPushButton::clicked, this, [this]()
-            { if(isLocal) onWhiteTaken("Player 2", false);
-                else {
-                    // 发送请求选择白棋座位
-                    emit SyncSeat("玩家1", "玩家2"); // 1表示白棋
-                } });
-
-    // 连接AI按钮
-    connect(ui->addAIBlackButton, &QPushButton::clicked, this, [this]()
-            { onBlackTaken("AI Player", true); });
-    connect(ui->addAIWhiteButton, &QPushButton::clicked, this, [this]()
-            { onWhiteTaken("AI Player", true); });
-
-    // 连接取消按钮（新协议）
-    connect(ui->cancelBlackButton, &QPushButton::clicked, this, [this]()
-            {if(isLocal) {
-                blackPlayer=nullptr;
-                SwitchPlayerInfoPanal(true, false);
-                ui->player1NameLabel->setText("等待玩家...");
-            } else {
-                // 发送请求取消黑棋座位
-                emit SyncSeat("玩家1", "玩家2"); // 2表示取消
-            } });
-    connect(ui->cancelWhiteButton, &QPushButton::clicked, this, [this]()
+    // 玩家就坐逻辑
+    auto handleSeat = [this](bool black)
+    {
+        if (isLocal)
+        {
+            bool &taken = black ? isBlackTaken : isWhiteTaken;
+            if (taken)
             {
-        if(isLocal) {
-            whitePlayer=nullptr;
-            SwitchPlayerInfoPanal(false, false);
-            ui->player2NameLabel->setText("等待玩家...");
-        } else {
-            // 发送请求取消白棋座位
-            emit SyncSeat("玩家1", "玩家2"); // 2表示取消
-        } });
+                logToUser(black ? "执黑位置已满" : "执白位置已满");
+                return;
+            }
+            taken = true;
+            (black ? isBlackAI : isWhiteAI) = false;
+            (black ? ui->player1NameLabel : ui->player2NameLabel)->setText(black ? "玩家 1" : "玩家 2");
+            SwitchPlayerInfoPanal(black, true);
+        }
+        else
+        {
+            emit SyncSeat(black ? username : "", black ? "" : username);
+        }
+    };
+
+    // AI 就坐逻辑
+    auto handleAI = [this](bool black)
+    {
+        bool &taken = black ? isBlackTaken : isWhiteTaken;
+        if (taken)
+        {
+            logToUser("该位置已占用");
+            return;
+        }
+        taken = true;
+        (black ? isBlackAI : isWhiteAI) = true;
+        (black ? ui->player1NameLabel : ui->player2NameLabel)->setText("AI 选手");
+        SwitchPlayerInfoPanal(black, true);
+    };
+
+    connect(ui->player1Avatar, &QPushButton::clicked, this, [=]
+            { handleSeat(true); });
+    connect(ui->player2Avatar, &QPushButton::clicked, this, [=]
+            { handleSeat(false); });
+    connect(ui->addAIBlackButton, &QPushButton::clicked, this, [=]
+            { handleAI(true); });
+    connect(ui->addAIWhiteButton, &QPushButton::clicked, this, [=]
+            { handleAI(false); });
+
+    // 取消座位
+    connect(ui->cancelBlackButton, &QPushButton::clicked, this, [this]
+            {
+        if (isLocal) { isBlackTaken = false; SwitchPlayerInfoPanal(true, false); ui->player1NameLabel->setText("等待玩家..."); }
+        else emit SyncSeat("", ""); });
+    connect(ui->cancelWhiteButton, &QPushButton::clicked, this, [this]
+            {
+        if (isLocal) { isWhiteTaken = false; SwitchPlayerInfoPanal(false, false); ui->player2NameLabel->setText("等待玩家..."); }
+        else emit SyncSeat("", ""); });
 }
 
 void RoomWidget::SetUpGameCtrlPanel()
 {
-    // 连接游戏控制按钮
-    connect(ui->startGameButton, &QPushButton::clicked, this, [this]()
-            { if(isLocal) onGameStarted(); 
-              else emit startGame(); });
-    connect(ui->drawButton, &QPushButton::clicked, this, [this]()
-            { if(isLocal) onDraw(NegStatus::Accept); 
-              else emit draw(NegStatus::Ask); });
-    connect(ui->undoButton, &QPushButton::clicked, this, [this]()
-            { if(isLocal) onUndoMove(NegStatus::Accept); 
-              else emit undoMove(NegStatus::Ask); });
-    connect(ui->surrenderButton, &QPushButton::clicked, this, [this]()
-            { if(isLocal) game->end(); 
-              else emit giveup(); });
+    connect(ui->startGameButton, &QPushButton::clicked, this, [this]
+            {
+        if (isLocal) onGameStarted(); else emit gameStart(); });
+    connect(ui->drawButton, &QPushButton::clicked, this, [this]
+            { onDraw(isLocal ? NegStatus::Accept : NegStatus::Ask); });
+    connect(ui->undoButton, &QPushButton::clicked, this, [this]
+            { onUndoMove(isLocal ? NegStatus::Accept : NegStatus::Ask); });
+    connect(ui->surrenderButton, &QPushButton::clicked, this, [this]
+            {
+        if (isLocal) game->end("对局结束"); else emit giveup(); });
 }
 
 void RoomWidget::SetUpFunctionalPanel()
 {
-    // 连接功能面板
-    connect(ui->enableAICheckBox, &QCheckBox::stateChanged, this, [this](int state)
-            {
-        bool enabled = (state == Qt::Checked);
-        qDebug() << "AI enabled:" << enabled; });
-
-    // 连接设置按钮
-    connect(ui->soundToggle, &QPushButton::toggled, this, [this](bool checked)
-            { ui->soundToggle->setText(checked ? "音效: 開" : "音效: 關"); });
-    connect(ui->bgmToggle, &QPushButton::toggled, this, [this](bool checked)
-            { ui->bgmToggle->setText(checked ? "背景音樂: 開" : "背景音樂: 關"); });
+    connect(ui->soundToggle, &QPushButton::toggled, this, [this](bool chk)
+            { ui->soundToggle->setText(chk ? "音效: 開" : "音效: 關"); });
+    connect(ui->bgmToggle, &QPushButton::toggled, this, [this](bool chk)
+            { ui->bgmToggle->setText(chk ? "背景音樂: 開" : "背景音樂: 關"); });
 }
-
-void RoomWidget::SetUpChessBoardWidget()
-{
-    // 获取棋盘组件指针
-    QWidget *chessBoardWidget = ui->chessBoardWidget;
-    if (!chessBoardWidget)
-    {
-        LOG_ERROR("chessBoardWidget is null");
-        return;
-    }
-
-    // 启用鼠标跟踪和点击
-    chessBoardWidget->setMouseTracking(true);
-    chessBoardWidget->installEventFilter(this);
-    chessBoardWidget->setStyleSheet("background-color: #E8B96A;");
-
-    if (game)
-    {
-        updateChessBoardDisplay();
-    }
-}
-
-void RoomWidget::onBlackTaken(const QString &username, bool isAI)
-{
-    if (isLocal && blackPlayer != nullptr)
-    {
-        logToUser("Black has been taken");
-    }
-    else
-    {
-        blackPlayer = std::make_unique<PlayerInfo>();
-        blackPlayer->username = username;
-        blackPlayer->TimeLeft = "00:00:00";
-        blackPlayer->isAI = isLocal && isAI;
-        ui->player1NameLabel->setText(blackPlayer->username);
-        ui->player1TimeLabel->setText(blackPlayer->TimeLeft);
-        SwitchPlayerInfoPanal(true, true);
-    }
-}
-
-void RoomWidget::onWhiteTaken(const QString &username, bool isAI)
-{
-    if (isLocal && whitePlayer != nullptr)
-    {
-        logToUser("White has been taken");
-    }
-    else
-    {
-        whitePlayer = std::make_unique<PlayerInfo>();
-        whitePlayer->username = username;
-        whitePlayer->TimeLeft = "00:00:00";
-        whitePlayer->isAI = isLocal && isAI;
-        ui->player2NameLabel->setText(whitePlayer->username);
-        ui->player2TimeLabel->setText(whitePlayer->TimeLeft);
-        SwitchPlayerInfoPanal(false, true);
-    }
-}
-
-void RoomWidget::onBlackTimeUpdate(const QString &playerTime)
-{
-    ui->player1TimeLabel->setText(playerTime);
-}
-void RoomWidget::onWhiteTimeUpdate(const QString &playerTime)
-{
-    ui->player2TimeLabel->setText(playerTime);
-}
-void RoomWidget::onChatMessageReceived(const QString &username, const QString &message)
+void RoomWidget::onChatMessage(const QString &username, const QString &message)
 {
     ui->chatHistory->append(QString("%1: %2").arg(username).arg(message));
 }
-void RoomWidget::onUpdateRoomPlayerList(const QStringList &players)
+void RoomWidget::onSyncUsersToRoom(const QStringList &players)
 {
     ui->moveList->clear();
     for (const QString &player : players)
         ui->moveList->addItem(player);
 }
-void RoomWidget::onUpdateRoomSetting(const QStringList &settings)
-{
-    // TODO: 待定
-}
-
 void RoomWidget::onDraw(NegStatus status)
 {
     switch (status)
     {
     case NegStatus::Ask:
+    {
         QMessageBox::StandardButton reply =
             QMessageBox::question(this, "和棋请求", "对方请求和棋，是否同意？",
                                   QMessageBox::Yes | QMessageBox::No);
 
         emit draw(reply == QMessageBox::Yes ? NegStatus::Accept : NegStatus::Reject);
         break;
+    }
     case NegStatus::Accept:
-        game->end();
+        logToUser("和棋请求已同意");
+        if (isLocal)
+        {
+            // 本地模式：直接结束游戏
+            if (game)
+            {
+                game->end("对局结束，和棋");
+            }
+        }
+        // 网络模式：等待服务器同步游戏状态
         break;
     case NegStatus::Reject:
         logToUser("对方拒绝和棋");
@@ -259,20 +211,33 @@ void RoomWidget::onDraw(NegStatus status)
         break;
     }
 }
-
 void RoomWidget::onUndoMove(NegStatus status)
 {
     switch (status)
     {
     case NegStatus::Ask:
+    {
         QMessageBox::StandardButton reply =
             QMessageBox::question(this, "悔棋请求", "对方请求悔棋，是否同意？",
                                   QMessageBox::Yes | QMessageBox::No);
 
-        emit draw(reply == QMessageBox::Yes ? NegStatus::Accept : NegStatus::Reject);
+        emit undoMove(reply == QMessageBox::Yes ? NegStatus::Accept : NegStatus::Reject);
         break;
+    }
     case NegStatus::Accept:
-        game->end();
+        // 同意悔棋，调用Game的undo方法
+        if (game)
+        {
+            bool success = game->undo();
+            if (success)
+            {
+                logToUser("悔棋成功");
+            }
+            else
+            {
+                logToUser("悔棋失败：没有可悔的棋步");
+            }
+        }
         break;
     case NegStatus::Reject:
         logToUser("对方拒绝悔棋");
@@ -282,67 +247,33 @@ void RoomWidget::onUndoMove(NegStatus status)
         break;
     }
 }
-
 void RoomWidget::onMakeMove(int x, int y)
 {
-    // 获取当前玩家
-    Piece currentPlayer = game->getCurrentPlayer();
-
-    // 尝试落子
     bool success = game->move(x, y);
-    if (success)
-    {
-        // 更新棋盘显示
-        updateChessBoardDisplay();
-
-        // 检查游戏是否结束
-        if (game->isGameOver())
-        {
-            Piece winner = game->getWinner();
-            QString winnerText = (winner == Piece::BLACK) ? "黑棋" : "白棋";
-            qDebug() << "RoomWidget::onMakeMove: Game over, winner:" << winnerText;
-        }
-
-        // 发射信号通知其他组件
-        emit makeMove(x, y);
-    }
-    else
-    {
-        qDebug() << "RoomWidget::onMakeMove: Invalid move at (" << x << "," << y << ")";
-    }
 }
+
 void RoomWidget::onBoardUpdated(const std::vector<std::vector<Piece>> &board)
 {
     // 更新棋盘显示
     updateChessBoardDisplay();
     qDebug() << "RoomWidget::onBoardUpdated: Board updated";
 }
-
-void RoomWidget::init(bool islocal)
-{
-    isLocal = islocal;
-    qDebug() << "RoomWidget::init: isLocal =" << isLocal;
-
-    // 根据模式初始化
-    if (isLocal)
-    {
-        ui->addAIBlackButton->setVisible(true);
-        ui->addAIWhiteButton->setVisible(true);
-    }
-    else
-    {
-        ui->addAIBlackButton->setVisible(false);
-        ui->addAIWhiteButton->setVisible(false);
-    }
-}
-
 void RoomWidget::onGameStarted()
 {
-    if (isLocal && (blackPlayer == nullptr || whitePlayer == nullptr))
-
-        SwitchGameStatus(GameStatus::Playing);
+    // 逻辑：如果是本地模式，且 (黑位没满 或者 白位没满)
+    if (isLocal && (!isBlackTaken || !isWhiteTaken))
+    {
+        logToUser("请先让两位黑白玩家全部就坐");
+        return;
+    }
+    if (gameStatus == End)
+    {
+        game->reset();
+    }
+    game->start();
+    gameStatus = GameStatus::Playing;
+    update();
 }
-
 void RoomWidget::onGameEnded(QString message)
 {
 
@@ -350,149 +281,227 @@ void RoomWidget::onGameEnded(QString message)
     SwitchGameStatus(GameStatus::End);
 }
 
-// private slots
-
-void RoomWidget::SwitchPlayerInfoPanal(bool isBlack, bool isTaken)
+void RoomWidget::onSyncRoomSetting(const QString &settings)
 {
-    if (isBlack)
+    qDebug() << "RoomWidget::onSyncRoomSetting: Received room settings:" << settings;
+    // 解析设置字符串并更新UI
+    // 这里可以根据实际协议格式进行解析
+    // TODO: 根据实际协议格式解析设置并更新UI
+    emit logToUser("房间设置已同步");
+}
+
+// 辅助函数
+
+void RoomWidget::handleBoardClick(int x, int y)
+{
+    if (gameStatus != GameStatus::Playing)
     {
-        if (isTaken && !blackPlayer)
-            LOG_WARN("blackPlayer is null");
-        ui->player1Avatar->setEnabled(!isTaken);
-        if (!isTaken && isLocal)
-            ui->addAIBlackButton->show();
-        else
-            ui->addAIBlackButton->hide();
-        if (isTaken)
-            ui->cancelBlackButton->show();
-        else
-            ui->cancelBlackButton->hide();
+        logToUser("游戏尚未开始，请等待");
+        return;
     }
+    if (isLocal)
+        game->move(x, y);
     else
     {
-        if (isTaken && !whitePlayer)
-            LOG_WARN("whitePlayer is null");
-        ui->player2Avatar->setEnabled(!isTaken);
-        if (!isTaken && isLocal)
-            ui->addAIWhiteButton->show();
-        else
-            ui->addAIWhiteButton->hide();
-        if (isTaken)
-            ui->cancelWhiteButton->show();
-        else
-            ui->cancelWhiteButton->hide();
+        // 检查是否是自己的回合
+        // if (game->getTurn() != currPlayer)
+        // {
+        //     logToUser("请等待对方落子");
+        //     return;
+        // }
+        // else
+        // {
+        // }
+        emit makeMove(x, y);
     }
+}
+
+void RoomWidget::SetUpSignals()
+{
+    // 设置信号连接
+    // 这个函数可能已经由其他函数处理，这里提供一个空实现
+    qDebug() << "RoomWidget::SetUpSignals: Setting up signals";
+}
+
+void RoomWidget::paintGameOver(QString msg)
+{
+    QWidget *chessBoardWidget = ui->chessBoardWidget;
+    QPainter painter(chessBoardWidget);
+
+    // 棋盘参数
+    const int gridSize = 40;
+    const int pieceRadius = 18;
+    const int boardMargin = 20;
+    const int starPointRadius = 4;
+    const int boardSize = 15;
+
+    // 计算棋盘实际位置
+    int boardLength = gridSize * (boardSize - 1);
+    int boardWidth = chessBoardWidget->width();
+    int boardHeight = chessBoardWidget->height();
+    QPoint boardTopLeft((boardWidth - boardLength) / 2, (boardHeight - boardLength) / 2);
+
+    int indicatorX = boardTopLeft.x() + (boardSize - 1) * gridSize + 30;
+    int indicatorY = boardTopLeft.y() + (boardSize / 2) * gridSize;
+    const int indicatorRadius = 12;
+
+    painter.setPen(Qt::NoPen);
+
+    int infoX = boardWidth / 2 - 100;
+    int infoY = boardHeight / 2 - 30;
+    int infoWidth = 200;
+    int infoHeight = 60;
+
+    painter.setPen(QPen(QColor(239, 68, 68, 200), 3));
+    painter.setBrush(QBrush(QColor(239, 68, 68, 180)));
+    painter.drawRect(infoX, infoY, infoWidth, infoHeight);
+
+    painter.setPen(Qt::white);
+    painter.setFont(QFont("Microsoft YaHei", 16, QFont::Bold));
+    painter.drawText(QRect(infoX, infoY, infoWidth, infoHeight), Qt::AlignCenter, msg);
+}
+
+void RoomWidget::updateChessBoardDisplay()
+{
+    QWidget *chessBoardWidget = ui->chessBoardWidget;
+    if (chessBoardWidget)
+    {
+        chessBoardWidget->update(); // 触发重绘
+    }
+}
+
+bool RoomWidget::isPlaying()
+{
+    // 检查游戏是否正在进行中
+    return gameStatus == GameStatus::Playing;
+}
+
+void RoomWidget::handleAIPlayerTurn(Piece player)
+{
+    // // 检查当前玩家是否是AI
+    // if ((player == Piece::BLACK && blackPlayer && blackPlayer->isAI) ||
+    //     (player == Piece::WHITE && whitePlayer && whitePlayer->isAI))
+    // {
+    //     if (blackPlayer->isAI)
+    //     {
+    //         aiPlayer = std::make_unique<AiPlayer>(Piece::BLACK);
+    //         aiMoveTimerId = TimerManager::AddTask(std::chrono::milliseconds(1000), [this]()
+    //                                               { executeAIMove(); }); // 1秒后执行}
+    //     }
+    //     if (whitePlayer->isAI)
+    //     {
+    //         aiPlayer = std::make_unique<AiPlayer>(Piece::WHITE);
+    //         aiMoveTimerId = TimerManager::AddTask(std::chrono::milliseconds(1000), [this]()
+    //                                               { executeAIMove(); }); // 1秒后执行}
+    //     }
+    // }
+}
+
+void RoomWidget::executeAIMove()
+{
+    // // 执行AI移动
+    // if (!aiPlayer || !game)
+    // {
+    //     return;
+    // }
+
+    // const auto &board = game->getBoard();
+    // auto move = aiPlayer->getNextMove(board);
+
+    // if (move.first >= 0 && move.second >= 0)
+    // {
+    //     // 执行移动
+    //     onMakeMove(move.first, move.second);
+    // }
+
+    // aiMoveTimerId = 0; // 重置计时器ID
+}
+void RoomWidget::checkAndExecuteAI(Piece currPlayer)
+{
+    // 核心修复：增加 isBlackAI 和 isWhiteAI 的判断
+    bool isAiTurn = (currPlayer == Piece::BLACK && isBlackAI) ||
+                    (currPlayer == Piece::WHITE && isWhiteAI);
+    if (isAiTurn && gameStatus == Playing)
+    {
+        QTimer::singleShot(600, this, [this, currPlayer]()
+                           {
+            // 再次确认状态，防止在延迟期间游戏结束或玩家退出
+            if (gameStatus != Playing) return;
+
+            auto* ai = (currPlayer == Piece::BLACK) ? blackAI.get() : whiteAI.get();
+            if (ai) {
+                auto [x, y] = ai->getNextMove(game->getBoard());
+                game->move(x, y);
+            } });
+    }
+}
+void RoomWidget::SetUpChessBoardWidget()
+{
+    ui->chessBoardWidget->setMouseTracking(true);
+    ui->chessBoardWidget->installEventFilter(this);
+    ui->chessBoardWidget->setStyleSheet("background-color: #E8B96A;");
+}
+
+// UI 辅助方法
+void RoomWidget::SwitchPlayerInfoPanal(bool isBlack, bool isTaken)
+{
+    QPushButton *avatar = isBlack ? ui->player1Avatar : ui->player2Avatar;
+    QPushButton *aiBtn = isBlack ? ui->addAIBlackButton : ui->addAIWhiteButton;
+    QPushButton *cancelBtn = isBlack ? ui->cancelBlackButton : ui->cancelWhiteButton;
+    QLabel *nameLabel = isBlack ? ui->player1NameLabel : ui->player2NameLabel;
+
+    avatar->setEnabled(!isTaken);
+    aiBtn->setVisible(!isTaken && isLocal);
+
+    // 只有当该位置被占用且(是本地模式或该位置是自己)时才显示取消按钮
+    bool isMe = (nameLabel->text() == username);
+    cancelBtn->setVisible(isTaken && (isLocal || isMe));
 }
 
 void RoomWidget::SwitchGameStatus(GameStatus status)
 {
     gameStatus = status;
-    switch (status)
-    {
-    case GameStatus::NotStarted:
-        ui->startGameButton->setEnabled(true);
-        ui->startGameButton->setText("开始游戏");
-        ui->undoButton->setEnabled(false);
-        ui->drawButton->setEnabled(false);
-        ui->surrenderButton->setEnabled(false);
-        break;
-    case GameStatus::Playing:
-        ui->startGameButton->setEnabled(false);
-        ui->undoButton->setEnabled(true);
-        ui->drawButton->setEnabled(true);
-        ui->surrenderButton->setEnabled(true);
-
-        break;
-    case GameStatus::End:
-        ui->startGameButton->setEnabled(true);
-        ui->startGameButton->setText("重新开始");
-        ui->undoButton->setEnabled(false);
-        ui->drawButton->setEnabled(false);
-        ui->surrenderButton->setEnabled(false);
-        break;
-    default:
-        break;
-    }
-}
-
-void RoomWidget::onGameBoardChanged(const std::vector<std::vector<Piece>> &board)
-{
-    onBoardUpdated(board);
-}
-
-void RoomWidget::onGameCurrentPlayerChanged(Piece player)
-{
-    updateChessBoardDisplay();
-}
-
-void RoomWidget::onGameEndedFromCore(Piece winner, const std::string &reason)
-{
-    QString winnerText = (winner == Piece::BLACK) ? "黑棋" : "白棋";
-    QString message = QString("%1 获胜！原因：%2").arg(winnerText).arg(QString::fromStdString(reason));
-
-    onGameEnded(message);
-
-    // 更新棋盘显示以显示游戏结束信息
-    updateChessBoardDisplay();
-}
-
-void RoomWidget::onGameMoveHistoryUpdated(const std::string &history)
-{
-    // TODO: ui->tabWidget “记录”页 Text替换为history
-}
-
-void RoomWidget::onGameTimeUpdated(const std::string &blackTime, const std::string &whiteTime)
-{
-    ui->player1TimeLabel->setText(QString::fromStdString(blackTime));
-    ui->player2TimeLabel->setText(QString::fromStdString(whiteTime));
-}
-
-void RoomWidget::handleBoardClick(int x, int y)
-{
-    qDebug() << "RoomWidget::handleBoardClick: Board clicked at (" << x << "," << y << ")";
-
-    // 处理棋盘点击事件
-    onMakeMove(x, y);
+    ui->startGameButton->setEnabled(status != Playing);
+    ui->startGameButton->setText(status == End ? "重新开始" : "开始游戏");
+    ui->undoButton->setEnabled(status == Playing);
+    ui->drawButton->setEnabled(status == Playing);
+    ui->surrenderButton->setEnabled(status == Playing);
 }
 
 bool RoomWidget::eventFilter(QObject *watched, QEvent *event)
 {
-    QWidget *chessBoardWidget = ui->chessBoardWidget;
-    if (!chessBoardWidget || watched != chessBoardWidget)
+    if (watched == ui->chessBoardWidget)
     {
-        LOG_ERROR("Invalid event filter");
-        return QWidget::eventFilter(watched, event);
-    }
-    // 鼠标点击事件 -> 落子
-    if (event->type() == QEvent::MouseButtonPress)
-    {
-        QMouseEvent *mouseEvent = static_cast<QMouseEvent *>(event);
-        QPoint gridPos = screenPosToGrid(mouseEvent->pos(), chessBoardWidget);
-        if (gridPos.x() >= 0 && gridPos.y() >= 0)
+        // 1. 处理绘图事件
+        if (event->type() == QEvent::Paint)
         {
-            handleBoardClick(gridPos.x(), gridPos.y());
-            return true; // 事件已处理
+            paintChessBoard(game->getBoard());
+            return true; // 告诉 Qt 该事件已处理，不要再画默认背景
+        }
+
+        // 2. 处理鼠标点击落子
+        if (event->type() == QEvent::MouseButtonPress)
+        {
+            if (gameStatus != Playing)
+                return true;
+
+            QPoint gridPos = screenPosToGrid(static_cast<QMouseEvent *>(event)->pos(), ui->chessBoardWidget);
+            if (gridPos.x() >= 0)
+                handleBoardClick(gridPos.x(), gridPos.y());
+            return true;
         }
     }
-    // update触发绘制事件 -> 绘制棋盘
-    else if (event->type() == QEvent::Paint)
-    {
-        // 绘制棋盘
-        QPaintEvent *paintEvent = static_cast<QPaintEvent *>(event);
-        QPainter painter(chessBoardWidget);
-        paintChessBoard(painter, chessBoardWidget);
-        return true;
-    }
-
     return QWidget::eventFilter(watched, event);
 }
 
-void RoomWidget::paintChessBoard(QPainter &painter, QWidget *boardWidget)
-{
-    if (!game)
-        return;
+// 绘图逻辑保持不变，但使用 member variable 替代 local 变量
 
-    const std::vector<std::vector<Piece>> &board = game->getBoard();
+void RoomWidget::paintChessBoard(const std::vector<std::vector<Piece>> &board)
+
+{
+    QWidget *chessBoardWidget = ui->chessBoardWidget;
+    QPainter painter(chessBoardWidget);
+    chessBoardWidget->update();
     int boardSize = board.size();
     if (boardSize == 0)
         return;
@@ -505,13 +514,11 @@ void RoomWidget::paintChessBoard(QPainter &painter, QWidget *boardWidget)
 
     // 计算棋盘实际位置
     int boardLength = gridSize * (boardSize - 1);
-    int boardWidth = boardWidget->width();
-    int boardHeight = boardWidget->height();
+    int boardWidth = chessBoardWidget->width();
+    int boardHeight = chessBoardWidget->height();
     QPoint boardTopLeft((boardWidth - boardLength) / 2, (boardHeight - boardLength) / 2);
-
     // 绘制棋盘背景
-    painter.fillRect(boardWidget->rect(), QColor(222, 184, 135));
-
+    painter.fillRect(chessBoardWidget->rect(), QColor(222, 184, 135));
     // 绘制网格线
     painter.setPen(QPen(Qt::black, 2));
     for (int i = 0; i < boardSize; i++)
@@ -519,7 +526,6 @@ void RoomWidget::paintChessBoard(QPainter &painter, QWidget *boardWidget)
         // 横线
         int y = boardTopLeft.y() + i * gridSize;
         painter.drawLine(boardTopLeft.x(), y, boardTopLeft.x() + boardLength, y);
-
         // 竖线
         int x = boardTopLeft.x() + i * gridSize;
         painter.drawLine(x, boardTopLeft.y(), x, boardTopLeft.y() + boardLength);
@@ -528,16 +534,15 @@ void RoomWidget::paintChessBoard(QPainter &painter, QWidget *boardWidget)
     // 绘制天元和星
     int center = boardSize / 2;
     int starPoints[4][2] = {{3, 3}, {3, 11}, {11, 3}, {11, 11}};
-
     painter.setBrush(Qt::black);
     painter.setPen(Qt::NoPen);
-
     // 绘制天元
     QPoint centerPoint(boardTopLeft.x() + center * gridSize,
                        boardTopLeft.y() + center * gridSize);
     painter.drawEllipse(centerPoint, starPointRadius, starPointRadius);
 
     // 绘制星
+
     for (auto &point : starPoints)
     {
         if (point[0] < boardSize && point[1] < boardSize)
@@ -549,6 +554,7 @@ void RoomWidget::paintChessBoard(QPainter &painter, QWidget *boardWidget)
     }
 
     // 绘制棋子
+
     for (int i = 0; i < boardSize; i++)
     {
         for (int j = 0; j < boardSize; j++)
@@ -568,174 +574,69 @@ void RoomWidget::paintChessBoard(QPainter &painter, QWidget *boardWidget)
                 // 绘制棋子
                 QRadialGradient gradient(piecePos, pieceRadius);
                 if (board[i][j] == Piece::BLACK)
+
                 {
+
                     gradient.setColorAt(0, QColor(80, 80, 80));
+
                     gradient.setColorAt(0.7, QColor(40, 40, 40));
+
                     gradient.setColorAt(1, QColor(0, 0, 0));
                 }
+
                 else
+
                 {
+
                     gradient.setColorAt(0, QColor(255, 255, 255));
+
                     gradient.setColorAt(0.7, QColor(240, 240, 240));
+
                     gradient.setColorAt(1, QColor(220, 220, 220));
                 }
 
                 painter.setBrush(QBrush(gradient));
+
                 painter.setPen(QPen(QColor(50, 50, 50), 1));
+
                 painter.drawEllipse(piecePos, pieceRadius, pieceRadius);
             }
         }
     }
-
-    // 绘制当前玩家指示器
-    if (!game->isGameOver())
-    {
-        Piece currentPlayer = game->getCurrentPlayer();
-        int indicatorX = boardTopLeft.x() + (boardSize - 1) * gridSize + 30;
-        int indicatorY = boardTopLeft.y() + (boardSize / 2) * gridSize;
-        const int indicatorRadius = 12;
-
-        painter.setPen(Qt::NoPen);
-        if (currentPlayer == Piece::BLACK)
-        {
-            // 黑棋指示器
-            QRadialGradient blackGrad(indicatorX, indicatorY, indicatorRadius);
-            blackGrad.setColorAt(0, QColor(100, 100, 100));
-            blackGrad.setColorAt(1, QColor(0, 0, 0));
-            painter.setBrush(QBrush(blackGrad));
-            painter.drawEllipse(indicatorX - indicatorRadius, indicatorY - indicatorRadius,
-                                indicatorRadius * 2, indicatorRadius * 2);
-
-            painter.setPen(QPen(Qt::black, 2));
-            painter.setFont(QFont("Microsoft YaHei", 12, QFont::Bold));
-            painter.drawText(indicatorX + 15, indicatorY + 5, "黑方回合");
-        }
-        else
-        {
-            // 白棋指示器
-            QRadialGradient whiteGrad(indicatorX, indicatorY, indicatorRadius);
-            whiteGrad.setColorAt(0, QColor(255, 255, 255));
-            whiteGrad.setColorAt(1, QColor(200, 200, 200));
-            painter.setBrush(QBrush(whiteGrad));
-            painter.setPen(QPen(Qt::black, 1));
-            painter.drawEllipse(indicatorX - indicatorRadius, indicatorY - indicatorRadius,
-                                indicatorRadius * 2, indicatorRadius * 2);
-
-            painter.setPen(QPen(Qt::white, 2));
-            painter.setFont(QFont("Microsoft YaHei", 12, QFont::Bold));
-            painter.drawText(indicatorX + 15, indicatorY + 5, "白方回合");
-        }
-    }
-
-    // 如果游戏结束，绘制获胜信息
-    if (game->isGameOver())
-    {
-        Piece winner = game->getWinner();
-        QString winnerText = (winner == Piece::BLACK) ? "黑棋" : "白棋";
-
-        int infoX = boardWidth / 2 - 100;
-        int infoY = boardHeight / 2 - 30;
-        int infoWidth = 200;
-        int infoHeight = 60;
-
-        painter.setPen(QPen(QColor(239, 68, 68, 200), 3));
-        painter.setBrush(QBrush(QColor(239, 68, 68, 180)));
-        painter.drawRect(infoX, infoY, infoWidth, infoHeight);
-
-        painter.setPen(Qt::white);
-        painter.setFont(QFont("Microsoft YaHei", 16, QFont::Bold));
-        painter.drawText(QRect(infoX, infoY, infoWidth, infoHeight), Qt::AlignCenter, winnerText + " 获胜！");
-    }
 }
 
-void RoomWidget::updateChessBoardDisplay()
+void RoomWidget::onSyncSeat(const QString &p1, const QString &p2)
 {
-    QWidget *chessBoardWidget = ui->chessBoardWidget;
-    if (chessBoardWidget)
+    isBlackTaken = !p1.isEmpty();
+    isWhiteTaken = !p2.isEmpty();
+    isBlackAI = isWhiteAI = false; // 网络模式暂不考虑 AI
+
+    ui->player1NameLabel->setText(isBlackTaken ? p1 : "等待玩家...");
+    ui->player2NameLabel->setText(isWhiteTaken ? p2 : "等待玩家...");
+
+    SwitchPlayerInfoPanal(true, isBlackTaken);
+    SwitchPlayerInfoPanal(false, isWhiteTaken);
+}
+
+void RoomWidget::onSyncGame(const QString &statusStr)
+{
+    if (!statusStr.isEmpty() && game->sync(statusStr.toStdString()))
     {
-        chessBoardWidget->update(); // 触发重绘
+        update();
     }
 }
 
 QPoint RoomWidget::screenPosToGrid(const QPoint &pos, QWidget *boardWidget)
 {
-    if (!game)
-        return QPoint(-1, -1);
-
-    const std::vector<std::vector<Piece>> &board = game->getBoard();
-    int boardSize = board.size();
-    if (boardSize == 0)
-        return QPoint(-1, -1);
-
     const int gridSize = 40;
-    const int boardLength = gridSize * (boardSize - 1);
-    int boardWidth = boardWidget->width();
-    int boardHeight = boardWidget->height();
-    QPoint boardTopLeft((boardWidth - boardLength) / 2, (boardHeight - boardLength) / 2);
+    const int boardSize = 15;
+    int boardLength = gridSize * (boardSize - 1);
+    QPoint boardTopLeft((boardWidget->width() - boardLength) / 2, (boardWidget->height() - boardLength) / 2);
 
-    // 检查是否在棋盘范围内
-    if (pos.x() < boardTopLeft.x() || pos.y() < boardTopLeft.y())
-    {
+    int gx = qRound((float)(pos.x() - boardTopLeft.x()) / gridSize);
+    int gy = qRound((float)(pos.y() - boardTopLeft.y()) / gridSize);
+
+    if (gx < 0 || gx >= boardSize || gy < 0 || gy >= boardSize)
         return QPoint(-1, -1);
-    }
-
-    int gridX = (pos.x() - boardTopLeft.x() + gridSize / 2) / gridSize;
-    int gridY = (pos.y() - boardTopLeft.y() + gridSize / 2) / gridSize;
-
-    // 确保在棋盘范围内
-    if (gridX < 0 || gridX >= boardSize || gridY < 0 || gridY >= boardSize)
-    {
-        return QPoint(-1, -1);
-    }
-
-    return QPoint(gridX, gridY);
-}
-
-// 新协议槽函数实现
-
-void RoomWidget::onSyncSeat(const QString &player1, const QString &player2)
-{
-    qDebug() << "RoomWidget::onSyncSeat: Received seat sync - Player1:" << player1 << "Player2:" << player2;
-
-    // 更新黑棋玩家
-    if (!player1.isEmpty() && player1 != "null")
-    {
-        onBlackTaken(player1, false);
-    }
-    else
-    {
-        // 黑棋座位为空
-        blackPlayer = nullptr;
-        SwitchPlayerInfoPanal(true, false);
-        ui->player1NameLabel->setText("等待玩家...");
-    }
-
-    // 更新白棋玩家
-    if (!player2.isEmpty() && player2 != "null")
-    {
-        onWhiteTaken(player2, false);
-    }
-    else
-    {
-        // 白棋座位为空
-        whitePlayer = nullptr;
-        SwitchPlayerInfoPanal(false, false);
-        ui->player2NameLabel->setText("等待玩家...");
-    }
-
-    emit logToUser("座位信息已同步");
-}
-
-void RoomWidget::onSyncRoomSetting(const QString &settings)
-{
-    qDebug() << "RoomWidget::onSyncRoomSetting: Received room settings:" << settings;
-    // 解析设置字符串并更新UI
-    // 这里可以根据实际协议格式进行解析
-    QStringList settingList = settings.split(';', Qt::SkipEmptyParts);
-    onUpdateRoomSetting(settingList);
-    emit logToUser("房间设置已同步");
-}
-
-void RoomWidget::onSyncGame(const QString &statusStr)
-{
+    return QPoint(gx, gy);
 }
