@@ -1,13 +1,12 @@
 #ifndef FRAME_H
 #define FRAME_H
 
-#include "EventBus.hpp"
 #include <vector>
 #include <cstdint>
+#include <array>
 
 #define MAGIC_NUMBER 0x12345678
 
-// [加密位 1bit]
 // 包头
 class Frame
 {

@@ -6,12 +6,7 @@
 #include <thread>
 #include <functional>
 
-inline uint64_t GetTimeMS()
-{
-    auto now = std::chrono::steady_clock::now();
-    auto duration = now.time_since_epoch();
-    return std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
-}
+#include "Timer.hpp"
 
 class TimeWheel
 {

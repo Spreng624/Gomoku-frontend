@@ -95,7 +95,6 @@ bool Client::Connect()
         LOG_ERROR("Socket create failed in Connect(): " + std::to_string(GET_LAST_ERROR()));
         return false;
     }
-    LOG_DEBUG("New socket created successfully, socket value: " + std::to_string((int)sock));
 
     if (connect(sock, (struct sockaddr *)&server_addr, sizeof(server_addr)) == -1)
     {

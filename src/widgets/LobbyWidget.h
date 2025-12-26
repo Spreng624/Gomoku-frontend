@@ -21,12 +21,15 @@ public:
     ~LobbyWidget();
 
 signals:
-    void localGame();
+    // Just for Initialization
+    void freshPlayerList();
+    void freshRoomList();
+
+    // TopBar
+    void localGame(); // --> GameWidget
     void quickMatch();
     void createRoom();
     void joinRoom(int roomId);
-    void freshPlayerList();
-    void freshRoomList();
 
 public slots:
     void updatePlayerList(const QStringList &players);

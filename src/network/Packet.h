@@ -7,71 +7,68 @@
 #include <string>
 #include <map>
 
-#define BUFFER_SIZE 4096
+#define BU99ER_SIZE 4096
 
 using ValueType = std::variant<
     int, uint8_t, uint32_t, uint64_t,
     std::string, bool, std::vector<uint8_t>>;
 using MapType = std::map<std::string, ValueType>;
 
-// 消息类型
+// 协商
+enum class NegStatus : uint8_t
+{
+    Ask,    // 发起请求
+    Accept, // 同意
+    Reject  // 拒绝
+};
+
+// 消息类型（注：Sync代表全量同步，作为请求时意味着需要同步）
 enum MsgType : uint32_t
 {
+    // 空消息, 可用作心跳包
     None = 0,
-    // 0x100-0x1FF 用户操作（请求）
-    Login = 0x100,
-    SignIn,
-    LoginByGuest,
-    Guest2User,
-    EditUsername,
-    EditPassword,
-    LogOut,
 
-    // 0x200-0x2FF 房间操作（请求）
-    CreateRoom = 0x200,
-    CreateSingleRoom,
-    JoinRoom,
-    ExitRoom,
-    QuickMatch,
+    // 100-199 账户操作
+    Login = 100,  // username, password --> success, (username, rating) / error
+    SignIn,       // username, password --> success, (username, rating) / error
+    LoginAsGuest, // None               --> success, (username, rating) / error
+    LogOut,       // None               --> success, None / error
 
-    // 0x300-0x3FF 座位操作（请求）
-    TakeBlack = 0x300,
-    TakeWhite,
-    CancelTake,
-    StartGame,
-    EditRoomSetting,
+    // 200-299 大厅操作
+    CreateRoom = 200,   // None   --> success, None / error
+    JoinRoom,           // roomId --> success, None / error
+    QuickMatch,         // None   --> success, None / error
+    updateUsersToLobby, // None   --> success, userList / error
+                        //        <-- userList
+    updateRoomsToLobby, // None   --> success, roomList / error
+                        //        <-- roomList
 
-    ChatMessage,
+    // 300-399 房间内部操作
+    SyncSeat = 300,  // P1, P2  --> success, (P1, P2) / error
+                     //         <-- P1, P2
+    SyncRoomSetting, // config  --> success, None / error
+                     //         <-- config
+    ChatMessage,     // msg     --> success, None / error
+                     //         <-- username, msg
+    SyncUsersToRoom, //         <-- playerListStr
+    ExitRoom,        // None    --> success, None / error
 
-    // 0x400-0x4FF 游戏操作（请求）
-    MakeMove = 0x400,
-    UndoMoveRequest,
-    UndoMoveResponse,
-    DrawRequest,
-    DrawResponse,
-    GiveUp,
+    // 400-499 游戏操作
+    GameStarted = 400, // None      --> success, None / error
+                       //           <-- None
+    GameEnded,         //           <-- msg    唯一无请求的消息
+    MakeMove,          // x, y      --> success, None / error
+                       //           <-- x, y
+    GiveUp,            // None      --> success, None / error
+    Draw,              // negStatus --> success, None / error
+                       //           <-- negStatus
+    UndoMove,          // negStatus --> success, None / error
+                       //           <-- negStatus
+    SyncGame,          // None      --> success, None / error
+                       //           <-- statusStr 一个 配置||行棋历史 的字符串搞定同步问题
 
-    // 0x500-0x5FF 查询和订阅（请求）
-    GetUser = 0x500,
-    GetUserList,
-    GetRoomList,
-
-    // 0x1000-0x1FFF 服务器推送（无需 requestId）
-    OpponentMoved = 0x1000,     // 对手落子推送
-    GameEnded = 0x1001,         // 游戏结束推送
-    PlayerJoined = 0x1002,      // 玩家加入推送
-    PlayerLeft = 0x1003,        // 玩家退出推送
-    RoomStatusChanged = 0x1004, // 房间状态推送
-    DrawRequested = 0x1005,     // 请求平局推送
-    DrawAccepted = 0x1006,      // 平局被接受推送
-    GiveUpRequested = 0x1007,   // 认输推送
-
-    // 0xFF00-0xFFFF 错误消息
-    Success = 0xFF00,
-    Error = 0xFFFF,
-    InvalidMsgType,
-    InvalidArg,
-    UnexpectedError
+    // 9999 错误
+    Error = 9999,
 };
 
 class Packet

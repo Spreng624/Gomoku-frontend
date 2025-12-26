@@ -9,10 +9,9 @@
 #include <QHBoxLayout>
 #include <memory>
 #include "LobbyWidget.h"
-#include "GameWidget.h"
-#include "Manager.h"
+#include "RoomWidget.h"
+#include "Controller.h"
 #include "ToastWidget.h"
-#include "GameManager.h"
 
 namespace Ui
 {
@@ -74,9 +73,8 @@ private:
     // 原有成员变量
     QStackedWidget *stackedWidget;
     LobbyWidget *lobby;
-    GameWidget *game;
-    std::unique_ptr<Manager> manager;
-    std::unique_ptr<GameManager> gameManager;
+    RoomWidget *room;
+    std::unique_ptr<Controller> ctrl;
     bool networkConnected;
     QString currentUsername;
     int currentRating;

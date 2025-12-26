@@ -30,7 +30,7 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="QWidget" name="chessBoardPlaceholder" native="true">
+    <widget class="QWidget" name="chessBoardWidget">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
        <horstretch>1</horstretch>
@@ -52,9 +52,6 @@
        <width>300</width>
        <height>0</height>
       </size>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">file:///E:/Dev/Gomoku-frontend/src/style.qss</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout">
       <property name="spacing">
@@ -117,32 +114,6 @@
            </property>
           </widget>
          </item>
-         <item>
-          <widget class="QPushButton" name="minimizeBtn">
-           <property name="text">
-            <string>─</string>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>25</width>
-             <height>25</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="closeBtn">
-           <property name="text">
-            <string>×</string>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>25</width>
-             <height>25</height>
-            </size>
-           </property>
-          </widget>
-         </item>
         </layout>
        </widget>
       </item>
@@ -161,7 +132,7 @@
             <item>
              <widget class="QPushButton" name="player1Avatar">
               <property name="text">
-               <string>黑棋</string>
+               <string>就坐</string>
               </property>
               <property name="minimumSize">
                <size>
@@ -176,7 +147,29 @@
                </size>
               </property>
               <property name="toolTip">
-               <string>就坐</string>
+               <string>执黑棋就坐</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="addAIBlackButton">
+              <property name="text">
+               <string>+AI</string>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>40</width>
+                <height>30</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>40</width>
+                <height>30</height>
+               </size>
+              </property>
+              <property name="toolTip">
+               <string>添加AI玩家执黑棋</string>
               </property>
              </widget>
             </item>
@@ -208,6 +201,28 @@
               </item>
              </layout>
             </item>
+            <item>
+             <widget class="QPushButton" name="cancelBlackButton">
+              <property name="text">
+               <string>X</string>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>40</width>
+                <height>30</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>40</width>
+                <height>30</height>
+               </size>
+              </property>
+              <property name="toolTip">
+               <string>取消执黑棋</string>
+              </property>
+             </widget>
+            </item>
            </layout>
           </widget>
          </item>
@@ -220,7 +235,7 @@
             <item>
              <widget class="QPushButton" name="player2Avatar">
               <property name="text">
-               <string>白棋</string>
+               <string>就坐</string>
               </property>
               <property name="minimumSize">
                <size>
@@ -235,7 +250,29 @@
                </size>
               </property>
               <property name="toolTip">
-               <string>就坐</string>
+               <string>执白棋就坐</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="addAIWhiteButton">
+              <property name="text">
+               <string>+AI</string>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>40</width>
+                <height>30</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>40</width>
+                <height>30</height>
+               </size>
+              </property>
+              <property name="toolTip">
+               <string>添加AI玩家执白棋</string>
               </property>
              </widget>
             </item>
@@ -267,6 +304,28 @@
               </item>
              </layout>
             </item>
+            <item>
+             <widget class="QPushButton" name="cancelWhiteButton">
+              <property name="text">
+               <string>X</string>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>40</width>
+                <height>30</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>40</width>
+                <height>30</height>
+               </size>
+              </property>
+              <property name="toolTip">
+               <string>取消执白棋</string>
+              </property>
+             </widget>
+            </item>
            </layout>
           </widget>
          </item>
@@ -295,6 +354,19 @@
           <widget class="QPushButton" name="startGameButton">
            <property name="text">
             <string>开始游戏</string>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>40</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="drawButton">
+           <property name="text">
+            <string>求和</string>
            </property>
            <property name="minimumSize">
             <size>
@@ -370,7 +442,7 @@
             <item>
              <widget class="QPushButton" name="sendButton">
               <property name="text">
-               <string>發送</string>
+               <string>发送</string>
               </property>
              </widget>
             </item>
@@ -380,7 +452,7 @@
         </widget>
         <widget class="QWidget" name="recordTab">
          <attribute name="title">
-          <string>記錄</string>
+          <string>记录</string>
          </attribute>
          <layout class="QVBoxLayout" name="verticalLayout_6">
           <item>
@@ -400,7 +472,7 @@
         </widget>
         <widget class="QWidget" name="settingTab">
          <attribute name="title">
-          <string>設置</string>
+          <string>设置</string>
          </attribute>
          <layout class="QVBoxLayout" name="verticalLayout_8">
           <property name="spacing">
@@ -484,13 +556,6 @@
           <widget class="QPushButton" name="backToLobbyButton">
            <property name="text">
             <string>返回大廳</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="restartButton">
-           <property name="text">
-            <string>重新開始</string>
            </property>
           </widget>
          </item>

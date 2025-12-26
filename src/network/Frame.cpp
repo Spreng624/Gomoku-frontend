@@ -1,7 +1,7 @@
 #include "Frame.h"
-
 #include <iostream>
 #include <cstring>
+#include <algorithm>
 
 #define BUFFER_SIZE 4096
 #define MAX_FRAME_SIZE 1024
