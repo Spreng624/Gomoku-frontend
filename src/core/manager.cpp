@@ -187,7 +187,7 @@ void Manager::joinRoom(int roomId)
         return;
 
     Packet packet(sessionId, MsgType::JoinRoom);
-    packet.AddParam("room_id", roomId);
+    packet.AddParam("roomId", roomId);
 
     sendPacket(packet);
 }
@@ -227,7 +227,7 @@ void Manager::exitRoom()
         return;
 
     Packet packet(sessionId, MsgType::ExitRoom);
-    packet.AddParam("room_id", currentRoomId);
+    packet.AddParam("roomId", currentRoomId);
     sendPacket(packet);
 
     // 不立即切换，等待服务器确认
@@ -244,7 +244,7 @@ void Manager::takeBlack()
         return;
 
     Packet packet(sessionId, MsgType::TakeBlack);
-    packet.AddParam("room_id", currentRoomId);
+    packet.AddParam("roomId", currentRoomId);
     sendPacket(packet);
 }
 
@@ -255,7 +255,7 @@ void Manager::takeWhite()
         return;
 
     Packet packet(sessionId, MsgType::TakeWhite);
-    packet.AddParam("room_id", currentRoomId);
+    packet.AddParam("roomId", currentRoomId);
     sendPacket(packet);
 }
 
@@ -266,7 +266,7 @@ void Manager::cancelTake()
         return;
 
     Packet packet(sessionId, MsgType::CancelTake);
-    packet.AddParam("room_id", currentRoomId);
+    packet.AddParam("roomId", currentRoomId);
     sendPacket(packet);
 }
 
@@ -277,7 +277,7 @@ void Manager::startGame()
         return;
 
     Packet packet(sessionId, MsgType::StartGame);
-    packet.AddParam("room_id", currentRoomId);
+    packet.AddParam("roomId", currentRoomId);
     sendPacket(packet);
 
     inGame = true;
@@ -322,7 +322,7 @@ void Manager::makeMove(int x, int y)
     }
 
     Packet packet(sessionId, MsgType::MakeMove);
-    packet.AddParam("room_id", currentRoomId);
+    packet.AddParam("roomId", currentRoomId);
     packet.AddParam("x", (uint32_t)x);
     packet.AddParam("y", (uint32_t)y);
 
@@ -336,7 +336,7 @@ void Manager::undoMoveRequest()
         return;
 
     Packet packet(sessionId, MsgType::UndoMoveRequest);
-    packet.AddParam("room_id", currentRoomId);
+    packet.AddParam("roomId", currentRoomId);
     sendPacket(packet);
 }
 
@@ -347,7 +347,7 @@ void Manager::undoMoveResponse(bool accepted)
         return;
 
     Packet packet(sessionId, MsgType::UndoMoveResponse);
-    packet.AddParam("room_id", currentRoomId);
+    packet.AddParam("roomId", currentRoomId);
     packet.AddParam("accepted", accepted);
     sendPacket(packet);
 }
@@ -359,7 +359,7 @@ void Manager::drawRequest()
         return;
 
     Packet packet(sessionId, MsgType::DrawRequest);
-    packet.AddParam("room_id", currentRoomId);
+    packet.AddParam("roomId", currentRoomId);
     sendPacket(packet);
 }
 
@@ -370,7 +370,7 @@ void Manager::drawResponse(bool accept)
         return;
 
     Packet packet(sessionId, MsgType::DrawResponse);
-    packet.AddParam("room_id", currentRoomId);
+    packet.AddParam("roomId", currentRoomId);
     packet.AddParam("accept", accept);
     sendPacket(packet);
 }
@@ -381,7 +381,7 @@ void Manager::giveUp()
         return;
 
     Packet packet(sessionId, MsgType::GiveUp);
-    packet.AddParam("room_id", currentRoomId);
+    packet.AddParam("roomId", currentRoomId);
     sendPacket(packet);
 }
 
@@ -520,7 +520,7 @@ void Manager::handlePacket(const Packet &packet)
         bool success = packet.GetParam<bool>("success", true); // 默认为true以保持向后兼容
         if (success)
         {
-            currentRoomId = packet.GetParam<int>("room_id");
+            currentRoomId = packet.GetParam<int>("roomId");
             LOG_INFO("Room created successfully, room ID: " + std::to_string(currentRoomId));
             emit logToUser(QString("房间创建成功，房间号: %1").arg(currentRoomId));
 
@@ -548,7 +548,7 @@ void Manager::handlePacket(const Packet &packet)
         bool success = packet.GetParam<bool>("success", true);
         if (success)
         {
-            currentRoomId = packet.GetParam<int>("room_id");
+            currentRoomId = packet.GetParam<int>("roomId");
             LOG_INFO("Single player room created successfully, room ID: " + std::to_string(currentRoomId));
             emit logToUser(QString("单人房间创建成功，房间号: %1").arg(currentRoomId));
 
@@ -573,7 +573,7 @@ void Manager::handlePacket(const Packet &packet)
         bool success = packet.GetParam<bool>("success", true);
         if (success)
         {
-            currentRoomId = packet.GetParam<int>("room_id");
+            currentRoomId = packet.GetParam<int>("roomId");
             LOG_INFO("Joined room successfully, room ID: " + std::to_string(currentRoomId));
             emit logToUser(QString("加入房间成功，房间号: %1").arg(currentRoomId));
 
@@ -609,7 +609,7 @@ void Manager::handlePacket(const Packet &packet)
         bool success = packet.GetParam<bool>("success", true);
         if (success)
         {
-            currentRoomId = packet.GetParam<int>("room_id");
+            currentRoomId = packet.GetParam<int>("roomId");
             LOG_INFO("Quick match successful, room ID: " + std::to_string(currentRoomId));
             emit logToUser(QString("快速匹配成功，房间号: %1").arg(currentRoomId));
 
